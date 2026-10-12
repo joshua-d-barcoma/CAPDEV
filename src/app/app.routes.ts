@@ -62,6 +62,12 @@ export const routes: Routes = [
     import('./pages/user/time-out/time-out')
       .then(m => m.TimeOut)
   },
+  {
+  path: 'user/history',
+  loadComponent: () =>
+    import('./pages/user/history/history')
+      .then(m => m.History)
+  },
   // Default
 
   {

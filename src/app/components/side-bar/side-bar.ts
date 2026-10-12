@@ -41,11 +41,6 @@ export class SideBar {
       icon: 'calendar'
     },
     {
-      label: 'Productivity',
-      route: '/productivity',
-      icon: 'check'
-    },
-    {
       label: 'Learning',
       route: '/learning',
       icon: 'diamond'
@@ -69,6 +64,11 @@ export class SideBar {
       icon: 'check'
     },
     {
+      label: 'Skill Hub',
+      route: '/user/skill-hub',
+      icon: 'cap'
+    },
+    {
       label: 'Time In',
       route: '/user/time-in',
       icon: 'clock'
@@ -77,6 +77,11 @@ export class SideBar {
       label: 'Time Out',
       route: '/user/time-out',
       icon: 'clock-out'
+    },
+    {
+      label: 'History',
+      route: '/user/history',
+      icon: 'calendar'
     }
   ];
 
