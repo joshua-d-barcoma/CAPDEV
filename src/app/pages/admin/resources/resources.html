@@ -509,61 +509,15 @@
 
     </div>
 
-    <div class="resource-search">
-      <input
-        type="search"
-        aria-label="Search employees"
-        placeholder="Search employees..."
-        [value]="searchTerm"
-        (input)="updateSearch($event)"
-      />
-    </div>
-
-    <div class="resource-filters">
-      <select
-        aria-label="Filter by capability"
-        [value]="capabilityFilter"
-        (change)="updateCapabilityFilter($event)"
-      >
-        <option value="">All Capabilities</option>
-        @for (capability of capabilityOptions; track capability) {
-          <option [value]="capability">{{ capability }}</option>
-        }
-      </select>
-
-      <select
-        aria-label="Filter by career level"
-        [value]="careerLevelFilter"
-        (change)="updateCareerLevelFilter($event)"
-      >
-        <option value="">All Career Levels</option>
-        @for (level of careerLevelOptions; track level) {
-          <option [value]="level">{{ level }}</option>
-        }
-      </select>
-
-      <select
-        aria-label="Filter by skill"
-        [value]="skillFilter"
-        (change)="updateSkillFilter($event)"
-      >
-        <option value="">All Skills</option>
-        @for (skill of skillOptions; track skill) {
-          <option [value]="skill">{{ skill }}</option>
-        }
-      </select>
-
-      <select
-        aria-label="Filter by attendance"
-        [value]="attendanceFilter"
-        (change)="updateAttendanceFilter($event)"
-      >
-        <option value="">All Attendance</option>
-        @for (status of attendanceOptions; track status) {
-          <option [value]="status">{{ status }}</option>
-        }
-      </select>
-    </div>
+    <app-search-filters
+      [searchTerm]="searchTerm"
+      [filters]="searchFilterOptions"
+      [dateRanges]="dateRangeFilterOptions"
+      (searchChange)="updateSearchTerm($event)"
+      (filterChange)="updateSearchFilter($event)"
+      (dateRangeChange)="updateDateRangeFilter($event)"
+      (resetAll)="resetAllFilters()"
+    />
 
     <div class="resource-list">
 
@@ -588,11 +542,23 @@
               </strong>
 
               <span>
-                {{ resource.careerLevel }}
+                {{ resource.workLocation }} · {{ resource.careerLevel }}
               </span>
 
             </div>
 
+          </div>
+
+          <!-- Join Date -->
+          <div class="resource-column">
+            <span class="column-label">Join Date</span>
+            <strong>{{ resource.joiningDate }}</strong>
+          </div>
+
+          <!-- Roll-In Date -->
+          <div class="resource-column">
+            <span class="column-label">Roll-In Date</span>
+            <strong>{{ resource.rollInDate }}</strong>
           </div>
 
           <!-- Capability -->
@@ -656,10 +622,10 @@
 
             <button
               type="button"
-              class="action-button primary"
+              class="action-button primary view-button"
               title="Employee details page coming soon"
             >
-              View Employee
+              View
             </button>
 
           </div>
