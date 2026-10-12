@@ -102,47 +102,38 @@
 
   <div class="analytics-grid">
 
-    <!-- Skill Distribution -->
-    <section class="analytics-card">
+    <!-- Bench Aging -->
+    <section class="analytics-card aging-card">
 
       <div class="analytics-header">
 
         <div>
           <h2>
-            Skill distribution
+            Time in bench
           </h2>
 
           <p>
-            Primary validated skills
+            Employee aging by days on bench
           </p>
         </div>
 
       </div>
 
-      <div class="skill-chart">
+      <div class="aging-metrics">
 
         @for (
-          skill of skillDistribution;
-          track skill.name
+          metric of benchAgingMetrics;
+          track metric.range
         ) {
 
-          <div class="skill-bar-item">
+          <div class="aging-metric">
 
-            <span class="skill-count">
-              {{ skill.count }}
-            </span>
+            <strong>
+              {{ metric.count }}
+            </strong>
 
-            <div class="skill-bar-track">
-
-              <div
-                class="skill-bar"
-                [style.height.%]="getSkillHeight(skill.count)"
-              ></div>
-
-            </div>
-
-            <span class="skill-name">
-              {{ skill.name }}
+            <span>
+              {{ metric.range }}
             </span>
 
           </div>
@@ -260,6 +251,57 @@
           }
 
         </div>
+
+      </div>
+
+    </section>
+
+    <!-- Skill Distribution -->
+    <section class="analytics-card skill-distribution-card">
+
+      <div class="analytics-header">
+
+        <div>
+          <h2>
+            Skill distribution
+          </h2>
+
+          <p>
+            Primary validated skills
+          </p>
+        </div>
+
+      </div>
+
+      <div class="skill-chart">
+
+        @for (
+          skill of skillDistribution;
+          track skill.name
+        ) {
+
+          <div class="skill-bar-item">
+
+            <span class="skill-count">
+              {{ skill.count }}
+            </span>
+
+            <div class="skill-bar-track">
+
+              <div
+                class="skill-bar"
+                [style.height.%]="getSkillHeight(skill.count)"
+              ></div>
+
+            </div>
+
+            <span class="skill-name">
+              {{ skill.name }}
+            </span>
+
+          </div>
+
+        }
 
       </div>
 

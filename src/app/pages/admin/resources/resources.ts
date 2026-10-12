@@ -20,6 +20,11 @@ interface SkillDistribution {
   count: number;
 }
 
+interface BenchAgingMetric {
+  range: string;
+  count: number;
+}
+
 interface CareerLevel {
   level: string;
   count: number;
@@ -70,6 +75,49 @@ export class Resources {
     {
       name: 'UiPath',
       count: 36
+    },
+    {
+      name: 'AWS',
+      count: 63
+    },
+    {
+      name: 'Python',
+      count: 51
+    },
+    {
+      name: 'Kubernetes',
+      count: 48
+    },
+    {
+      name: 'SQL',
+      count: 44
+    },
+    {
+      name: 'Terraform',
+      count: 39
+    },
+    {
+      name: 'Linux',
+      count: 31
+    }
+  ];
+
+  benchAgingMetrics: BenchAgingMetric[] = [
+    {
+      range: '0-30 days',
+      count: 28
+    },
+    {
+      range: '31-60 days',
+      count: 24
+    },
+    {
+      range: '61-90 days',
+      count: 17
+    },
+    {
+      range: '91-120+ days',
+      count: 17
     }
   ];
 
@@ -307,9 +355,11 @@ export class Resources {
   }
 
   getSkillHeight(count: number): number {
-    const max = 70;
+    const max = Math.max(
+      ...this.skillDistribution.map(skill => skill.count)
+    );
 
-    return (count / max) * 100;
+    return max > 0 ? (count / max) * 100 : 0;
   }
 
   getCapabilityWidth(count: number): number {
