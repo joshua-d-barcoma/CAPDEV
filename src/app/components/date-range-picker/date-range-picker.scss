@@ -1,0 +1,334 @@
+$font: 'Poppins', system-ui, sans-serif;
+$radius-sm: 8px;
+$radius-md: 7px;
+$radius-lg: 16px;
+
+$color-bg: #ffffff;
+$color-border: #e8e2eb;
+$color-text: #17131d;
+$color-muted: #918796;
+$color-accent: #7631aa;
+$color-range-bg: #f4e6fb;
+$color-hover: #fcf7ff;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.drp-wrapper {
+  position: relative;
+  display: block;
+  min-width: 0;
+  color: $color-text;
+  font-family: $font;
+  font-size: 14px;
+}
+
+.drp-trigger {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 11px;
+  border: 1.5px solid $color-border;
+  border-radius: $radius-md;
+  background: $color-bg;
+  color: $color-text;
+  font-family: $font;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    border-color: #cdb3dc;
+  }
+
+  &.open {
+    border-color: $color-accent;
+    box-shadow: 0 0 0 3px rgba(118, 49, 170, 0.1);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(118, 49, 170, 0.28);
+    outline-offset: 1px;
+  }
+
+  > span:nth-child(2) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.drp-icon-cal {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: $color-muted;
+}
+
+.drp-icon-chevron {
+  width: 10px;
+  height: 6px;
+  flex-shrink: 0;
+  margin-left: auto;
+  color: $color-muted;
+  transition: transform 0.2s ease;
+
+  &.rotated {
+    transform: rotate(180deg);
+  }
+}
+
+.drp-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 1000;
+  overflow: hidden;
+  border: 1.5px solid $color-border;
+  border-radius: $radius-lg;
+  background: $color-bg;
+  box-shadow: 0 8px 32px rgba(24, 12, 30, 0.1), 0 2px 8px rgba(24, 12, 30, 0.06);
+  animation: drp-open 0.15s ease;
+}
+
+@keyframes drp-open {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.drp-layout {
+  display: flex;
+}
+
+.drp-presets {
+  min-width: 130px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 0;
+  border-right: 1.5px solid $color-border;
+}
+
+.drp-preset-btn {
+  width: 100%;
+  display: block;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: $color-text;
+  font-family: $font;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.1s;
+
+  &:hover {
+    background: $color-hover;
+  }
+
+  &.active {
+    background: $color-range-bg;
+    color: $color-accent;
+    font-weight: 600;
+  }
+}
+
+.drp-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: auto;
+  padding: 12px 16px 0;
+}
+
+.drp-action-confirm,
+.drp-action-reset {
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: $color-accent;
+  font-family: $font;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: opacity 0.15s;
+
+  &:hover:not(:disabled) {
+    opacity: 0.7;
+  }
+
+  &:disabled {
+    color: $color-muted;
+    cursor: not-allowed;
+  }
+}
+
+.drp-calendar {
+  width: 290px;
+  padding: 14px 16px 16px;
+}
+
+.drp-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.drp-month-label {
+  color: $color-text;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.drp-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.drp-nav-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid $color-border;
+  border-radius: $radius-sm;
+  background: none;
+  color: $color-text;
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s;
+
+  svg {
+    width: 6px;
+    height: 10px;
+  }
+
+  &:hover {
+    border-color: #cdb3dc;
+    background: $color-hover;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(118, 49, 170, 0.28);
+    outline-offset: 1px;
+  }
+}
+
+.drp-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  row-gap: 2px;
+}
+
+.drp-weekday {
+  padding-bottom: 7px;
+  color: $color-muted;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+.drp-day {
+  position: relative;
+  min-width: 0;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: $color-text;
+  cursor: pointer;
+
+  &.in-range {
+    background: $color-range-bg;
+  }
+
+  &.start:not(.end) {
+    background: linear-gradient(to left, $color-range-bg 50%, transparent 50%);
+  }
+
+  &.end:not(.start) {
+    background: linear-gradient(to right, $color-range-bg 50%, transparent 50%);
+  }
+
+  &.start.end {
+    background: transparent;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-accent;
+    outline-offset: -2px;
+  }
+
+  .drp-day-inner {
+    position: relative;
+    z-index: 1;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 12px;
+    transition: background 0.1s, color 0.1s;
+  }
+
+  &:hover:not(.start):not(.end) .drp-day-inner {
+    background: $color-hover;
+  }
+
+  &.other-month .drp-day-inner {
+    color: $color-muted;
+  }
+
+  &.today:not(.start):not(.end) .drp-day-inner {
+    border: 1.5px solid $color-accent;
+  }
+
+  &.start .drp-day-inner,
+  &.end .drp-day-inner {
+    background: $color-accent;
+    color: #ffffff;
+    font-weight: 600;
+  }
+}
+
+@media (max-width: 560px) {
+  .drp-panel {
+    max-width: calc(100vw - 32px);
+    overflow-x: auto;
+  }
+
+  .drp-calendar {
+    width: 260px;
+    padding: 12px;
+  }
+
+  .drp-presets {
+    min-width: 112px;
+  }
+
+  .drp-preset-btn {
+    padding-right: 10px;
+    padding-left: 12px;
+    font-size: 11px;
+  }
+}
