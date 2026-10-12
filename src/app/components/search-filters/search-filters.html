@@ -1,0 +1,40 @@
+<div class="search-filters">
+  <input
+    type="search"
+    class="search-input"
+    aria-label="Search employees"
+    [placeholder]="searchPlaceholder"
+    [value]="searchTerm"
+    (input)="updateSearch($event)"
+  />
+
+  @for (filter of filters; track filter.key) {
+    <select
+      [attr.aria-label]="filter.label"
+      [value]="filter.value"
+      (change)="updateFilter($event, filter.key)"
+    >
+      <option value="">{{ filter.label }}</option>
+      @for (option of filter.options; track option) {
+        <option [value]="option">{{ option }}</option>
+      }
+    </select>
+  }
+
+  @for (dateRange of dateRanges; track dateRange.key) {
+    <app-date-range-picker
+      [label]="dateRange.label"
+      [startDate]="dateRange.startDate"
+      [endDate]="dateRange.endDate"
+      (rangeChange)="updateDateRange(dateRange.key, $event)"
+    />
+  }
+
+  <button
+    type="button"
+    class="reset-filters-button"
+    (click)="resetAll.emit()"
+  >
+    Reset all
+  </button>
+</div>

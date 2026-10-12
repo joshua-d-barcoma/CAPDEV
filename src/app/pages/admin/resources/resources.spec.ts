@@ -70,4 +70,39 @@ describe('Resources', () => {
     expect(component.filteredResources.map(resource => resource.name))
       .toEqual(['John Reyes']);
   });
+
+  it('should filter employees by location, join date, and roll-in date', () => {
+    component.workLocationFilter = 'Cebu';
+    component.joiningDateFrom = '2022-01-01';
+    component.rollInDateTo = '2026-08-31';
+
+    expect(component.filteredResources.map(resource => resource.name))
+      .toEqual(['Maria Cruz']);
+  });
+
+  it('should reset search and all resource filters', () => {
+    component.searchTerm = 'Maria';
+    component.capabilityFilter = 'Cloud Customer Edge';
+    component.careerLevelFilter = 'CL7';
+    component.skillFilter = 'Azure';
+    component.attendanceFilter = 'Present';
+    component.workLocationFilter = 'Cebu';
+    component.joiningDateFrom = '2022-01-01';
+    component.joiningDateTo = '2022-12-31';
+    component.rollInDateFrom = '2026-08-01';
+    component.rollInDateTo = '2026-09-01';
+
+    component.resetAllFilters();
+
+    expect(component.searchTerm).toBe('');
+    expect(component.capabilityFilter).toBe('');
+    expect(component.careerLevelFilter).toBe('');
+    expect(component.skillFilter).toBe('');
+    expect(component.attendanceFilter).toBe('');
+    expect(component.workLocationFilter).toBe('');
+    expect(component.joiningDateFrom).toBe('');
+    expect(component.joiningDateTo).toBe('');
+    expect(component.rollInDateFrom).toBe('');
+    expect(component.rollInDateTo).toBe('');
+  });
 });

@@ -23,6 +23,49 @@
 
   </div>
 
+  <!-- Attendance Summary -->
+  <section class="summary-grid" aria-label="Attendance summary">
+
+    <article class="summary-card">
+      <div class="summary-icon purple">👥</div>
+      <div class="summary-content">
+        <span class="summary-label">Total Bench</span>
+        <strong>{{ totalBenchEmployees }}</strong>
+        <span class="summary-detail">Active bench employees</span>
+      </div>
+    </article>
+
+    <article class="summary-card">
+      <div class="summary-icon green">✓</div>
+      <div class="summary-content">
+        <span class="summary-label">Today's Attendance</span>
+        <strong>{{ attendancePercentage }}%</strong>
+        <span class="summary-detail">
+          {{ summaryPresentToday }} of {{ totalBenchEmployees }} present
+        </span>
+      </div>
+    </article>
+
+    <article class="summary-card">
+      <div class="summary-icon orange">!</div>
+      <div class="summary-content">
+        <span class="summary-label">Tardiness Count</span>
+        <strong>{{ tardinessCount }}</strong>
+        <span class="summary-detail">Present after 9:00 AM</span>
+      </div>
+    </article>
+
+    <article class="summary-card">
+      <div class="summary-icon red">!</div>
+      <div class="summary-content">
+        <span class="summary-label">Active Non-Compliance</span>
+        <strong>{{ activeNonCompliance }}</strong>
+        <span class="summary-detail">Active cases</span>
+      </div>
+    </article>
+
+  </section>
+
   <!-- Unapproved Absences -->
   <section class="absence-card">
 
@@ -124,7 +167,7 @@
 
   </section>
 
-  <!-- Today's Time-In -->
+  <!-- Attendance Records -->
   <section class="attendance-card">
 
     <div class="attendance-header">
@@ -135,11 +178,11 @@
         </span>
 
         <h2>
-          Today's Time-In
+          Attendance Records
         </h2>
 
         <p>
-          Employee time-in and time-out attendance for today.
+          Filter employee attendance by date, range, and employee details.
         </p>
       </div>
 
@@ -161,6 +204,25 @@
 
     </div>
 
+    <div class="attendance-date-filter">
+      <app-date-range-picker
+        label="Attendance date"
+        [startDate]="attendanceDateFrom"
+        [endDate]="attendanceDateTo"
+        (rangeChange)="updateDateRange($event, 'attendance')"
+      />
+    </div>
+
+    <app-search-filters
+      [searchTerm]="searchTerm"
+      [filters]="searchFilterOptions"
+      [dateRanges]="dateRangeFilterOptions"
+      (searchChange)="updateSearchTerm($event)"
+      (filterChange)="updateSearchFilter($event)"
+      (dateRangeChange)="updateSearchDateRange($event)"
+      (resetAll)="resetAllFilters()"
+    />
+
     <div class="attendance-table-wrapper">
 
       <table class="attendance-table">
@@ -168,6 +230,10 @@
         <thead>
 
           <tr>
+
+            <th>
+              Date
+            </th>
 
             <th>
               Employees
@@ -192,13 +258,15 @@
         <tbody>
 
           @for (
-            record of attendanceRecords;
-            track record.name
+            record of filteredAttendanceRecords;
+            track record.date + record.name
           ) {
 
             <tr
               [class.absent-row]="record.status === 'Absent'"
             >
+
+              <td>{{ record.date }}</td>
 
               <td>
 
@@ -280,6 +348,14 @@
 
               </td>
 
+            </tr>
+
+          } @empty {
+
+            <tr>
+              <td colspan="5" class="empty-table-cell">
+                No attendance records match your search or filters.
+              </td>
             </tr>
 
           }

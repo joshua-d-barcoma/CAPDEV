@@ -1,4 +1,11 @@
 import { Component } from '@angular/core';
+import {
+  DateRangeFilterChange,
+  SearchFilters,
+  SelectFilterChange,
+  SelectFilterConfig,
+  DateRangeFilterConfig
+} from '../../../components/search-filters/search-filters';
 
 type AttendanceStatus =
   | 'Present'
@@ -6,13 +13,18 @@ type AttendanceStatus =
   | 'Vacation Leave'
   | 'Unapproved Absence';
 
+type WorkLocation = 'Manila' | 'Cebu';
+
 interface Resource {
   name: string;
   careerLevel: string;
+  workLocation: WorkLocation;
   capability: string;
   skills: string[];
   attendanceStatus: AttendanceStatus;
   absenceDays: number;
+  joiningDate: string;
+  rollInDate: string;
 }
 
 interface SkillDistribution {
@@ -38,6 +50,7 @@ interface CapabilityDistribution {
 @Component({
   selector: 'app-resources',
   standalone: true,
+  imports: [SearchFilters],
   templateUrl: './resources.html',
   styleUrl: './resources.scss'
 })
@@ -50,6 +63,11 @@ export class Resources {
   careerLevelFilter = '';
   skillFilter = '';
   attendanceFilter = '';
+  workLocationFilter = '';
+  joiningDateFrom = '';
+  joiningDateTo = '';
+  rollInDateFrom = '';
+  rollInDateTo = '';
 
   skillDistribution: SkillDistribution[] = [
     {
@@ -167,6 +185,7 @@ export class Resources {
     {
       name: 'Alex Santos',
       careerLevel: 'CL8',
+      workLocation: 'Manila',
       capability: 'SRE / Hybrid Cloud',
       skills: [
         'AWS',
@@ -175,11 +194,14 @@ export class Resources {
         'Terraform'
       ],
       attendanceStatus: 'Present',
-      absenceDays: 0
+      absenceDays: 0,
+      joiningDate: '2020-02-10',
+      rollInDate: '2026-07-14'
     },
     {
       name: 'Maria Cruz',
       careerLevel: 'CL7',
+      workLocation: 'Cebu',
       capability: 'Cloud Customer Edge',
       skills: [
         'Azure',
@@ -187,11 +209,14 @@ export class Resources {
         'Terraform'
       ],
       attendanceStatus: 'Present',
-      absenceDays: 0
+      absenceDays: 0,
+      joiningDate: '2022-06-20',
+      rollInDate: '2026-08-05'
     },
     {
       name: 'John Reyes',
       careerLevel: 'CL6',
+      workLocation: 'Manila',
       capability: 'Network',
       skills: [
         'Routing',
@@ -199,11 +224,14 @@ export class Resources {
         'Cisco'
       ],
       attendanceStatus: 'Unapproved Absence',
-      absenceDays: 1
+      absenceDays: 1,
+      joiningDate: '2021-11-01',
+      rollInDate: '2026-09-10'
     },
     {
       name: 'Sarah Garcia',
       careerLevel: 'CL9',
+      workLocation: 'Cebu',
       capability: 'Hybrid Cloud - Operations',
       skills: [
         'AWS',
@@ -212,11 +240,14 @@ export class Resources {
         'Docker'
       ],
       attendanceStatus: 'Unapproved Absence',
-      absenceDays: 3
+      absenceDays: 3,
+      joiningDate: '2019-04-15',
+      rollInDate: '2026-06-20'
     },
     {
       name: 'Michael Tan',
       careerLevel: 'CL8',
+      workLocation: 'Manila',
       capability: 'Hybrid Cloud - Migration',
       skills: [
         'Azure',
@@ -224,11 +255,14 @@ export class Resources {
         'Terraform'
       ],
       attendanceStatus: 'Present',
-      absenceDays: 0
+      absenceDays: 0,
+      joiningDate: '2023-01-09',
+      rollInDate: '2026-09-25'
     },
     {
       name: 'Nicole Lim',
       careerLevel: 'CL5',
+      workLocation: 'Cebu',
       capability: 'Service Management',
       skills: [
         'ITIL',
@@ -236,7 +270,9 @@ export class Resources {
         'Incident Management'
       ],
       attendanceStatus: 'Vacation Leave',
-      absenceDays: 0
+      absenceDays: 0,
+      joiningDate: '2020-08-31',
+      rollInDate: '2026-10-01'
     }
   ];
 
@@ -280,8 +316,11 @@ export class Resources {
       (!query || [
           resource.name,
           resource.careerLevel,
+          resource.workLocation,
           resource.capability,
           resource.attendanceStatus,
+          resource.joiningDate,
+          resource.rollInDate,
           ...resource.skills
         ].some(value => value.toLowerCase().includes(query))) &&
       (!this.capabilityFilter ||
@@ -290,8 +329,77 @@ export class Resources {
         resource.careerLevel === this.careerLevelFilter) &&
       (!this.skillFilter || resource.skills.includes(this.skillFilter)) &&
       (!this.attendanceFilter ||
-        resource.attendanceStatus === this.attendanceFilter)
+        resource.attendanceStatus === this.attendanceFilter) &&
+      (!this.workLocationFilter ||
+        resource.workLocation === this.workLocationFilter) &&
+      this.isDateInRange(
+        resource.joiningDate,
+        this.joiningDateFrom,
+        this.joiningDateTo
+      ) &&
+      this.isDateInRange(
+        resource.rollInDate,
+        this.rollInDateFrom,
+        this.rollInDateTo
+      )
     );
+  }
+
+  get searchFilterOptions(): SelectFilterConfig[] {
+    return [
+      {
+        key: 'capability',
+        label: 'All Capabilities',
+        options: this.capabilityOptions,
+        value: this.capabilityFilter
+      },
+      {
+        key: 'careerLevel',
+        label: 'All Career Levels',
+        options: this.careerLevelOptions,
+        value: this.careerLevelFilter
+      },
+      {
+        key: 'skill',
+        label: 'All Skills',
+        options: this.skillOptions,
+        value: this.skillFilter
+      },
+      {
+        key: 'attendance',
+        label: 'All Attendance',
+        options: this.attendanceOptions,
+        value: this.attendanceFilter
+      },
+      {
+        key: 'workLocation',
+        label: 'All Locations',
+        options: this.workLocationOptions,
+        value: this.workLocationFilter
+      }
+    ];
+  }
+
+  get dateRangeFilterOptions(): DateRangeFilterConfig[] {
+    return [
+      {
+        key: 'joining',
+        label: 'Join date',
+        startDate: this.joiningDateFrom,
+        endDate: this.joiningDateTo
+      },
+      {
+        key: 'rollIn',
+        label: 'Roll-in date',
+        startDate: this.rollInDateFrom,
+        endDate: this.rollInDateTo
+      }
+    ];
+  }
+
+  get workLocationOptions(): WorkLocation[] {
+    return [...new Set(this.resources.map(resource => resource.workLocation))]
+      .sort((a, b) => a.localeCompare(b));
   }
 
   get capabilityOptions(): string[] {
@@ -314,44 +422,51 @@ export class Resources {
       .sort((a, b) => a.localeCompare(b));
   }
 
-  updateSearch(event: Event): void {
-    const target = event.target;
+  updateSearchTerm(searchTerm: string): void {
+    this.searchTerm = searchTerm;
+  }
 
-    if (target instanceof HTMLInputElement) {
-      this.searchTerm = target.value;
+  updateSearchFilter(change: SelectFilterChange): void {
+    switch (change.key) {
+      case 'capability':
+        this.capabilityFilter = change.value;
+        break;
+      case 'careerLevel':
+        this.careerLevelFilter = change.value;
+        break;
+      case 'skill':
+        this.skillFilter = change.value;
+        break;
+      case 'attendance':
+        this.attendanceFilter = change.value;
+        break;
+      case 'workLocation':
+        this.workLocationFilter = change.value;
+        break;
     }
   }
 
-  updateCapabilityFilter(event: Event): void {
-    const target = event.target;
-
-    if (target instanceof HTMLSelectElement) {
-      this.capabilityFilter = target.value;
+  updateDateRangeFilter(change: DateRangeFilterChange): void {
+    if (change.key === 'joining') {
+      this.joiningDateFrom = change.range.start;
+      this.joiningDateTo = change.range.end;
+    } else if (change.key === 'rollIn') {
+      this.rollInDateFrom = change.range.start;
+      this.rollInDateTo = change.range.end;
     }
   }
 
-  updateCareerLevelFilter(event: Event): void {
-    const target = event.target;
-
-    if (target instanceof HTMLSelectElement) {
-      this.careerLevelFilter = target.value;
-    }
-  }
-
-  updateSkillFilter(event: Event): void {
-    const target = event.target;
-
-    if (target instanceof HTMLSelectElement) {
-      this.skillFilter = target.value;
-    }
-  }
-
-  updateAttendanceFilter(event: Event): void {
-    const target = event.target;
-
-    if (target instanceof HTMLSelectElement) {
-      this.attendanceFilter = target.value;
-    }
+  resetAllFilters(): void {
+    this.searchTerm = '';
+    this.capabilityFilter = '';
+    this.careerLevelFilter = '';
+    this.skillFilter = '';
+    this.attendanceFilter = '';
+    this.workLocationFilter = '';
+    this.joiningDateFrom = '';
+    this.joiningDateTo = '';
+    this.rollInDateFrom = '';
+    this.rollInDateTo = '';
   }
 
   getSkillHeight(count: number): number {
@@ -389,6 +504,10 @@ export class Resources {
     return (
       (count / this.totalEmployees) * circumference
     );
+  }
+
+  private isDateInRange(date: string, from: string, to: string): boolean {
+    return (!from || date >= from) && (!to || date <= to);
   }
 
 }
