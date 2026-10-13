@@ -19,7 +19,7 @@ $radius: 16px;
 // Dashboard
 .dashboard {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
@@ -29,7 +29,7 @@ $radius: 16px;
 
   .dashboard-eyebrow {
     color: $purple;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.8px;
     text-transform: uppercase;
@@ -45,7 +45,7 @@ $radius: 16px;
   p {
     margin: 0;
     color: $text-secondary;
-    font-size: 11px;
+    font-size: 14px;
   }
 }
 
@@ -110,7 +110,7 @@ $radius: 16px;
   border-radius: 5px;
   background: $purple-light;
   color: $purple-dark;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -118,7 +118,7 @@ $radius: 16px;
   display: block;
   margin-top: 4px;
   color: $text-secondary;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .profile-detail {
@@ -132,13 +132,13 @@ $radius: 16px;
 
 .profile-detail-label {
   color: $text-muted;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 500;
 }
 
 .profile-detail-value {
   color: $text;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -162,7 +162,7 @@ $radius: 16px;
   border-radius: 5px;
   background: #fcf9fd;
   color: $purple-dark;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 500;
 }
 
@@ -185,7 +185,7 @@ $radius: 16px;
     display: block;
     margin-bottom: 4px;
     color: $purple;
-    font-size: 8px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.7px;
     text-transform: uppercase;
@@ -194,7 +194,7 @@ $radius: 16px;
   h3 {
     margin: 0;
     color: $text;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
   }
 }
@@ -206,7 +206,7 @@ $radius: 16px;
   p {
     margin: 14px 0 8px;
     color: $text-secondary;
-    font-size: 10px;
+    font-size: 13px;
     line-height: 1.5;
   }
 }
@@ -216,13 +216,13 @@ $radius: 16px;
   border-radius: 6px;
   background: #e5f6ef;
   color: $green;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 600;
 }
 
 .achievement-date {
   color: $text-muted;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 // Time Card
@@ -244,7 +244,7 @@ $radius: 16px;
 
   .time-label {
     color: $text-muted;
-    font-size: 8px;
+    font-size: 12px;
   }
 
   strong {
@@ -302,7 +302,7 @@ $radius: 16px;
   display: block;
   margin-bottom: 4px;
   color: $purple;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.4px;
@@ -311,7 +311,7 @@ $radius: 16px;
 .task-item h4 {
   margin: 0;
   color: $text;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -319,7 +319,7 @@ $radius: 16px;
   display: block;
   margin-top: 4px;
   color: $text-muted;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .task-meta {
@@ -333,7 +333,7 @@ $radius: 16px;
 .task-priority {
   padding: 5px 8px;
   border-radius: 6px;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
 
@@ -357,7 +357,7 @@ $radius: 16px;
 .task-status {
   padding: 5px 8px;
   border-radius: 6px;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
 
@@ -401,7 +401,7 @@ $radius: 16px;
   h4 {
     margin: 0;
     color: $text;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 600;
   }
 }
@@ -410,14 +410,14 @@ $radius: 16px;
   display: block;
   margin-top: 4px;
   color: $text-muted;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .training-status {
   flex-shrink: 0;
   padding: 5px 8px;
   border-radius: 6px;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 600;
 
   &.completed {
@@ -441,7 +441,7 @@ $radius: 16px;
   border-radius: 6px;
   background: $purple-light;
   color: $purple-dark;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -452,7 +452,7 @@ $radius: 16px;
 
 .recommendation-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   margin-top: 16px;
 }
@@ -481,7 +481,7 @@ $radius: 16px;
   h4 {
     margin: 0;
     color: $text;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 600;
   }
 }
@@ -490,7 +490,7 @@ $radius: 16px;
   flex-shrink: 0;
   padding: 4px 6px;
   border-radius: 5px;
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 600;
 
   &.upskill {
@@ -507,13 +507,13 @@ $radius: 16px;
 .recommendation-item p {
   margin: 7px 0 0;
   color: $text-secondary;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
 .recommendation-duration {
   color: $text-muted;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 // Responsive

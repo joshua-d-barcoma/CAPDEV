@@ -22,7 +22,7 @@ $radius: 16px;
 // Page
 .history-page {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
@@ -32,7 +32,7 @@ $radius: 16px;
 
   .page-eyebrow {
     color: $purple;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.8px;
     text-transform: uppercase;
@@ -48,14 +48,14 @@ $radius: 16px;
   p {
     margin: 0;
     color: $text-secondary;
-    font-size: 11px;
+    font-size: 14px;
   }
 }
 
 // Summary Cards
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 20px;
 }
@@ -71,7 +71,7 @@ $radius: 16px;
     display: block;
     margin-bottom: 6px;
     color: $text-muted;
-    font-size: 8px;
+    font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.4px;
     text-transform: uppercase;
@@ -88,7 +88,7 @@ $radius: 16px;
     display: block;
     margin-top: 4px;
     color: $text-secondary;
-    font-size: 8px;
+    font-size: 12px;
   }
 }
 
@@ -112,7 +112,7 @@ $radius: 16px;
     display: block;
     margin-bottom: 4px;
     color: $purple;
-    font-size: 8px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.7px;
     text-transform: uppercase;
@@ -121,14 +121,14 @@ $radius: 16px;
   h2 {
     margin: 0;
     color: $text;
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 700;
   }
 
   p {
     margin: 5px 0 0;
     color: $text-secondary;
-    font-size: 9px;
+    font-size: 12px;
   }
 }
 
@@ -137,7 +137,7 @@ $radius: 16px;
   border-radius: 6px;
   background: $purple-light;
   color: $purple-dark;
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -157,7 +157,7 @@ $radius: 16px;
     padding: 11px 14px;
     border-bottom: 1px solid $border;
     color: $text-muted;
-    font-size: 8px;
+    font-size: 12px;
     font-weight: 600;
     text-align: left;
     text-transform: uppercase;
@@ -169,7 +169,7 @@ $radius: 16px;
     padding: 14px;
     border-bottom: 1px solid $border;
     color: $text-secondary;
-    font-size: 9px;
+    font-size: 12px;
     background: #ffffff;
     white-space: nowrap;
   }
@@ -200,13 +200,13 @@ $radius: 16px;
 .date-value,
 .time-value {
   color: $text;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 500;
 }
 
 .hours-value {
   color: $purple-dark;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -216,7 +216,7 @@ $radius: 16px;
   display: inline-flex;
   padding: 5px 8px;
   border-radius: 5px;
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 600;
 }
 
@@ -256,14 +256,14 @@ $radius: 16px;
 .empty-state {
   padding: 24px;
   color: $text-muted;
-  font-size: 9px;
+  font-size: 12px;
   text-align: center;
 }
 
 // Responsive
 @media (max-width: 768px) {
   .summary-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .history-card {

@@ -20,7 +20,7 @@ $radius: 16px;
 // Page
 .time-in-page {
   width: 100%;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -30,7 +30,7 @@ $radius: 16px;
 
   .page-eyebrow {
     color: $purple;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.8px;
     text-transform: uppercase;
@@ -46,7 +46,7 @@ $radius: 16px;
   p {
     margin: 0;
     color: $text-secondary;
-    font-size: 11px;
+    font-size: 14px;
   }
 }
 
@@ -73,7 +73,7 @@ $radius: 16px;
     display: block;
     margin-bottom: 5px;
     color: $purple;
-    font-size: 8px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.7px;
     text-transform: uppercase;
@@ -89,7 +89,7 @@ $radius: 16px;
   p {
     margin: 7px 0 0;
     color: $text-secondary;
-    font-size: 10px;
+    font-size: 13px;
     line-height: 1.5;
   }
 }
@@ -110,12 +110,12 @@ $radius: 16px;
 
   span {
     color: $text-secondary;
-    font-size: 9px;
+    font-size: 12px;
   }
 
   strong {
     color: $text;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 600;
   }
 }
@@ -127,7 +127,7 @@ $radius: 16px;
   border-radius: 8px;
   background: $purple-light;
   color: $purple-dark;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -135,7 +135,7 @@ $radius: 16px;
   display: block;
   margin-bottom: 10px;
   color: $red;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -150,7 +150,7 @@ $radius: 16px;
   p {
     margin: 0 0 9px;
     color: $text-secondary;
-    font-size: 9px;
+    font-size: 12px;
     line-height: 1.6;
 
     &:last-child {
@@ -172,7 +172,7 @@ $radius: 16px;
     display: block;
     margin-bottom: 5px;
     color: $text;
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 600;
   }
 }
@@ -181,7 +181,7 @@ $radius: 16px;
   display: block;
   margin-bottom: 7px;
   color: $text-muted;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .required {
@@ -199,7 +199,7 @@ input[type='text'] {
   background: #ffffff;
   color: $text;
   font-family: inherit;
-  font-size: 10px;
+  font-size: 13px;
   transition: border-color 150ms ease, box-shadow 150ms ease;
 
   &::placeholder {
@@ -237,7 +237,7 @@ input[type='text'] {
 
   span {
     color: $text-secondary;
-    font-size: 9px;
+    font-size: 12px;
     line-height: 1.5;
   }
 }
@@ -269,7 +269,7 @@ input[type='text'] {
 .instruction {
   margin: 0 0 16px;
   color: $text-secondary;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.6;
 
   strong {
@@ -283,7 +283,7 @@ input[type='text'] {
   display: block;
   margin-top: 6px;
   color: $red;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 // Actions
@@ -302,7 +302,7 @@ input[type='text'] {
   background: $purple;
   color: #ffffff;
   font-family: inherit;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: background 150ms ease, transform 150ms ease;
