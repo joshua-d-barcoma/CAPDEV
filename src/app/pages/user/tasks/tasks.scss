@@ -22,7 +22,7 @@ $radius: 16px;
 // Page
 .tasks-page {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
@@ -32,7 +32,7 @@ $radius: 16px;
 
   .page-eyebrow {
     color: $purple;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.8px;
     text-transform: uppercase;
@@ -48,14 +48,14 @@ $radius: 16px;
   p {
     margin: 0;
     color: $text-secondary;
-    font-size: 11px;
+    font-size: 14px;
   }
 }
 
 // Summary Cards
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
   margin-bottom: 20px;
 }
@@ -107,7 +107,7 @@ $radius: 16px;
 
   .summary-label {
     color: $text-muted;
-    font-size: 9px;
+    font-size: 12px;
   }
 
   strong {
@@ -145,7 +145,7 @@ $radius: 16px;
     display: block;
     margin-bottom: 4px;
     color: $purple;
-    font-size: 8px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.7px;
     text-transform: uppercase;
@@ -154,7 +154,7 @@ $radius: 16px;
   h2 {
     margin: 0;
     color: $text;
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 700;
   }
 }
@@ -168,7 +168,7 @@ $radius: 16px;
   border-radius: 6px;
   background: $purple-light;
   color: $purple-dark;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -208,7 +208,7 @@ $radius: 16px;
   h3 {
     margin: 0;
     color: $text;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 600;
   }
 }
@@ -216,13 +216,13 @@ $radius: 16px;
 .task-content p {
   margin: 6px 0;
   color: $text-secondary;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
 .task-due {
   color: $text-muted;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 // Priority
@@ -230,7 +230,7 @@ $radius: 16px;
   flex-shrink: 0;
   padding: 4px 6px;
   border-radius: 5px;
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 600;
 
   &.high {
@@ -261,7 +261,7 @@ $radius: 16px;
   background: #ffffff;
   color: $text;
   font-family: inherit;
-  font-size: 8px;
+  font-size: 12px;
   cursor: pointer;
 
   &:focus {
@@ -277,7 +277,7 @@ $radius: 16px;
 
 .recommendation-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   margin-top: 16px;
 }
@@ -301,7 +301,7 @@ $radius: 16px;
   h3 {
     margin: 0;
     color: $text;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 600;
   }
 }
@@ -310,7 +310,7 @@ $radius: 16px;
   flex-shrink: 0;
   padding: 4px 6px;
   border-radius: 5px;
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 600;
 
   &.upskill {
@@ -327,14 +327,14 @@ $radius: 16px;
 .recommendation-card p {
   margin: 9px 0;
   color: $text-secondary;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
 .recommendation-duration {
   margin-top: auto;
   color: $text-muted;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 // Responsive

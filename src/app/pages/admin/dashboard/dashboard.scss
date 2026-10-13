@@ -23,7 +23,7 @@ $radius: 16px;
 // Dashboard
 .dashboard {
   width: 100%;
-  max-width: 1440px;
+  max-width: 1600px;
   margin: 0 auto;
   box-sizing: border-box;
 }
@@ -43,7 +43,7 @@ $radius: 16px;
   p {
     margin: 5px 0 0;
     color: $text-secondary;
-    font-size: 12px;
+    font-size: 14px;
   }
 }
 
@@ -90,7 +90,7 @@ $radius: 16px;
 // Card Label
 .card-label {
   color: $text-secondary;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -107,7 +107,7 @@ $radius: 16px;
 // Card Meta
 .card-meta {
   margin-top: 10px;
-  font-size: 11px;
+  font-size: 14px;
 
   &.positive {
     color: $green;
@@ -142,7 +142,7 @@ $radius: 16px;
   p {
     margin: 5px 0 0;
     color: $text-secondary;
-    font-size: 11px;
+    font-size: 14px;
   }
 }
 
@@ -177,7 +177,7 @@ $radius: 16px;
     background: transparent;
     color: $text-secondary;
     font-family: inherit;
-    font-size: 11px;
+    font-size: 14px;
     cursor: pointer;
     transition: 160ms ease;
 
@@ -209,7 +209,7 @@ $radius: 16px;
   justify-content: space-between;
   padding: 8px 0 30px;
   color: $text-muted;
-  font-size: 9px;
+  font-size: 12px;
   text-align: right;
 }
 
@@ -271,7 +271,7 @@ $radius: 16px;
   justify-content: space-between;
   padding: 2px 0 0;
   color: $text-muted;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 // Chart Footer
@@ -297,7 +297,7 @@ $radius: 16px;
   align-items: center;
   gap: 6px;
   color: $text-secondary;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 // Legend Dot
@@ -326,7 +326,7 @@ $radius: 16px;
 // Chart Note
 .chart-note {
   color: $text-muted;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 // Today's Attendance Summary
@@ -353,7 +353,7 @@ $radius: 16px;
   p {
     margin: 5px 0 0;
     color: $text-secondary;
-    font-size: 11px;
+    font-size: 14px;
   }
 }
 
@@ -363,7 +363,7 @@ $radius: 16px;
   border-radius: 6px;
   background: $purple-light;
   color: $purple-dark;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -396,7 +396,7 @@ $radius: 16px;
   align-items: center;
   justify-content: center;
   border-radius: 9px;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
 
   &.present {
@@ -438,7 +438,7 @@ $radius: 16px;
 // Stat Label
 .stat-label {
   color: $text-secondary;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 // Action Items
@@ -454,7 +454,7 @@ $radius: 16px;
   background: #ffffff;
   color: $purple-dark;
   font-family: inherit;
-  font-size: 10px;
+  font-size: 13px;
   cursor: pointer;
 
   &:hover {
@@ -513,7 +513,7 @@ $radius: 16px;
   h3 {
     margin: 0;
     color: $text;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
   }
 }
@@ -522,7 +522,7 @@ $radius: 16px;
 .priority {
   padding: 3px 7px;
   border-radius: 5px;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 600;
 
   &.high {
@@ -540,7 +540,7 @@ $radius: 16px;
 .action-content p {
   margin: 4px 0 0;
   color: $text-secondary;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 // Action Meta
@@ -549,7 +549,7 @@ $radius: 16px;
   gap: 15px;
   margin-top: 5px;
   color: $text-muted;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 // Action Arrow

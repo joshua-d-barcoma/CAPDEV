@@ -22,7 +22,7 @@ $radius: 16px;
 // Page
 .attendance-page {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
@@ -32,7 +32,7 @@ $radius: 16px;
 
   .page-eyebrow {
     color: $purple;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.8px;
     text-transform: uppercase;
@@ -48,7 +48,7 @@ $radius: 16px;
   p {
     margin: 0;
     color: $text-secondary;
-    font-size: 11px;
+    font-size: 14px;
   }
 }
 
@@ -113,7 +113,7 @@ $radius: 16px;
 
 .summary-label {
   color: $text-muted;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .summary-content strong {
@@ -124,7 +124,7 @@ $radius: 16px;
 
 .summary-detail {
   color: $text-secondary;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 // Absence Card
@@ -148,7 +148,7 @@ $radius: 16px;
     display: block;
     margin-bottom: 4px;
     color: $red;
-    font-size: 8px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.7px;
     text-transform: uppercase;
@@ -157,14 +157,14 @@ $radius: 16px;
   h2 {
     margin: 0;
     color: $text;
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 700;
   }
 
   p {
     margin: 5px 0 0;
     color: $text-secondary;
-    font-size: 9px;
+    font-size: 12px;
   }
 }
 
@@ -177,7 +177,7 @@ $radius: 16px;
   border-radius: 7px;
   background: #fdeaea;
   color: $red;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -210,12 +210,12 @@ $radius: 16px;
 
   strong {
     color: $text;
-    font-size: 10px;
+    font-size: 13px;
   }
 
   span {
     color: $text-muted;
-    font-size: 8px;
+    font-size: 12px;
   }
 }
 
@@ -226,18 +226,18 @@ $radius: 16px;
 
   strong {
     color: $red;
-    font-size: 14px;
+    font-size: 16px;
   }
 
   span {
     color: $text-muted;
-    font-size: 7px;
+    font-size: 11px;
   }
 }
 
 .absence-warning {
   color: $orange;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -246,7 +246,7 @@ $radius: 16px;
   align-items: center;
   gap: 7px;
   color: $red;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -260,7 +260,7 @@ $radius: 16px;
   border-radius: 50%;
   background: $red;
   color: #ffffff;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .empty-state {
@@ -268,7 +268,7 @@ $radius: 16px;
   border-radius: 9px;
   background: #f8f6f9;
   color: $text-muted;
-  font-size: 9px;
+  font-size: 12px;
   text-align: center;
 }
 
@@ -292,7 +292,7 @@ $radius: 16px;
     display: block;
     margin-bottom: 4px;
     color: $purple;
-    font-size: 8px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.7px;
     text-transform: uppercase;
@@ -301,14 +301,14 @@ $radius: 16px;
   h2 {
     margin: 0;
     color: $text;
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 700;
   }
 
   p {
     margin: 5px 0 0;
     color: $text-secondary;
-    font-size: 9px;
+    font-size: 12px;
   }
 }
 
@@ -321,7 +321,7 @@ $radius: 16px;
   span {
     padding: 6px 8px;
     border-radius: 6px;
-    font-size: 7px;
+    font-size: 11px;
     font-weight: 600;
   }
 
@@ -362,7 +362,7 @@ $radius: 16px;
     padding: 11px 14px;
     border-bottom: 1px solid $border;
     color: $text-muted;
-    font-size: 8px;
+    font-size: 12px;
     font-weight: 600;
     text-align: left;
     text-transform: uppercase;
@@ -372,7 +372,7 @@ $radius: 16px;
   .empty-table-cell {
     padding: 18px;
     color: $text-muted;
-    font-size: 9px;
+    font-size: 12px;
     text-align: center;
   }
 
@@ -380,7 +380,7 @@ $radius: 16px;
     padding: 14px;
     border-bottom: 1px solid $border;
     color: $text-secondary;
-    font-size: 9px;
+    font-size: 12px;
     background: #ffffff;
   }
 
@@ -418,7 +418,7 @@ $radius: 16px;
 
 .resource-name {
   color: $text;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 600;
 
   &.absent-name {
@@ -429,7 +429,7 @@ $radius: 16px;
 
 .time-value {
   color: $text;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 500;
 }
 
@@ -439,7 +439,7 @@ $radius: 16px;
   border-radius: 5px;
   background: #fff3df;
   color: $orange;
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 600;
 }
 
@@ -449,7 +449,7 @@ $radius: 16px;
   border-radius: 5px;
   background: #f0edf1;
   color: $text-muted;
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 600;
 }
 
@@ -462,7 +462,7 @@ $radius: 16px;
 // Hours
 .hours-value {
   color: $purple-dark;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
 }
 

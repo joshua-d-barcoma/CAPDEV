@@ -61,7 +61,7 @@ $transition: 200ms ease;
     .brand-subtitle {
       margin-top: 4px;
       color: $text-secondary;
-      font-size: 9px;
+      font-size: 12px;
       font-weight: 400;
       letter-spacing: 0.7px;
     }
@@ -77,7 +77,7 @@ $transition: 200ms ease;
   .navigation-title {
     margin: 0 0 8px 10px;
     color: $text-muted;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.8px;
   }
@@ -123,7 +123,7 @@ $transition: 200ms ease;
 
     .navigation-label {
       margin-left: 13px;
-      font-size: 15px;
+      font-size: 17px;
       font-weight: 400;
       white-space: nowrap;
     }
@@ -144,7 +144,7 @@ $transition: 200ms ease;
 
   .footer-text {
     color: #a99caf;
-    font-size: 10px;
+    font-size: 13px;
     line-height: 1.4;
     white-space: nowrap;
   }
@@ -206,6 +206,40 @@ $transition: 200ms ease;
   .sidebar {
     width: 100%;
     padding: 28px 6px 18px;
+  }
+
+  .sidebar:not(.collapsed) {
+    .brand {
+      min-width: auto;
+      padding-left: 0;
+      justify-content: center;
+      margin-bottom: 32px;
+
+      .brand-content {
+        display: none;
+      }
+    }
+
+    .navigation {
+      .navigation-title {
+        display: none;
+      }
+
+      .navigation-item {
+        width: 48px;
+        padding: 0;
+        margin: 0 auto 2px;
+        justify-content: center;
+
+        .navigation-label {
+          display: none;
+        }
+      }
+    }
+
+    .sidebar-footer {
+      display: none;
+    }
   }
 
   .sidebar.collapsed {
