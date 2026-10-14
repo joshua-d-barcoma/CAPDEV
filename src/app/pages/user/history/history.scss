@@ -284,3 +284,78 @@ $radius: 16px;
     grid-template-columns: 1fr;
   }
 }
+
+.rto-schedule-card {
+  margin-bottom: 20px;
+}
+
+.rto-week {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.rto-day {
+  display: flex;
+  min-height: 70px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid $border;
+  border-radius: 9px;
+  background: #fcfafc;
+
+  strong {
+    color: $text;
+    font-size: 12px;
+  }
+
+  span {
+    color: $text-muted;
+    font-size: 11px;
+  }
+
+  &.complete {
+    border-color: #ccebdd;
+    background: #f4fbf7;
+
+    span {
+      color: $green;
+    }
+  }
+
+  &.pending {
+    border-color: #f0dfb3;
+    background: #fffaf0;
+
+    span {
+      color: $orange;
+    }
+  }
+
+  &.remote {
+    border-color: #d4e3f5;
+    background: #f5f9fe;
+
+    span {
+      color: #3978c8;
+    }
+  }
+}
+
+.rto-note {
+  margin: 12px 0 0;
+  color: $text-muted;
+  font-size: 11px;
+}
+
+@media (max-width: 600px) {
+  .rto-week {
+    gap: 5px;
+  }
+
+  .rto-day {
+    min-height: 60px;
+  }
+}

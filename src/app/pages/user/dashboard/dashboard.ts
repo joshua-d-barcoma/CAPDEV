@@ -46,6 +46,8 @@ export class UserDashboard {
 
   timeIn = '08:42 AM';
   timeOut = '--:--';
+  readonly rtoAttendance = '3/4';
+  readonly deploymentReadiness = 60;
 
   latestCompletion = {
     title: 'Completed Security Awareness',
@@ -131,6 +133,10 @@ export class UserDashboard {
     return this.trainings.filter(
       training => training.progress === 100
     ).length;
+  }
+
+  getCompletedTaskCount(): number {
+    return this.tasks.filter(task => task.status === 'Completed').length;
   }
 
   getTrainingProgress(): number {

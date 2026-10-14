@@ -92,6 +92,29 @@
 
   </section>
 
+  <section class="quick-stats" aria-label="Bench progress summary">
+    <article class="quick-stat">
+      <span>Training progress</span>
+      <strong>{{ getTrainingProgress() }}%</strong>
+      <small>{{ getCompletedTrainingCount() }} of {{ trainings.length }} completed</small>
+    </article>
+    <article class="quick-stat">
+      <span>Tasks today</span>
+      <strong>{{ getCompletedTaskCount() }}/{{ tasks.length }}</strong>
+      <small>Assigned tasks completed</small>
+    </article>
+    <article class="quick-stat">
+      <span>RTO this week</span>
+      <strong>{{ rtoAttendance }}</strong>
+      <small>Onsite days recorded against target</small>
+    </article>
+    <article class="quick-stat">
+      <span>Deployment readiness</span>
+      <strong>{{ deploymentReadiness }}%</strong>
+      <small>Complete your readiness checklist</small>
+    </article>
+  </section>
+
   <!-- Latest Achievement / Time -->
   <div class="top-grid">
 

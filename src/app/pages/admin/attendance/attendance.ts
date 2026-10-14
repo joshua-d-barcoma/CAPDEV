@@ -35,6 +35,20 @@ interface AttendanceRecord {
   rollInDate: string;
 }
 
+interface RtoCapability {
+  capability: string;
+  compliant: number;
+}
+
+interface AttendanceException {
+  name: string;
+  capability: string;
+  careerLevel: string;
+  status: string;
+  infractions: number;
+  nextStep: string;
+}
+
 @Component({
   selector: 'app-attendance',
   standalone: true,
@@ -46,6 +60,40 @@ export class Attendance {
   totalBenchEmployees = 86;
   summaryPresentToday = 79;
   activeNonCompliance = 1;
+  readonly rtoCompliance = 82;
+  readonly rtoByCapability: RtoCapability[] = [
+    { capability: 'Hybrid Cloud', compliant: 89 },
+    { capability: 'Network', compliant: 82 },
+    { capability: 'Security', compliant: 94 },
+    { capability: 'Data & AI', compliant: 78 }
+  ];
+
+  readonly attendanceExceptions: AttendanceException[] = [
+    {
+      name: 'John Reyes',
+      capability: 'Network',
+      careerLevel: 'CL6',
+      status: 'NCNS',
+      infractions: 1,
+      nextStep: 'Confirm leave or exception status'
+    },
+    {
+      name: 'Sarah Garcia',
+      capability: 'Hybrid Cloud - Operations',
+      careerLevel: 'CL9',
+      status: 'Unapproved absence',
+      infractions: 3,
+      nextStep: 'Bench lead review'
+    },
+    {
+      name: 'Karen Flores',
+      capability: 'Security',
+      careerLevel: 'CL8',
+      status: 'Late check-in',
+      infractions: 2,
+      nextStep: 'Review attendance pattern'
+    }
+  ];
   readonly todayDate = this.formatLocalDate(new Date());
   searchTerm = '';
   capabilityFilter = '';
@@ -242,6 +290,10 @@ export class Attendance {
 
       return timeIn !== null && timeIn > onTimeCutoff;
     }).length;
+  }
+
+  getRtoBarWidth(value: number): number {
+    return Math.min(Math.max(value, 0), 100);
   }
 
   get onLeaveToday(): number {

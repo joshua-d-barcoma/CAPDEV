@@ -64,6 +64,35 @@
       </div>
     </article>
 
+    <article class="summary-card">
+      <div class="summary-icon purple">↗</div>
+      <div class="summary-content">
+        <span class="summary-label">RTO Compliance</span>
+        <strong>{{ rtoCompliance }}%</strong>
+        <span class="summary-detail">Onsite schedule compliance</span>
+      </div>
+    </article>
+
+  </section>
+
+  <section class="attendance-card rto-report-card">
+    <div class="attendance-header">
+      <div>
+        <span class="card-eyebrow">Attendance &amp; RTO</span>
+        <h2>RTO Compliance by Capability</h2>
+        <p>Current guidance: onsite Monday–Thursday; Friday work from home.</p>
+      </div>
+      <span class="rto-policy-badge">CG2 primary reporting site</span>
+    </div>
+    <div class="rto-capability-list">
+      @for (item of rtoByCapability; track item.capability) {
+        <div class="rto-capability-row">
+          <span>{{ item.capability }}</span>
+          <div class="rto-track"><span [style.width.%]="getRtoBarWidth(item.compliant)"></span></div>
+          <strong>{{ item.compliant }}%</strong>
+        </div>
+      }
+    </div>
   </section>
 
   <!-- Unapproved Absences -->
@@ -366,6 +395,43 @@
 
     </div>
 
+  </section>
+
+  <section class="attendance-card exceptions-card">
+    <div class="attendance-header">
+      <div>
+        <span class="card-eyebrow">Follow-up Required</span>
+        <h2>Exceptions to Follow Up</h2>
+        <p>Attendance and RTO exceptions for lead review.</p>
+      </div>
+      <span class="absence-count">{{ attendanceExceptions.length }}</span>
+    </div>
+    <div class="exception-table-wrapper">
+      <table class="exception-table">
+        <thead>
+          <tr>
+            <th>Resource</th>
+            <th>Capability</th>
+            <th>CL</th>
+            <th>Status</th>
+            <th>Infractions (MTD)</th>
+            <th>Next step</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (exception of attendanceExceptions; track exception.name) {
+            <tr>
+              <td><strong>{{ exception.name }}</strong></td>
+              <td>{{ exception.capability }}</td>
+              <td>{{ exception.careerLevel }}</td>
+              <td><span class="exception-status">{{ exception.status }}</span></td>
+              <td>{{ exception.infractions }}</td>
+              <td>{{ exception.nextStep }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   </section>
 
 </div>

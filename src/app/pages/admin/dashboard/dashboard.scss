@@ -50,7 +50,7 @@ $radius: 16px;
 // Summary Cards
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: 18px;
   margin-bottom: 20px;
 }
@@ -448,6 +448,8 @@ $radius: 16px;
 
 // View All
 .view-all-button {
+  display: inline-flex;
+  align-items: center;
   padding: 7px 12px;
   border: 1px solid #e5d9eb;
   border-radius: 8px;
@@ -456,6 +458,7 @@ $radius: 16px;
   font-family: inherit;
   font-size: 13px;
   cursor: pointer;
+  text-decoration: none;
 
   &:hover {
     background: $purple-light;
