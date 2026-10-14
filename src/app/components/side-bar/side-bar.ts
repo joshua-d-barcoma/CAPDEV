@@ -46,8 +46,13 @@ export class SideBar {
       icon: 'diamond'
     },
     {
+      label: 'Work Management',
+      route: '/admin/work-management',
+      icon: 'check'
+    },
+    {
       label: 'Action Items',
-      route: '/action-items',
+      route: '/admin/action-items',
       icon: 'flag'
     }
   ];
@@ -81,6 +86,11 @@ export class SideBar {
     {
       label: 'History',
       route: '/user/history',
+      icon: 'calendar'
+    },
+    {
+      label: 'Calendar',
+      route: '/user/calendar',
       icon: 'calendar'
     }
   ];
