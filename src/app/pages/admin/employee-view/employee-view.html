@@ -1,0 +1,251 @@
+<main class="employee-view-page">
+  @if (employee; as person) {
+    <header class="page-header">
+      <a class="back-link" routerLink="/resources">← Back to Employees</a>
+      <span class="page-eyebrow">Employee Dashboard</span>
+      <h1>{{ person.name }}</h1>
+      <p>{{ person.capability }} · {{ person.careerLevel }} · Capability Building · Day {{ benchDays }} on bench</p>
+    </header>
+
+    <section class="welcome-banner">
+      <h2>Good afternoon, {{ firstName }} <span aria-hidden="true">👋</span></h2>
+      <p>{{ person.capability }} · {{ person.careerLevel }} · Capability Building · Day {{ benchDays }} on bench</p>
+    </section>
+
+    <section class="detail-card profile-card">
+      <div class="profile-avatar" aria-hidden="true">{{ person.name.charAt(0) }}</div>
+      <div class="profile-main">
+        <div class="profile-name-row">
+          <h2>{{ person.name }}</h2>
+          <span class="career-level">{{ person.careerLevel }}</span>
+        </div>
+        <span class="profile-role">Bench Resource · {{ person.workLocation }}</span>
+      </div>
+      <div class="profile-detail">
+        <span>Capability</span>
+        <strong>{{ person.capability }}</strong>
+      </div>
+      <div class="profile-detail">
+        <span>Career Level</span>
+        <strong>{{ person.careerLevel }}</strong>
+      </div>
+      <div class="profile-skills">
+        <span>Skills</span>
+        <div class="skill-list">
+          @for (skill of person.skills; track skill) {
+            <span class="skill-tag">{{ skill }}</span>
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="quick-stats" aria-label="Employee progress summary">
+      <article class="quick-stat">
+        <span>Training progress</span>
+        <strong>{{ trainingProgress }}%</strong>
+        <small>{{ completedTrainingCount }} of {{ trainings.length }} completed</small>
+      </article>
+      <article class="quick-stat">
+        <span>Tasks today</span>
+        <strong>{{ completedTaskCount }}/{{ tasks.length }}</strong>
+        <small>Assigned tasks completed</small>
+      </article>
+      <article class="quick-stat">
+        <span>RTO this week</span>
+        <strong>{{ rtoAttendance }}</strong>
+        <small>Onsite days recorded against target</small>
+      </article>
+      <article class="quick-stat">
+        <span>Deployment readiness</span>
+        <strong>{{ deploymentReadiness }}%</strong>
+        <small>Complete the readiness checklist</small>
+      </article>
+    </section>
+
+    <div class="top-grid">
+      <section class="detail-card achievement-card">
+        <div class="card-header">
+          <div>
+            <span class="card-eyebrow">Latest Achievement</span>
+            <h2>{{ latestCompletion.title }}</h2>
+          </div>
+          <span class="achievement-badge">{{ latestCompletion.type }}</span>
+        </div>
+        <p>{{ latestCompletion.description }}</p>
+        <span class="achievement-date">{{ latestCompletion.date }}</span>
+      </section>
+
+      <section class="detail-card time-card">
+        <div class="card-header">
+          <div>
+            <span class="card-eyebrow">Attendance</span>
+            <h2>Time In / Out</h2>
+          </div>
+          <span class="attendance-status">{{ person.attendanceStatus }}</span>
+        </div>
+        <div class="time-summary">
+          <div class="time-item">
+            <span>Time In</span>
+            <strong>{{ timeIn }}</strong>
+          </div>
+          <span class="time-divider"></span>
+          <div class="time-item">
+            <span>Time Out</span>
+            <strong>{{ timeOut }}</strong>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="detail-card">
+      <header class="card-header">
+        <div>
+          <span class="card-eyebrow">Return to Office</span>
+          <h2>RTO Schedule</h2>
+          <p>Admins can update this employee's schedule directly.</p>
+        </div>
+        @if (!scheduleEditing) {
+          <button type="button" class="secondary-button" (click)="startScheduleEdit()">Edit Schedule</button>
+        }
+      </header>
+
+      @if (scheduleEditing) {
+        <div class="rto-week">
+          @for (day of scheduleDraft; track day.day; let index = $index) {
+            <label class="rto-day">
+              <strong>{{ day.day }}</strong>
+              <select [name]="'schedule-' + day.day" [(ngModel)]="scheduleDraft[index].location">
+                <option value="Onsite">Onsite</option>
+                <option value="WFH">WFH</option>
+              </select>
+            </label>
+          }
+        </div>
+        <div class="form-actions">
+          <button type="button" class="secondary-button" (click)="scheduleEditing = false">Cancel</button>
+          <button type="button" class="primary-button" (click)="saveSchedule()">Save Schedule</button>
+        </div>
+      } @else {
+        <div class="rto-week">
+          @for (day of rto.getSchedule(person.name); track day.day) {
+            <div class="rto-day" [class.remote]="day.location === 'WFH'">
+              <strong>{{ day.day }}</strong>
+              <span>{{ day.location }}</span>
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+    <div class="task-grid">
+      <section class="detail-card">
+        <header class="card-header">
+          <div>
+            <span class="card-eyebrow">Required</span>
+            <h2>Mandatory Training</h2>
+          </div>
+          <span class="count-badge">{{ completedTrainingCount }}/{{ trainings.length }}</span>
+        </header>
+        <div class="activity-list">
+          @for (training of trainings; track training.title) {
+            <article class="activity-item">
+              <div>
+                <strong>{{ training.title }}</strong>
+                <span>{{ training.due }}</span>
+              </div>
+              <span class="activity-status"
+                [class.completed]="training.progress === 100"
+                [class.in-progress]="training.progress > 0 && training.progress < 100"
+                [class.not-started]="training.progress === 0">
+                {{ training.progress === 100 ? 'Completed' : training.progress > 0 ? 'In Progress' : 'Not Started' }}
+              </span>
+            </article>
+          }
+        </div>
+      </section>
+
+      <section class="detail-card">
+        <header class="card-header">
+          <div>
+            <span class="card-eyebrow">Assigned Work</span>
+            <h2>Other Tasks</h2>
+          </div>
+        </header>
+        <div class="activity-list">
+          @for (task of tasks; track task.title) {
+            <article class="activity-item task-activity">
+              <div>
+                <span class="activity-category">{{ task.category }}</span>
+                <strong>{{ task.title }}</strong>
+                <span>{{ task.due }}</span>
+              </div>
+              <div class="task-badges">
+                <span class="priority-badge" [class.high]="task.priority === 'High'" [class.medium]="task.priority === 'Medium'" [class.low]="task.priority === 'Low'">{{ task.priority }}</span>
+                <span class="activity-status" [class.completed]="task.status === 'Completed'" [class.in-progress]="task.status === 'In Progress'" [class.not-started]="task.status === 'Not Started'">{{ task.status }}</span>
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+    </div>
+
+    <section class="detail-card recommendation-card">
+      <header class="card-header">
+        <div>
+          <span class="card-eyebrow">Development</span>
+          <h2>Recommended Development</h2>
+        </div>
+      </header>
+      <div class="recommendation-list">
+        @for (recommendation of recommendations; track recommendation.title) {
+          <article class="recommendation-item">
+            <div>
+              <div class="recommendation-title-row">
+                <h3>{{ recommendation.title }}</h3>
+                <span class="recommendation-type" [class.upskill]="recommendation.type === 'Upskill'" [class.cross-skill]="recommendation.type === 'Cross-skill'">{{ recommendation.type }}</span>
+              </div>
+              <p>{{ recommendation.description }}</p>
+            </div>
+            <span class="recommendation-duration">{{ recommendation.duration }}</span>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section class="detail-card request-card">
+      <header class="card-header">
+        <div>
+          <span class="card-eyebrow">Employee Requests</span>
+          <h2>RTO Schedule Change</h2>
+          <p>Review schedule changes submitted by this employee.</p>
+        </div>
+        @if (pendingRequest) {
+          <span class="status-pill pending">Pending approval</span>
+        }
+      </header>
+
+      @if (pendingRequest; as request) {
+        <div class="request-details">
+          <p>Submitted {{ request.submittedAt }}. Requested schedule:</p>
+          <div class="request-week">
+            @for (day of request.requestedSchedule; track day.day) {
+              <span><strong>{{ day.day }}</strong> {{ day.location }}</span>
+            }
+          </div>
+          <div class="form-actions">
+            <button type="button" class="secondary-button reject-button" (click)="reviewRequest(request, false)">Reject</button>
+            <button type="button" class="primary-button" (click)="reviewRequest(request, true)">Approve Schedule</button>
+          </div>
+        </div>
+      } @else {
+        <p class="empty-state">There are no pending RTO schedule requests for this employee.</p>
+      }
+    </section>
+  } @else {
+    <section class="detail-card not-found">
+      <h1>Employee not found</h1>
+      <p>This employee may no longer be in the directory.</p>
+      <a class="back-link" routerLink="/resources">Return to Employees</a>
+    </section>
+  }
+</main>

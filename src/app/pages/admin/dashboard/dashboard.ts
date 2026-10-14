@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 type ViewMode = 'day' | 'week' | 'month';
 
@@ -21,6 +22,7 @@ interface ActionItem {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
+  imports: [RouterLink],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss'
 })
@@ -36,6 +38,9 @@ export class Dashboard {
   vacationToday = 3;
   absentToday = 2;
   activeNonCompliance = 1;
+  readyForDeployment = 24;
+  capabilityBuilding = 38;
+  rtoCompliance = 82;
 
   // Daily Attendance
   dayData: AttendanceData[] = [

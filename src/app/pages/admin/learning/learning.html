@@ -17,7 +17,7 @@
       </h1>
 
       <p>
-        Monitor resource accomplishments, learning activity, and mandatory training.
+        Monitor employee accomplishments, learning activity, and mandatory training.
       </p>
     </div>
 
@@ -77,7 +77,7 @@
       </strong>
 
       <span class="summary-detail">
-        Resources require learning assignment
+        Employees require learning assignment
       </span>
 
     </div>
@@ -115,7 +115,7 @@
         </h2>
 
         <p>
-          Latest learning and training accomplishments from resources.
+          Latest learning and training accomplishments from employees.
         </p>
       </div>
 
@@ -254,7 +254,7 @@
           </h2>
 
           <p>
-            Resources who currently have no active learning tasks.
+            Employees who currently have no active learning tasks.
           </p>
         </div>
 
@@ -311,6 +311,130 @@
 
   </div>
 
+  <section class="learning-card skill-hub-management">
+    <div class="card-header">
+      <div>
+        <span class="card-eyebrow">Skill Hub</span>
+        <h2>Certifications, Cohorts &amp; Announcements</h2>
+        <p>Manage the content shown to employees in Skill Hub.</p>
+      </div>
+    </div>
+
+    <div class="content-management-grid">
+      <article class="content-management-card">
+        <div class="content-card-heading">
+          <div>
+            <h3>Certifications</h3>
+            <span>{{ skillHubContent.certifications.length }} listed</span>
+          </div>
+          <button class="secondary-button" type="button" (click)="certificationFormVisible = !certificationFormVisible">
+            {{ certificationFormVisible ? 'Cancel' : '+ Add' }}
+          </button>
+        </div>
+        @if (certificationFormVisible) {
+          <form class="content-form" (ngSubmit)="addCertification()">
+            <label>
+              Certification name
+              <input name="certificationName" [(ngModel)]="certificationDraft.name" required maxlength="100" />
+            </label>
+            <label>
+              Details
+              <input name="certificationDetail" [(ngModel)]="certificationDraft.detail" required maxlength="160" />
+            </label>
+            <button class="primary-button" type="submit">Add certification</button>
+          </form>
+        }
+        <ul class="managed-content-list">
+          @for (certification of skillHubContent.certifications; track $index) {
+            <li>
+              <strong>{{ certification.name }}</strong>
+              <span>{{ certification.detail }}</span>
+            </li>
+          }
+        </ul>
+      </article>
+
+      <article class="content-management-card">
+        <div class="content-card-heading">
+          <div>
+            <h3>Bench Cohorts</h3>
+            <span>{{ skillHubContent.cohorts.length }} listed</span>
+          </div>
+          <button class="secondary-button" type="button" (click)="cohortFormVisible = !cohortFormVisible">
+            {{ cohortFormVisible ? 'Cancel' : '+ Add' }}
+          </button>
+        </div>
+        @if (cohortFormVisible) {
+          <form class="content-form" (ngSubmit)="addCohort()">
+            <label>
+              Cohort name
+              <input name="cohortName" [(ngModel)]="cohortDraft.name" required maxlength="100" />
+            </label>
+            <label>
+              Focus
+              <input name="cohortFocus" [(ngModel)]="cohortDraft.focus" required maxlength="160" />
+            </label>
+            <label>
+              Duration
+              <input name="cohortDuration" [(ngModel)]="cohortDraft.duration" required maxlength="60" />
+            </label>
+            <button class="primary-button" type="submit">Add cohort</button>
+          </form>
+        }
+        <ul class="managed-content-list">
+          @for (cohort of skillHubContent.cohorts; track $index) {
+            <li>
+              <strong>{{ cohort.name }}</strong>
+              <span>{{ cohort.focus }} · {{ cohort.duration }}</span>
+            </li>
+          }
+        </ul>
+      </article>
+
+      <article class="content-management-card">
+        <div class="content-card-heading">
+          <div>
+            <h3>Announcements</h3>
+            <span>{{ skillHubContent.announcements.length }} listed</span>
+          </div>
+          <button class="secondary-button" type="button" (click)="announcementFormVisible = !announcementFormVisible">
+            {{ announcementFormVisible ? 'Cancel' : '+ Add' }}
+          </button>
+        </div>
+        @if (announcementFormVisible) {
+          <form class="content-form" (ngSubmit)="addAnnouncement()">
+            <label>
+              Announcement title
+              <input name="announcementTitle" [(ngModel)]="announcementDraft.title" required maxlength="100" />
+            </label>
+            <label>
+              Description
+              <textarea name="announcementDescription" [(ngModel)]="announcementDraft.description" required maxlength="300" rows="3"></textarea>
+            </label>
+            <label>
+              Category
+              <select name="announcementType" [(ngModel)]="announcementDraft.type">
+                <option value="Attendance">Attendance</option>
+                <option value="Profile">Profile</option>
+                <option value="Learning">Learning</option>
+              </select>
+            </label>
+            <button class="primary-button" type="submit">Add announcement</button>
+          </form>
+        }
+        <ul class="managed-content-list">
+          @for (announcement of skillHubContent.announcements; track $index) {
+            <li>
+              <strong>{{ announcement.title }}</strong>
+              <span>{{ announcement.description }}</span>
+              <small>{{ announcement.type }}</small>
+            </li>
+          }
+        </ul>
+      </article>
+    </div>
+  </section>
+
   <!-- Mandatory Trainings -->
   <section class="learning-card">
 
@@ -326,7 +450,7 @@
         </h2>
 
         <p>
-          Manage required training programs assigned to bench resources.
+          Manage required training programs assigned to bench employees.
         </p>
       </div>
 

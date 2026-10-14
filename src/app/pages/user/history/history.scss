@@ -142,6 +142,107 @@ $radius: 16px;
   white-space: nowrap;
 }
 
+.rto-schedule-card {
+  margin-bottom: 20px;
+}
+
+.rto-week {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.rto-day {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 8px;
+  border: 1px solid $border;
+  border-radius: 9px;
+
+  strong {
+    color: $text;
+    font-size: 12px;
+  }
+
+  span {
+    color: $green;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  &.remote span {
+    color: $purple-dark;
+  }
+
+  select {
+    width: 100%;
+    padding: 7px 3px;
+    border: 1px solid $border;
+    border-radius: 6px;
+    background: #fff;
+    color: $text-secondary;
+    font: inherit;
+    font-size: 11px;
+  }
+}
+
+.rto-edit-button,
+.rto-cancel-button,
+.rto-submit-button {
+  padding: 8px 11px;
+  border: 1px solid $purple;
+  border-radius: 7px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.rto-edit-button,
+.rto-cancel-button {
+  background: #fff;
+  color: $purple-dark;
+}
+
+.rto-submit-button {
+  background: $purple;
+  color: #fff;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+}
+
+.rto-request-status {
+  padding: 6px 9px;
+  border-radius: 6px;
+  background: #fff3df;
+  color: $orange;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.rto-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.rto-note {
+  margin: 10px 0 0;
+  color: $text-muted;
+  font-size: 11px;
+
+  &.rejected {
+    color: $red;
+  }
+}
+
 // History Table
 .history-table-wrapper {
   width: 100%;
@@ -274,6 +375,10 @@ $radius: 16px;
     flex-direction: column;
   }
 
+  .rto-week {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .history-table {
     min-width: 650px;
   }
@@ -282,5 +387,80 @@ $radius: 16px;
 @media (max-width: 480px) {
   .summary-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+.rto-schedule-card {
+  margin-bottom: 20px;
+}
+
+.rto-week {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.rto-day {
+  display: flex;
+  min-height: 70px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid $border;
+  border-radius: 9px;
+  background: #fcfafc;
+
+  strong {
+    color: $text;
+    font-size: 12px;
+  }
+
+  span {
+    color: $text-muted;
+    font-size: 11px;
+  }
+
+  &.complete {
+    border-color: #ccebdd;
+    background: #f4fbf7;
+
+    span {
+      color: $green;
+    }
+  }
+
+  &.pending {
+    border-color: #f0dfb3;
+    background: #fffaf0;
+
+    span {
+      color: $orange;
+    }
+  }
+
+  &.remote {
+    border-color: #d4e3f5;
+    background: #f5f9fe;
+
+    span {
+      color: #3978c8;
+    }
+  }
+}
+
+.rto-note {
+  margin: 12px 0 0;
+  color: $text-muted;
+  font-size: 11px;
+}
+
+@media (max-width: 600px) {
+  .rto-week {
+    gap: 5px;
+  }
+
+  .rto-day {
+    min-height: 60px;
   }
 }

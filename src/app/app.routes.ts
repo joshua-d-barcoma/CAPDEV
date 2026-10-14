@@ -18,6 +18,12 @@ export const routes: Routes = [
       import('./pages/admin/resources/resources')
         .then(m => m.Resources)
   },
+  {
+    path: 'admin/employees/:employeeName',
+    loadComponent: () =>
+      import('./pages/admin/employee-view/employee-view')
+        .then(m => m.EmployeeView)
+  },
 
   {
   path: 'attendance',
@@ -31,6 +37,18 @@ export const routes: Routes = [
   loadComponent: () =>
     import('./pages/admin/learning/learning')
       .then(m => m.Learning)
+  },
+  {
+    path: 'admin/work-management',
+    loadComponent: () =>
+      import('./pages/admin/work-management/work-management')
+        .then(m => m.WorkManagement)
+  },
+  {
+    path: 'admin/action-items',
+    loadComponent: () =>
+      import('./pages/admin/action-items/action-items')
+        .then(m => m.ActionItems)
   },
   // =====================================================
   // User
@@ -67,6 +85,18 @@ export const routes: Routes = [
   loadComponent: () =>
     import('./pages/user/history/history')
       .then(m => m.History)
+  },
+  {
+  path: 'user/calendar',
+  loadComponent: () =>
+    import('./pages/user/calendar/calendar')
+      .then(m => m.Calendar)
+  },
+  {
+    path: 'user/skill-hub',
+    loadComponent: () =>
+      import('./pages/user/skill-hub/skill-hub')
+        .then(m => m.SkillHub)
   },
   // Default
 

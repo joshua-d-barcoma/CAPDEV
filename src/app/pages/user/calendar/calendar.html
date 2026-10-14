@@ -1,0 +1,122 @@
+<div class="calendar-page">
+  <header class="page-header">
+    <div>
+      <span class="page-eyebrow">Attendance Records</span>
+      <h1>My Calendar</h1>
+      <p>Review your onsite, remote, leave, and attendance exception days.</p>
+    </div>
+    <button type="button" class="request-button" (click)="requestFormOpen = !requestFormOpen">
+      File Leave / Exception
+    </button>
+  </header>
+
+  @if (requestFormOpen) {
+    <form class="request-form" (submit)="handleRequestSubmit($event)">
+      <div>
+        <label for="request-date">Date</label>
+        <input id="request-date" type="date" [value]="requestDate" (input)="updateRequestDate($event)" required />
+      </div>
+      <div class="request-reason">
+        <label for="request-reason">Reason</label>
+        <input id="request-reason" type="text" [value]="requestReason" (input)="updateRequestReason($event)" maxlength="250" required />
+      </div>
+      <button type="submit" class="request-button">Submit Request</button>
+    </form>
+  }
+  @if (requestError) {
+    <p class="request-error" role="alert">{{ requestError }}</p>
+  }
+  @if (requestSubmitted) {
+    <p class="request-confirmation" role="status">Your request has been recorded in this demo view; connect the app to a service to submit it for review.</p>
+  }
+
+  <section class="summary-grid" aria-label="Monthly attendance summary">
+    <article class="summary-card">
+      <span class="summary-label">Onsite</span>
+      <strong>{{ onsiteDays }}</strong>
+      <span class="summary-detail">Recorded or scheduled</span>
+    </article>
+    <article class="summary-card">
+      <span class="summary-label">Work from home</span>
+      <strong>{{ remoteDays }}</strong>
+      <span class="summary-detail">Remote work days</span>
+    </article>
+    <article class="summary-card">
+      <span class="summary-label">Leave</span>
+      <strong>{{ leaveDays }}</strong>
+      <span class="summary-detail">Approved leave days</span>
+    </article>
+    <article class="summary-card">
+      <span class="summary-label">Exceptions</span>
+      <strong>{{ exceptions }}</strong>
+      <span class="summary-detail">Attendance requiring review</span>
+    </article>
+  </section>
+
+  <section class="calendar-card">
+    <div class="calendar-header">
+      <div>
+        <span class="card-eyebrow">Monthly View</span>
+        <h2>{{ monthLabel }}</h2>
+      </div>
+      <div class="month-controls">
+        <button type="button" aria-label="Previous month" (click)="changeMonth(-1)">‹</button>
+        <button type="button" (click)="goToToday()">Today</button>
+        <button type="button" aria-label="Next month" (click)="changeMonth(1)">›</button>
+      </div>
+    </div>
+
+    <div class="calendar-layout">
+      <div class="calendar-grid">
+        @for (weekday of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track weekday) {
+          <div class="weekday">{{ weekday }}</div>
+        }
+        @for (day of calendarDays; track day.date.getTime()) {
+          <button
+            type="button"
+            class="calendar-day"
+            [class.outside-month]="!day.inCurrentMonth"
+            [class.selected]="isSelected(day)"
+            [class.onsite]="day.status === 'Onsite'"
+            [class.wfh]="day.status === 'WFH'"
+            [class.leave]="day.status === 'Leave'"
+            [class.exception]="day.status === 'Exception'"
+            [class.weekend]="day.status === 'Weekend'"
+            [disabled]="!day.inCurrentMonth"
+            [attr.aria-label]="day.date.toDateString() + ': ' + day.status"
+            (click)="selectDay(day)"
+          >
+            <span class="day-number">{{ day.dayNumber }}</span>
+            @if (day.status !== 'Weekend') {
+              <span class="day-status">{{ day.status }}</span>
+            }
+          </button>
+        }
+      </div>
+
+      <aside class="selected-day-card">
+        <span class="card-eyebrow">Selected Day</span>
+        @if (selectedDay; as day) {
+          <h3>{{ day.date | date:'EEEE, MMM d' }}</h3>
+          <span class="status-pill" [class.onsite]="day.status === 'Onsite'" [class.wfh]="day.status === 'WFH'" [class.leave]="day.status === 'Leave'" [class.exception]="day.status === 'Exception'">
+            {{ day.status }}
+          </span>
+          <p>{{ day.note }}</p>
+        }
+        <div class="policy-note">
+          <strong>RTO guidance</strong>
+          <span>Onsite Monday–Thursday; Friday work from home, subject to your team’s current policy.</span>
+        </div>
+      </aside>
+    </div>
+
+    <div class="calendar-legend" aria-label="Calendar legend">
+      <span><i class="onsite"></i>Onsite</span>
+      <span><i class="wfh"></i>WFH</span>
+      <span><i class="leave"></i>Leave</span>
+      <span><i class="exception"></i>No attendance record / exception</span>
+      <span><i class="weekend"></i>Weekend</span>
+    </div>
+    <p class="sample-note">Calendar dates and attendance records are illustrative sample data.</p>
+  </section>
+</div>

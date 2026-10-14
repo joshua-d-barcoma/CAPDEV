@@ -56,7 +56,7 @@ $radius: 16px;
 // Summary Cards
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 16px;
   margin-bottom: 20px;
 }
@@ -148,6 +148,7 @@ $radius: 16px;
 
 .skill-distribution-card {
   grid-column: 1 / -1;
+  min-width: 0;
 }
 
 .analytics-header {
@@ -200,15 +201,19 @@ $radius: 16px;
 
 // Skill Distribution
 .skill-chart {
+  display: flex;
   height: 205px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+  min-width: 0;
   align-items: flex-end;
-  gap: 8px 12px;
-  padding: 0 12px;
+  gap: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0 12px 6px;
 }
 
 .skill-bar-item {
+  min-width: 56px;
+  flex: 1 0 56px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -245,9 +250,12 @@ $radius: 16px;
 }
 
 .skill-name {
+  max-width: 100%;
   margin-top: 9px;
   color: $text-secondary;
   font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -732,6 +740,131 @@ $radius: 16px;
   }
 }
 
+.roster-status {
+  width: fit-content;
+  padding: 4px 6px;
+  border-radius: 5px;
+  background: $purple-light;
+  color: $purple-dark;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.column-subtext {
+  color: $text-muted;
+  font-size: 11px;
+}
+
+.insight-card {
+  margin-top: 16px;
+}
+
+.scorecard-table-wrapper {
+  overflow-x: auto;
+}
+
+.scorecard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+
+  th {
+    padding: 10px;
+    background: #f8f6f9;
+    color: $text-muted;
+    font-size: 11px;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 11px 10px;
+    border-bottom: 1px solid $border;
+    color: $text-secondary;
+    white-space: nowrap;
+  }
+}
+
+.insight-note {
+  margin: 10px 0 0;
+  color: $text-muted;
+  font-size: 11px;
+}
+
+.pipeline-list,
+.cohort-list {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.pipeline-row {
+  display: grid;
+  grid-template-columns: minmax(105px, 1fr) 1.4fr 28px;
+  align-items: center;
+  gap: 9px;
+
+  span,
+  strong {
+    color: $text-secondary;
+    font-size: 11px;
+  }
+}
+
+.pipeline-track,
+.cohort-progress {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 5px;
+  background: #eee9f1;
+
+  span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, $purple-dark, $purple);
+  }
+}
+
+.cohort-item {
+  padding-bottom: 12px;
+  border-bottom: 1px solid $border;
+
+  &:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  p {
+    margin: 5px 0 8px;
+    color: $text-muted;
+    font-size: 11px;
+  }
+
+  small {
+    display: block;
+    margin-top: 5px;
+    color: $text-secondary;
+    font-size: 10px;
+  }
+}
+
+.cohort-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+
+  strong {
+    color: $text;
+    font-size: 12px;
+  }
+
+  span {
+    color: $text-muted;
+    font-size: 11px;
+  }
+}
+
 .column-label {
   color: $text-muted;
   font-size: 11px;
@@ -839,10 +972,6 @@ $radius: 16px;
 }
 
 @media (max-width: 900px) {
-  .summary-grid {
-    grid-template-columns: 1fr;
-  }
-
   .analytics-grid,
   .management-grid {
     grid-template-columns: 1fr;
@@ -890,12 +1019,6 @@ $radius: 16px;
   .career-content {
     height: auto;
     flex-direction: column;
-  }
-
-  .skill-chart {
-    grid-template-columns: repeat(auto-fit, minmax(56px, 1fr));
-    gap: 5px;
-    padding: 0;
   }
 
   .skill-bar-track {

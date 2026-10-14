@@ -94,10 +94,58 @@
 
     </div>
 
+    <div class="summary-card">
+
+      <div class="summary-icon blue">
+        →
+      </div>
+
+      <div class="summary-content">
+
+        <span class="summary-label">
+          Ready for Deployment
+        </span>
+
+        <strong>
+          {{ deploymentReady }}
+        </strong>
+
+        <span class="summary-detail">
+          {{ deploymentReadyPercentage }}% of bench
+        </span>
+
+      </div>
+
+    </div>
+
+    <div class="summary-card">
+
+      <div class="summary-icon orange">
+        ◷
+      </div>
+
+      <div class="summary-content">
+
+        <span class="summary-label">
+          RTO Compliance
+        </span>
+
+        <strong>
+          {{ rtoCompliance }}%
+        </strong>
+
+        <span class="summary-detail">
+          Onsite target Mon–Thu
+        </span>
+
+      </div>
+
+    </div>
+
   </div>
 
   <!-- =====================================================
-       Resource Analytics
+       Employee Analytics
        ===================================================== -->
 
   <div class="analytics-grid">
@@ -309,6 +357,44 @@
 
   </div>
 
+  <div class="analytics-grid distribution-grid">
+    <section class="analytics-card">
+      <div class="analytics-header">
+        <h2>Bench Status</h2>
+        <p>Current assignment and availability mix.</p>
+      </div>
+      <div class="capability-list">
+        @for (status of benchStatusDistribution; track status.name) {
+          <div class="capability-row">
+            <span class="capability-name">{{ status.name }}</span>
+            <div class="capability-track">
+              <div class="capability-bar" [style.width.%]="getDistributionWidth(status.count, benchStatusDistribution)"></div>
+            </div>
+            <strong class="capability-count">{{ status.count }}</strong>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="analytics-card">
+      <div class="analytics-header">
+        <h2>Location</h2>
+        <p>Bench headcount by work location.</p>
+      </div>
+      <div class="capability-list">
+        @for (location of locationDistribution; track location.name) {
+          <div class="capability-row">
+            <span class="capability-name">{{ location.name }}</span>
+            <div class="capability-track">
+              <div class="capability-bar" [style.width.%]="getDistributionWidth(location.count, locationDistribution)"></div>
+            </div>
+            <strong class="capability-count">{{ location.count }}</strong>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+
   <!-- =====================================================
        Capability and Absences
        ===================================================== -->
@@ -476,7 +562,7 @@
   </div>
 
   <!-- =====================================================
-       All Resources
+       All Employees
        ===================================================== -->
 
   <section class="resources-card">
@@ -572,6 +658,14 @@
               {{ resource.capability }}
             </strong>
 
+            <span class="roster-status">
+              {{ getRosterStatus(resource) }}
+            </span>
+
+            <span class="column-subtext">
+              {{ getRosterMetric(daysOnBench, resource) }} days on bench
+            </span>
+
           </div>
 
           <!-- Skills -->
@@ -615,6 +709,11 @@
               {{ resource.attendanceStatus }}
             </span>
 
+            <span class="column-subtext">
+              Training {{ getRosterMetric(trainingCompletion, resource) }}% ·
+              {{ getRosterSnapshot(resource) }} snapshot
+            </span>
+
           </div>
 
           <!-- Actions -->
@@ -623,7 +722,7 @@
             <button
               type="button"
               class="action-button primary view-button"
-              title="Employee details page coming soon"
+              [routerLink]="['/admin/employees', resource.name]"
             >
               View
             </button>
@@ -643,5 +742,82 @@
     </div>
 
   </section>
+
+  <section class="resources-card insight-card">
+    <div class="card-header">
+      <div>
+        <span class="card-eyebrow">Bench Scorecard</span>
+        <h2>Readiness by Capability</h2>
+      </div>
+      <span class="resource-count">4 measures</span>
+    </div>
+    <div class="scorecard-table-wrapper">
+      <table class="scorecard-table">
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th>HC</th>
+            <th>Attendance / RTO</th>
+            <th>Mandatory Training</th>
+            <th>Proficiency</th>
+            <th>EOD / Deliverables</th>
+            <th>Overall</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (entry of scorecardByCapability; track entry.capability) {
+            <tr>
+              <td><strong>{{ entry.capability }}</strong></td>
+              <td>{{ entry.headcount }}</td>
+              <td>{{ entry.attendance }}%</td>
+              <td>{{ entry.training }}%</td>
+              <td>{{ entry.proficiency }}%</td>
+              <td>{{ entry.deliverables }}%</td>
+              <td><strong>{{ getScorecardAverage(entry) }}%</strong></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="insight-note">Proficiency targets should align to role and career level; values shown are sample scorecard data.</p>
+  </section>
+
+  <div class="management-grid">
+    <section class="analytics-card pipeline-card">
+      <div class="analytics-header">
+        <h2>Deployment Pipeline</h2>
+        <p>From bench to billable — interview and endorsement progress.</p>
+      </div>
+      <div class="pipeline-list">
+        @for (stage of deploymentPipeline; track stage.stage) {
+          <div class="pipeline-row">
+            <span>{{ stage.stage }}</span>
+            <div class="pipeline-track"><span [style.width.%]="getPipelineWidth(stage.count)"></span></div>
+            <strong>{{ stage.count }}</strong>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="analytics-card cohorts-card">
+      <div class="analytics-header">
+        <h2>Bench Cohorts &amp; Missions</h2>
+        <p>Learning groups and internal missions for bench employees.</p>
+      </div>
+      <div class="cohort-list">
+        @for (cohort of benchCohorts; track cohort.name) {
+          <article class="cohort-item">
+            <div class="cohort-heading">
+              <strong>{{ cohort.name }}</strong>
+              <span>{{ cohort.members }} members</span>
+            </div>
+            <p>{{ cohort.focus }}</p>
+            <div class="cohort-progress"><span [style.width.%]="cohort.progress"></span></div>
+            <small>{{ cohort.progress }}% mission progress</small>
+          </article>
+        }
+      </div>
+    </section>
+  </div>
 
 </div>

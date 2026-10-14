@@ -2,7 +2,9 @@
 // Learning
 // =====================================================
 
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { SkillHubContent } from '../../../services/skill-hub-content';
 
 interface Achievement {
   employee: string;
@@ -37,10 +39,23 @@ interface MandatoryTraining {
 @Component({
   selector: 'app-learning',
   standalone: true,
+  imports: [FormsModule],
   templateUrl: './learning.html',
   styleUrl: './learning.scss'
 })
 export class Learning {
+  readonly skillHubContent = inject(SkillHubContent);
+  certificationFormVisible = false;
+  cohortFormVisible = false;
+  announcementFormVisible = false;
+  certificationDraft = { name: '', detail: '' };
+  cohortDraft = { name: '', focus: '', duration: '' };
+  announcementDraft: { title: string; description: string; type: 'Attendance' | 'Profile' | 'Learning' } = {
+    title: '',
+    description: '',
+    type: 'Learning'
+  };
+
   achievements: Achievement[] = [
     {
       employee: 'Alex Santos',
@@ -207,5 +222,50 @@ export class Learning {
 
   editTraining(training: MandatoryTraining): void {
     console.log('Edit training:', training.title);
+  }
+
+  addCertification(): void {
+    const name = this.certificationDraft.name.trim();
+    const detail = this.certificationDraft.detail.trim();
+    if (!name || !detail) {
+      return;
+    }
+
+    this.skillHubContent.certifications.push({
+      name,
+      detail,
+      status: 'Recommended'
+    });
+    this.certificationDraft = { name: '', detail: '' };
+    this.certificationFormVisible = false;
+  }
+
+  addCohort(): void {
+    const name = this.cohortDraft.name.trim();
+    const focus = this.cohortDraft.focus.trim();
+    const duration = this.cohortDraft.duration.trim();
+    if (!name || !focus || !duration) {
+      return;
+    }
+
+    this.skillHubContent.cohorts.push({ name, focus, duration, joined: false });
+    this.cohortDraft = { name: '', focus: '', duration: '' };
+    this.cohortFormVisible = false;
+  }
+
+  addAnnouncement(): void {
+    const title = this.announcementDraft.title.trim();
+    const description = this.announcementDraft.description.trim();
+    if (!title || !description) {
+      return;
+    }
+
+    this.skillHubContent.announcements.push({
+      title,
+      description,
+      type: this.announcementDraft.type
+    });
+    this.announcementDraft = { title: '', description: '', type: 'Learning' };
+    this.announcementFormVisible = false;
   }
 }

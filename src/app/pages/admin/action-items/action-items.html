@@ -1,0 +1,73 @@
+<div class="action-items-page">
+  <header class="page-header">
+    <div>
+      <span class="page-eyebrow">Bench Lead Workspace</span>
+      <h1>Action Items</h1>
+      <p>Prioritize governance follow-ups and operational issues that need attention.</p>
+    </div>
+    <div class="filter-toggle" aria-label="Filter action items">
+      <button type="button" [class.active]="filter === 'All'" (click)="setFilter('All')">All</button>
+      <button type="button" [class.active]="filter === 'Open'" (click)="setFilter('Open')">Open</button>
+      <button type="button" [class.active]="filter === 'Done'" (click)="setFilter('Done')">Done</button>
+    </div>
+  </header>
+
+  <section class="summary-grid" aria-label="Action item summary">
+    <article class="summary-card">
+      <span class="summary-label">Open items</span>
+      <strong>{{ openCount }}</strong>
+      <span class="summary-detail">Not yet completed</span>
+    </article>
+    <article class="summary-card">
+      <span class="summary-label">High priority</span>
+      <strong>{{ highPriorityCount }}</strong>
+      <span class="summary-detail">Open high-priority follow-ups</span>
+    </article>
+    <article class="summary-card">
+      <span class="summary-label">Due today</span>
+      <strong>{{ dueTodayCount }}</strong>
+      <span class="summary-detail">Needs attention today</span>
+    </article>
+  </section>
+
+  <div class="content-grid">
+    <section class="action-card">
+      <div class="card-header">
+        <div>
+          <span class="card-eyebrow">Action Tracker</span>
+          <h2>{{ filter }} Items</h2>
+          <p>Update the status as follow-ups progress.</p>
+        </div>
+        <span class="count-badge">{{ filteredActionItems.length }}</span>
+      </div>
+
+      <div class="action-list">
+        @for (item of filteredActionItems; track item.title) {
+          <article class="action-item" [class.done]="item.status === 'Done'">
+            <span class="priority-marker" [class.high]="item.priority === 'High'" [class.medium]="item.priority === 'Medium'"></span>
+            <div class="action-body">
+              <div class="action-title-row">
+                <h3>{{ item.title }}</h3>
+                <span class="priority-pill" [class.high]="item.priority === 'High'" [class.medium]="item.priority === 'Medium'">{{ item.priority }}</span>
+              </div>
+              <p>{{ item.description }}</p>
+              <div class="action-meta">
+                <span>{{ item.category }}</span>
+                <span>Owner: {{ item.owner }}</span>
+                <span>{{ item.due }}</span>
+              </div>
+            </div>
+            <select [value]="item.status" [attr.aria-label]="'Status for ' + item.title" (change)="updateStatus(item, $event)">
+              <option>Open</option>
+              <option>In Progress</option>
+              <option>Done</option>
+            </select>
+          </article>
+        } @empty {
+          <div class="empty-state">No action items match this filter.</div>
+        }
+      </div>
+    </section>
+
+  </div>
+</div>

@@ -4,10 +4,31 @@
   <section class="dashboard-header">
 
     <div>
-      <h1>Dashboard</h1>
+      <h1>Bench Overview <span class="heading-chevron">&gt;</span></h1>
       <p>
-        Overview of bench employees and workforce readiness.
+        IIS bench population · capability counts and workforce readiness.
       </p>
+    </div>
+
+    <div class="dashboard-filters" aria-label="Dashboard filters">
+      <label>
+        <span class="visually-hidden">Filter by location</span>
+        <select aria-label="Filter by location">
+          <option value="">All Locations</option>
+          <option value="Manila">Manila</option>
+          <option value="Cebu">Cebu</option>
+        </select>
+      </label>
+      <label>
+        <span class="visually-hidden">Filter by capability</span>
+        <select aria-label="Filter by capability">
+          <option value="">All Capabilities</option>
+          <option value="Hybrid Cloud">Hybrid Cloud</option>
+          <option value="Network">Network</option>
+          <option value="Security">Security</option>
+          <option value="Data & AI">Data &amp; AI</option>
+        </select>
+      </label>
     </div>
 
   </section>
@@ -83,6 +104,33 @@
 
       </div>
 
+    </article>
+
+    <article class="summary-card">
+      <div class="card-decoration"></div>
+      <div class="card-content">
+        <span class="card-label">Ready for Deployment</span>
+        <span class="card-value">{{ readyForDeployment }}</span>
+        <span class="card-meta positive">{{ Math.round(readyForDeployment / totalEmployees * 100) }}% of bench</span>
+      </div>
+    </article>
+
+    <article class="summary-card">
+      <div class="card-decoration"></div>
+      <div class="card-content">
+        <span class="card-label">Capability Building</span>
+        <span class="card-value">{{ capabilityBuilding }}</span>
+        <span class="card-meta">Assigned to learning or bootcamp</span>
+      </div>
+    </article>
+
+    <article class="summary-card">
+      <div class="card-decoration"></div>
+      <div class="card-content">
+        <span class="card-label">Today's RTO Compliance</span>
+        <span class="card-value">{{ rtoCompliance }}%</span>
+        <span class="card-meta">Onsite Mon–Thu · Friday WFH</span>
+      </div>
     </article>
   </section>
   <!-- ================================================= -->
@@ -402,12 +450,12 @@
           Most urgent items requiring your attention.
         </p>
       </div>
-      <button
-        type="button"
+      <a
         class="view-all-button"
+        routerLink="/admin/action-items"
       >
         View all
-      </button>
+      </a>
     </div>
 
     <div class="action-list">

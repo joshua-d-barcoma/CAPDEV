@@ -2,7 +2,9 @@
 // History
 // =====================================================
 
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { EmployeeRto, RtoDay } from '../../../services/employee-rto';
 
 type AttendanceStatus = 'Present' | 'On Leave' | 'Absent';
 
@@ -16,10 +18,17 @@ interface AttendanceRecord {
 @Component({
   selector: 'app-history',
   standalone: true,
+  imports: [FormsModule],
   templateUrl: './history.html',
   styleUrl: './history.scss'
 })
 export class History {
+  readonly employeeName = 'Alex Santos';
+  readonly rto = inject(EmployeeRto);
+  rtoEditorVisible = false;
+  rtoDraft: RtoDay[] = this.rto.getSchedule(this.employeeName)
+    .map(day => ({ ...day }));
+
   attendanceRecords: AttendanceRecord[] = [
     {
       date: 'Oct 12, 2026',
@@ -75,6 +84,37 @@ export class History {
     return this.attendanceRecords.filter(
       record => record.status === 'Absent'
     ).length;
+  }
+
+  get rtoOnsiteDays(): number {
+    return this.rto.getSchedule(this.employeeName)
+      .filter(day => day.location === 'Onsite').length;
+  }
+
+  get rtoRequestPending(): boolean {
+    return this.rto.hasPendingRequest(this.employeeName);
+  }
+
+  get rtoScheduleChanged(): boolean {
+    const schedule = this.rto.getSchedule(this.employeeName);
+    return this.rtoDraft.some((day, index) =>
+      day.location !== schedule[index]?.location
+    );
+  }
+
+  startRtoEdit(): void {
+    this.rtoDraft = this.rto.getSchedule(this.employeeName)
+      .map(day => ({ ...day }));
+    this.rtoEditorVisible = true;
+  }
+
+  submitRtoRequest(): void {
+    if (this.rtoRequestPending || !this.rtoScheduleChanged) {
+      return;
+    }
+
+    this.rto.submitRequest(this.employeeName, this.rtoDraft);
+    this.rtoEditorVisible = false;
   }
 
   getHoursWorked(record: AttendanceRecord): string {

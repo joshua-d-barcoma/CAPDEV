@@ -4,6 +4,25 @@
 
 <div class="dashboard">
 
+  <section class="welcome-banner" aria-label="Welcome and quick actions">
+    <div class="welcome-content">
+      <h2>Good afternoon, {{ firstName }} <span aria-hidden="true">👋</span></h2>
+      <p>
+        {{ profile.capability }} · {{ profile.careerLevel }} ·
+        Capability Building · Day {{ benchDays }} on bench
+      </p>
+      <div class="welcome-actions">
+        <a class="welcome-button primary" routerLink="/user/time-in">
+          Check in at CG2
+        </a>
+        <a class="welcome-button secondary" routerLink="/user/tasks">
+          View Tasks
+        </a>
+      </div>
+    </div>
+    <span class="welcome-mark" aria-hidden="true">&gt;</span>
+  </section>
+
   <!-- Dashboard Header -->
   <div class="dashboard-header">
 
@@ -90,6 +109,29 @@
 
     </div>
 
+  </section>
+
+  <section class="quick-stats" aria-label="Bench progress summary">
+    <article class="quick-stat">
+      <span>Training progress</span>
+      <strong>{{ getTrainingProgress() }}%</strong>
+      <small>{{ getCompletedTrainingCount() }} of {{ trainings.length }} completed</small>
+    </article>
+    <article class="quick-stat">
+      <span>Tasks today</span>
+      <strong>{{ getCompletedTaskCount() }}/{{ tasks.length }}</strong>
+      <small>Assigned tasks completed</small>
+    </article>
+    <article class="quick-stat">
+      <span>RTO this week</span>
+      <strong>{{ rtoAttendance }}</strong>
+      <small>Onsite days recorded against target</small>
+    </article>
+    <article class="quick-stat">
+      <span>Deployment readiness</span>
+      <strong>{{ deploymentReadiness }}%</strong>
+      <small>Complete your readiness checklist</small>
+    </article>
   </section>
 
   <!-- Latest Achievement / Time -->

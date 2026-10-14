@@ -1,4 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import {
+  AttendanceStatus,
+  Employee,
+  EmployeeDirectory,
+  WorkLocation
+} from '../../../services/employee-directory';
 import {
   DateRangeFilterChange,
   SearchFilters,
@@ -6,26 +13,6 @@ import {
   SelectFilterConfig,
   DateRangeFilterConfig
 } from '../../../components/search-filters/search-filters';
-
-type AttendanceStatus =
-  | 'Present'
-  | 'Sick Leave'
-  | 'Vacation Leave'
-  | 'Unapproved Absence';
-
-type WorkLocation = 'Manila' | 'Cebu';
-
-interface Resource {
-  name: string;
-  careerLevel: string;
-  workLocation: WorkLocation;
-  capability: string;
-  skills: string[];
-  attendanceStatus: AttendanceStatus;
-  absenceDays: number;
-  joiningDate: string;
-  rollInDate: string;
-}
 
 interface SkillDistribution {
   name: string;
@@ -47,14 +34,37 @@ interface CapabilityDistribution {
   count: number;
 }
 
+interface ScorecardEntry {
+  capability: string;
+  headcount: number;
+  attendance: number;
+  training: number;
+  proficiency: number;
+  deliverables: number;
+}
+
+interface PipelineStage {
+  stage: string;
+  count: number;
+}
+
+interface BenchCohort {
+  name: string;
+  focus: string;
+  members: number;
+  progress: number;
+}
+
 @Component({
   selector: 'app-resources',
   standalone: true,
-  imports: [SearchFilters],
+  imports: [SearchFilters, RouterLink],
   templateUrl: './resources.html',
   styleUrl: './resources.scss'
 })
 export class Resources {
+  readonly employeeDirectory = inject(EmployeeDirectory);
+  readonly resources = this.employeeDirectory.employees;
   totalEmployees = 86;
   presentToday = 79;
   activeNonCompliance = 1;
@@ -181,109 +191,66 @@ export class Resources {
     }
   ];
 
-  resources: Resource[] = [
-    {
-      name: 'Alex Santos',
-      careerLevel: 'CL8',
-      workLocation: 'Manila',
-      capability: 'SRE / Hybrid Cloud',
-      skills: [
-        'AWS',
-        'Azure',
-        'Kubernetes',
-        'Terraform'
-      ],
-      attendanceStatus: 'Present',
-      absenceDays: 0,
-      joiningDate: '2020-02-10',
-      rollInDate: '2026-07-14'
-    },
-    {
-      name: 'Maria Cruz',
-      careerLevel: 'CL7',
-      workLocation: 'Cebu',
-      capability: 'Cloud Customer Edge',
-      skills: [
-        'Azure',
-        'Networking',
-        'Terraform'
-      ],
-      attendanceStatus: 'Present',
-      absenceDays: 0,
-      joiningDate: '2022-06-20',
-      rollInDate: '2026-08-05'
-    },
-    {
-      name: 'John Reyes',
-      careerLevel: 'CL6',
-      workLocation: 'Manila',
-      capability: 'Network',
-      skills: [
-        'Routing',
-        'Switching',
-        'Cisco'
-      ],
-      attendanceStatus: 'Unapproved Absence',
-      absenceDays: 1,
-      joiningDate: '2021-11-01',
-      rollInDate: '2026-09-10'
-    },
-    {
-      name: 'Sarah Garcia',
-      careerLevel: 'CL9',
-      workLocation: 'Cebu',
-      capability: 'Hybrid Cloud - Operations',
-      skills: [
-        'AWS',
-        'Linux',
-        'Kubernetes',
-        'Docker'
-      ],
-      attendanceStatus: 'Unapproved Absence',
-      absenceDays: 3,
-      joiningDate: '2019-04-15',
-      rollInDate: '2026-06-20'
-    },
-    {
-      name: 'Michael Tan',
-      careerLevel: 'CL8',
-      workLocation: 'Manila',
-      capability: 'Hybrid Cloud - Migration',
-      skills: [
-        'Azure',
-        'Migration',
-        'Terraform'
-      ],
-      attendanceStatus: 'Present',
-      absenceDays: 0,
-      joiningDate: '2023-01-09',
-      rollInDate: '2026-09-25'
-    },
-    {
-      name: 'Nicole Lim',
-      careerLevel: 'CL5',
-      workLocation: 'Cebu',
-      capability: 'Service Management',
-      skills: [
-        'ITIL',
-        'ServiceNow',
-        'Incident Management'
-      ],
-      attendanceStatus: 'Vacation Leave',
-      absenceDays: 0,
-      joiningDate: '2020-08-31',
-      rollInDate: '2026-10-01'
-    }
+  readonly benchStatusDistribution: CapabilityDistribution[] = [
+    { name: 'Ready for Deployment', count: 24 },
+    { name: 'Capability Building', count: 38 },
+    { name: 'Unavailable in Bench', count: 18 },
+    { name: 'Apprentice', count: 4 },
+    { name: 'Lateral Cross Training', count: 2 }
   ];
 
-  get unapprovedAbsences(): Resource[] {
+  readonly locationDistribution: CapabilityDistribution[] = [
+    { name: 'Manila', count: 68 },
+    { name: 'Cebu', count: 18 }
+  ];
+
+  readonly deploymentReady = 24;
+  readonly capabilityBuilding = 38;
+  readonly rtoCompliance = 82;
+
+  readonly rosterStatuses = [
+    'Capability Building',
+    'Ready for Deployment',
+    'Unavailable in Bench',
+    'Ready for Deployment',
+    'Lateral Cross Training',
+    'Apprentice'
+  ];
+
+  readonly daysOnBench = [92, 70, 34, 116, 19, 13];
+  readonly trainingCompletion = [84, 100, 58, 92, 67, 45];
+  readonly snapshotStatus = ['Retained', 'New', 'Retained', 'Retained', 'New', 'Retained'];
+
+  readonly scorecardByCapability: ScorecardEntry[] = [
+    { capability: 'Hybrid Cloud', headcount: 29, attendance: 94, training: 82, proficiency: 76, deliverables: 88 },
+    { capability: 'Network', headcount: 18, attendance: 91, training: 78, proficiency: 73, deliverables: 81 },
+    { capability: 'Security', headcount: 18, attendance: 96, training: 89, proficiency: 84, deliverables: 90 },
+    { capability: 'Data & AI', headcount: 14, attendance: 93, training: 86, proficiency: 79, deliverables: 85 }
+  ];
+
+  readonly deploymentPipeline: PipelineStage[] = [
+    { stage: 'Ready for screening', count: 24 },
+    { stage: 'Profile shared with TFS', count: 16 },
+    { stage: 'Interview in progress', count: 9 },
+    { stage: 'Client selection', count: 5 },
+    { stage: 'Deployment confirmed', count: 3 }
+  ];
+
+  readonly benchCohorts: BenchCohort[] = [
+    { name: 'Cloud Elite', focus: 'Cloud engineering and operations', members: 18, progress: 72 },
+    { name: 'Automation Mission', focus: 'Infrastructure automation', members: 14, progress: 58 },
+    { name: 'Digital Workplace', focus: 'Microsoft 365 and endpoint services', members: 12, progress: 81 },
+    { name: 'Network Readiness', focus: 'Enterprise network operations', members: 10, progress: 64 }
+  ];
+
+  get unapprovedAbsences(): Employee[] {
     return this.resources.filter(
       resource =>
         resource.attendanceStatus === 'Unapproved Absence'
     );
   }
 
-  get criticalAbsences(): Resource[] {
+  get criticalAbsences(): Employee[] {
     return this.unapprovedAbsences.filter(
       resource => resource.absenceDays >= 3
     );
@@ -309,7 +276,7 @@ export class Resources {
     );
   }
 
-  get filteredResources(): Resource[] {
+  get filteredResources(): Employee[] {
     const query = this.searchTerm.trim().toLowerCase();
 
     return this.resources.filter(resource =>
@@ -343,6 +310,49 @@ export class Resources {
         this.rollInDateTo
       )
     );
+  }
+
+  getRosterStatus(resource: Employee): string {
+    const index = this.resources.indexOf(resource);
+    return this.rosterStatuses[index] ?? 'Capability Building';
+  }
+
+  getRosterMetric(
+    values: number[],
+    resource: Employee
+  ): number {
+    const index = this.resources.indexOf(resource);
+    return values[index] ?? 0;
+  }
+
+  get deploymentReadyPercentage(): number {
+    return this.totalEmployees
+      ? Math.round((this.deploymentReady / this.totalEmployees) * 100)
+      : 0;
+  }
+
+  getRosterSnapshot(resource: Employee): string {
+    const index = this.resources.indexOf(resource);
+    return this.snapshotStatus[index] ?? 'Retained';
+  }
+
+  getScorecardAverage(entry: ScorecardEntry): number {
+    return Math.round(
+      (entry.attendance + entry.training + entry.proficiency + entry.deliverables) / 4
+    );
+  }
+
+  getPipelineWidth(count: number): number {
+    const max = Math.max(...this.deploymentPipeline.map(stage => stage.count));
+    return max ? (count / max) * 100 : 0;
+  }
+
+  getDistributionWidth(
+    count: number,
+    distribution: CapabilityDistribution[]
+  ): number {
+    const max = Math.max(...distribution.map(item => item.count));
+    return max ? (count / max) * 100 : 0;
   }
 
   get searchFilterOptions(): SelectFilterConfig[] {
