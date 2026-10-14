@@ -1,4 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import {
+  AttendanceStatus,
+  Employee,
+  EmployeeDirectory,
+  WorkLocation
+} from '../../../services/employee-directory';
 import {
   DateRangeFilterChange,
   SearchFilters,
@@ -6,26 +13,6 @@ import {
   SelectFilterConfig,
   DateRangeFilterConfig
 } from '../../../components/search-filters/search-filters';
-
-type AttendanceStatus =
-  | 'Present'
-  | 'Sick Leave'
-  | 'Vacation Leave'
-  | 'Unapproved Absence';
-
-type WorkLocation = 'Manila' | 'Cebu';
-
-interface Resource {
-  name: string;
-  careerLevel: string;
-  workLocation: WorkLocation;
-  capability: string;
-  skills: string[];
-  attendanceStatus: AttendanceStatus;
-  absenceDays: number;
-  joiningDate: string;
-  rollInDate: string;
-}
 
 interface SkillDistribution {
   name: string;
@@ -71,11 +58,13 @@ interface BenchCohort {
 @Component({
   selector: 'app-resources',
   standalone: true,
-  imports: [SearchFilters],
+  imports: [SearchFilters, RouterLink],
   templateUrl: './resources.html',
   styleUrl: './resources.scss'
 })
 export class Resources {
+  readonly employeeDirectory = inject(EmployeeDirectory);
+  readonly resources = this.employeeDirectory.employees;
   totalEmployees = 86;
   presentToday = 79;
   activeNonCompliance = 1;
@@ -254,109 +243,14 @@ export class Resources {
     { name: 'Network Readiness', focus: 'Enterprise network operations', members: 10, progress: 64 }
   ];
 
-  resources: Resource[] = [
-    {
-      name: 'Alex Santos',
-      careerLevel: 'CL8',
-      workLocation: 'Manila',
-      capability: 'SRE / Hybrid Cloud',
-      skills: [
-        'AWS',
-        'Azure',
-        'Kubernetes',
-        'Terraform'
-      ],
-      attendanceStatus: 'Present',
-      absenceDays: 0,
-      joiningDate: '2020-02-10',
-      rollInDate: '2026-07-14'
-    },
-    {
-      name: 'Maria Cruz',
-      careerLevel: 'CL7',
-      workLocation: 'Cebu',
-      capability: 'Cloud Customer Edge',
-      skills: [
-        'Azure',
-        'Networking',
-        'Terraform'
-      ],
-      attendanceStatus: 'Present',
-      absenceDays: 0,
-      joiningDate: '2022-06-20',
-      rollInDate: '2026-08-05'
-    },
-    {
-      name: 'John Reyes',
-      careerLevel: 'CL6',
-      workLocation: 'Manila',
-      capability: 'Network',
-      skills: [
-        'Routing',
-        'Switching',
-        'Cisco'
-      ],
-      attendanceStatus: 'Unapproved Absence',
-      absenceDays: 1,
-      joiningDate: '2021-11-01',
-      rollInDate: '2026-09-10'
-    },
-    {
-      name: 'Sarah Garcia',
-      careerLevel: 'CL9',
-      workLocation: 'Cebu',
-      capability: 'Hybrid Cloud - Operations',
-      skills: [
-        'AWS',
-        'Linux',
-        'Kubernetes',
-        'Docker'
-      ],
-      attendanceStatus: 'Unapproved Absence',
-      absenceDays: 3,
-      joiningDate: '2019-04-15',
-      rollInDate: '2026-06-20'
-    },
-    {
-      name: 'Michael Tan',
-      careerLevel: 'CL8',
-      workLocation: 'Manila',
-      capability: 'Hybrid Cloud - Migration',
-      skills: [
-        'Azure',
-        'Migration',
-        'Terraform'
-      ],
-      attendanceStatus: 'Present',
-      absenceDays: 0,
-      joiningDate: '2023-01-09',
-      rollInDate: '2026-09-25'
-    },
-    {
-      name: 'Nicole Lim',
-      careerLevel: 'CL5',
-      workLocation: 'Cebu',
-      capability: 'Service Management',
-      skills: [
-        'ITIL',
-        'ServiceNow',
-        'Incident Management'
-      ],
-      attendanceStatus: 'Vacation Leave',
-      absenceDays: 0,
-      joiningDate: '2020-08-31',
-      rollInDate: '2026-10-01'
-    }
-  ];
-
-  get unapprovedAbsences(): Resource[] {
+  get unapprovedAbsences(): Employee[] {
     return this.resources.filter(
       resource =>
         resource.attendanceStatus === 'Unapproved Absence'
     );
   }
 
-  get criticalAbsences(): Resource[] {
+  get criticalAbsences(): Employee[] {
     return this.unapprovedAbsences.filter(
       resource => resource.absenceDays >= 3
     );
@@ -382,7 +276,7 @@ export class Resources {
     );
   }
 
-  get filteredResources(): Resource[] {
+  get filteredResources(): Employee[] {
     const query = this.searchTerm.trim().toLowerCase();
 
     return this.resources.filter(resource =>
@@ -418,14 +312,14 @@ export class Resources {
     );
   }
 
-  getRosterStatus(resource: Resource): string {
+  getRosterStatus(resource: Employee): string {
     const index = this.resources.indexOf(resource);
     return this.rosterStatuses[index] ?? 'Capability Building';
   }
 
   getRosterMetric(
     values: number[],
-    resource: Resource
+    resource: Employee
   ): number {
     const index = this.resources.indexOf(resource);
     return values[index] ?? 0;
@@ -437,7 +331,7 @@ export class Resources {
       : 0;
   }
 
-  getRosterSnapshot(resource: Resource): string {
+  getRosterSnapshot(resource: Employee): string {
     const index = this.resources.indexOf(resource);
     return this.snapshotStatus[index] ?? 'Retained';
   }

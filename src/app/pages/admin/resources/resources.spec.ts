@@ -1,5 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
+import { provideRouter, Router } from '@angular/router';
 import { Resources } from './resources';
+
+@Component({
+  standalone: true,
+  template: ''
+})
+class EmployeeRouteStub {}
 
 describe('Resources', () => {
   let component: Resources;
@@ -8,6 +16,11 @@ describe('Resources', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Resources],
+      providers: [
+        provideRouter([
+          { path: 'admin/employees/:employeeName', component: EmployeeRouteStub }
+        ])
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Resources);
@@ -52,6 +65,15 @@ describe('Resources', () => {
     component.searchTerm = 'no matching employee';
 
     expect(component.filteredResources).toEqual([]);
+  });
+
+  it('opens the selected employee dashboard from the View button', async () => {
+    fixture.detectChanges();
+    const viewButton = fixture.nativeElement.querySelector('.view-button') as HTMLButtonElement;
+    viewButton.click();
+    await fixture.whenStable();
+
+    expect(TestBed.inject(Router).url).toBe('/admin/employees/Alex%20Santos');
   });
 
   it('should apply capability, career level, skill, and attendance filters together', () => {

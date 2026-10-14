@@ -81,18 +81,52 @@
       <div>
         <span class="card-eyebrow">Return to Office</span>
         <h2>My RTO Schedule</h2>
-        <p>Example weekly schedule: onsite Monday–Thursday and WFH Friday.</p>
+        <p>Your current weekly onsite and work-from-home schedule.</p>
       </div>
-      <span class="record-count">3 / 4 onsite days</span>
+      @if (!rtoEditorVisible && !rtoRequestPending) {
+        <button type="button" class="rto-edit-button" (click)="startRtoEdit()">Request Schedule Change</button>
+      } @else if (rtoRequestPending) {
+        <span class="rto-request-status">Awaiting admin approval</span>
+      }
     </div>
-    <div class="rto-week">
-      <div class="rto-day complete"><strong>Mon</strong><span>Onsite</span></div>
-      <div class="rto-day complete"><strong>Tue</strong><span>Onsite</span></div>
-      <div class="rto-day complete"><strong>Wed</strong><span>Onsite</span></div>
-      <div class="rto-day pending"><strong>Thu</strong><span>Pending</span></div>
-      <div class="rto-day remote"><strong>Fri</strong><span>WFH</span></div>
-    </div>
-    <p class="rto-note">If you need leave or an attendance exception, contact your lead and follow the team's request process.</p>
+    @if (rtoEditorVisible) {
+      <div class="rto-week">
+        @for (day of rtoDraft; track day.day; let index = $index) {
+          <label class="rto-day">
+            <strong>{{ day.day }}</strong>
+            <select [name]="'requested-rto-' + day.day" [(ngModel)]="rtoDraft[index].location">
+              <option value="Onsite">Onsite</option>
+              <option value="WFH">WFH</option>
+            </select>
+          </label>
+        }
+      </div>
+      <div class="rto-form-actions">
+        <button type="button" class="rto-cancel-button" (click)="rtoEditorVisible = false">Cancel</button>
+        <button type="button" class="rto-submit-button" [disabled]="!rtoScheduleChanged" (click)="submitRtoRequest()">Submit for Approval</button>
+      </div>
+      <p class="rto-note">Your current schedule stays active until an admin approves the change.</p>
+    } @else {
+      <div class="rto-week">
+        @for (day of rto.getSchedule(employeeName); track day.day) {
+          <div class="rto-day" [class.remote]="day.location === 'WFH'">
+            <strong>{{ day.day }}</strong>
+            <span>{{ day.location }}</span>
+          </div>
+        }
+      </div>
+      <span class="record-count">{{ rtoOnsiteDays }} onsite days / week</span>
+      @if (rto.getLatestRequest(employeeName); as request) {
+        <p class="rto-note" [class.rejected]="request.status === 'Rejected'">
+          Latest schedule request: {{ request.status }}.
+          @if (request.status === 'Rejected') {
+            You may submit a new request.
+          }
+        </p>
+      } @else {
+        <p class="rto-note">Schedule changes are sent to your admin for approval.</p>
+      }
+    }
   </section>
 
   <!-- Attendance History -->

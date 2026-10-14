@@ -18,4 +18,16 @@ describe('History', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('submits RTO schedule changes for admin approval without applying them immediately', () => {
+    const currentSchedule = component.rto.getSchedule(component.employeeName)
+      .map(day => ({ ...day }));
+    component.rtoDraft[0].location = 'WFH';
+
+    component.submitRtoRequest();
+
+    expect(component.rto.getLatestRequest(component.employeeName)?.status).toBe('Pending');
+    expect(component.rto.getSchedule(component.employeeName)).toEqual(currentSchedule);
+    expect(component.rtoRequestPending).toBe(true);
+  });
 });

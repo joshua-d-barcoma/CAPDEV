@@ -18,6 +18,12 @@ export const routes: Routes = [
       import('./pages/admin/resources/resources')
         .then(m => m.Resources)
   },
+  {
+    path: 'admin/employees/:employeeName',
+    loadComponent: () =>
+      import('./pages/admin/employee-view/employee-view')
+        .then(m => m.EmployeeView)
+  },
 
   {
   path: 'attendance',
