@@ -25,7 +25,7 @@ export class ActionItems {
   readonly actionItems: ActionItem[] = [
     {
       title: 'Review overdue mandatory training',
-      description: 'Follow up with three resources whose required training is overdue.',
+      description: 'Follow up with three employees whose required training is overdue.',
       category: 'Learning',
       owner: 'Capability Development POC',
       due: 'Due today',
@@ -33,8 +33,8 @@ export class ActionItems {
       status: 'Open'
     },
     {
-      title: 'Assign unallocated bench resources',
-      description: 'Match two available resources with appropriate learning or internal work.',
+      title: 'Assign unallocated bench employees',
+      description: 'Match two available employees with appropriate learning or internal work.',
       category: 'Assignment',
       owner: 'Bench Lead',
       due: 'Due today',
@@ -52,7 +52,7 @@ export class ActionItems {
     },
     {
       title: 'Review deployment readiness',
-      description: 'Validate the profiles of five resources approaching deployment readiness.',
+      description: 'Validate the profiles of five employees approaching deployment readiness.',
       category: 'Deployment',
       owner: 'Deployment POC',
       due: 'Due this week',
@@ -70,19 +70,13 @@ export class ActionItems {
     },
     {
       title: 'Review attendance exceptions',
-      description: 'Confirm next steps for resources with repeated attendance exceptions.',
+      description: 'Confirm next steps for employees with repeated attendance exceptions.',
       category: 'Attendance',
       owner: 'Bench Management Team',
       due: 'Oct 17',
       priority: 'High',
       status: 'Open'
     }
-  ];
-
-  readonly upcoming = [
-    { title: 'Bench Resources Weekly Touchpoint', when: 'Wednesday · 10:00 AM', category: 'Bench' },
-    { title: 'Capability Development Alignment', when: 'Weekly · 3:00 PM', category: 'Learning' },
-    { title: 'Training and Certification Plan Review', when: 'Due this week', category: 'Governance' }
   ];
 
   get filteredActionItems(): ActionItem[] {

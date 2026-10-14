@@ -30,6 +30,11 @@ $radius: 16px;
 
 // Dashboard Header
 .dashboard-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+
   margin-bottom: 20px;
 
   h1 {
@@ -40,11 +45,54 @@ $radius: 16px;
     letter-spacing: -0.4px;
   }
 
+  .heading-chevron {
+    color: $purple;
+  }
+
   p {
     margin: 5px 0 0;
     color: $text-secondary;
     font-size: 14px;
   }
+}
+
+.dashboard-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  select {
+    min-width: 180px;
+    height: 42px;
+    padding: 0 34px 0 13px;
+    border: 1px solid $border;
+    border-radius: 7px;
+    outline: none;
+    background: #fff;
+    color: $text;
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:focus-visible {
+      border-color: $purple;
+      box-shadow: 0 0 0 2px rgba($purple, 0.12);
+    }
+  }
+
+  label:last-child select {
+    min-width: 300px;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
 }
 
 // Summary Cards
@@ -600,6 +648,23 @@ $radius: 16px;
 }
 
 @media (max-width: 768px) {
+  .dashboard-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dashboard-filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    label,
+    select,
+    label:last-child select {
+      width: 100%;
+      min-width: 0;
+    }
+  }
+
   .dashboard-header {
     h1 {
       font-size: 21px;

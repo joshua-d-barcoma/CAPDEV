@@ -69,25 +69,5 @@
       </div>
     </section>
 
-    <aside class="action-card upcoming-card">
-      <div class="card-header">
-        <div>
-          <span class="card-eyebrow">Calendar</span>
-          <h2>Upcoming</h2>
-          <p>Key check-ins and governance milestones.</p>
-        </div>
-      </div>
-      <div class="upcoming-list">
-        @for (item of upcoming; track item.title) {
-          <article class="upcoming-item">
-            <span class="upcoming-marker" [class.governance]="item.category === 'Governance'"></span>
-            <div>
-              <strong>{{ item.title }}</strong>
-              <span>{{ item.when }}</span>
-            </div>
-          </article>
-        }
-      </div>
-    </aside>
   </div>
 </div>

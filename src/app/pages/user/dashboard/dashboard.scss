@@ -23,6 +23,91 @@ $radius: 16px;
   margin: 0 auto;
 }
 
+.welcome-banner {
+  position: relative;
+  display: flex;
+  min-height: 165px;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 28px 36px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  background: linear-gradient(110deg, #08020c 0%, #410069 58%, #a900ff 100%);
+  color: #fff;
+}
+
+.welcome-content {
+  position: relative;
+  z-index: 1;
+
+  h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 26px;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 7px 0 18px;
+    color: rgba(255, 255, 255, 0.84);
+    font-size: 15px;
+  }
+}
+
+.welcome-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.welcome-button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0 17px;
+  border: 1px solid #fff;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 150ms ease, color 150ms ease;
+
+  &.primary {
+    border-color: $purple;
+    background: $purple;
+    color: #fff;
+
+    &:hover {
+      border-color: #c34cff;
+      background: #c34cff;
+    }
+  }
+
+  &.secondary {
+    background: #fff;
+    color: $purple-dark;
+
+    &:hover {
+      background: $purple-light;
+    }
+  }
+}
+
+.welcome-mark {
+  position: absolute;
+  top: 50%;
+  right: 34px;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 66px;
+  font-weight: 900;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+
 .quick-stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -578,6 +663,26 @@ $radius: 16px;
 }
 
 @media (max-width: 768px) {
+  .welcome-banner {
+    min-height: 150px;
+    padding: 23px;
+  }
+
+  .welcome-content h2 {
+    font-size: 22px;
+  }
+
+  .welcome-content p {
+    max-width: 80%;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .welcome-mark {
+    right: 14px;
+    font-size: 48px;
+  }
+
   .profile-card {
     display: grid;
     grid-template-columns: auto 1fr;

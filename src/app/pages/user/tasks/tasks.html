@@ -91,7 +91,7 @@
   <!-- Task Lists -->
   <div class="task-grid">
 
-    <!-- Mandatory Tasks -->
+    <!-- Mandatory Trainings -->
     <section class="dashboard-card task-section">
 
       <div class="card-header">
@@ -102,7 +102,7 @@
           </span>
 
           <h2>
-            Mandatory Tasks
+            Mandatory Trainings
           </h2>
         </div>
 
@@ -256,48 +256,6 @@
     </section>
 
   </div>
-
-  <section class="dashboard-card eod-card">
-    <div class="card-header">
-      <div>
-        <span class="card-eyebrow">End of Day</span>
-        <h2>Daily Accomplishment Report</h2>
-      </div>
-    </div>
-    @if (eodSubmitted) {
-      <div class="eod-confirmation" role="status">
-        Your EOD report has been submitted for today.
-      </div>
-    } @else {
-      <form class="eod-form" (ngSubmit)="submitEodReport()">
-        <label for="eod-summary">What did you accomplish today?</label>
-        <textarea
-          id="eod-summary"
-          name="eodSummary"
-          [(ngModel)]="eodSummary"
-          required
-          maxlength="1000"
-          placeholder="Summarize your tasks, learning, and other bench activities."
-        ></textarea>
-        <div class="eod-form-footer">
-          <div>
-            <label for="hours-spent">Hours spent</label>
-            <input
-              id="hours-spent"
-              name="hoursSpent"
-              type="number"
-              [(ngModel)]="hoursSpent"
-              min="0.5"
-              max="24"
-              step="0.5"
-              required
-            />
-          </div>
-          <button type="submit" class="eod-submit-button">Submit EOD</button>
-        </div>
-      </form>
-    }
-  </section>
 
   <!-- Recommendations -->
   <section class="dashboard-card recommendation-section">

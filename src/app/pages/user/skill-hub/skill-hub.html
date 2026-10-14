@@ -46,19 +46,14 @@
       <div>
         <span class="card-eyebrow">My Skills</span>
         <h2>Skill Proficiency</h2>
-        <p>Review your current proficiency and keep it aligned with your role.</p>
+        <p>Review your current proficiency levels.</p>
       </div>
-      <span class="info-badge">Profile target: P2 / P3 by career level</span>
     </div>
     <div class="proficiency-list">
       @for (skill of proficiencies; track skill.name) {
         <div class="proficiency-row">
-          <div class="proficiency-title">
-            <strong>{{ skill.name }}</strong>
-            <span>{{ skill.level }}</span>
-          </div>
-          <div class="proficiency-track"><span [style.width.%]="getScoreWidth(skill.score)"></span></div>
-          <strong class="proficiency-score">{{ skill.score }}%</strong>
+          <strong class="proficiency-name">{{ skill.name }}</strong>
+          <span class="proficiency-level">{{ skill.level }}</span>
         </div>
       }
     </div>
@@ -73,7 +68,7 @@
       </div>
     </div>
     <div class="certification-list">
-      @for (certification of certifications; track certification.name) {
+      @for (certification of content.certifications; track $index) {
         <article class="certification-item">
           <span class="certification-icon" [class.completed]="certification.status === 'Completed'">
             {{ certification.status === 'Completed' ? '✓' : '◇' }}
@@ -102,7 +97,7 @@
       </div>
     </div>
     <div class="cohort-grid">
-      @for (cohort of cohorts; track cohort.name) {
+      @for (cohort of content.cohorts; track $index) {
         <article class="cohort-item">
           <div class="cohort-symbol">◎</div>
           <h3>{{ cohort.name }}</h3>
@@ -125,7 +120,7 @@
         </div>
       </div>
       <div class="announcement-list">
-        @for (announcement of announcements; track announcement.title) {
+        @for (announcement of content.announcements; track $index) {
           <div class="announcement-item">
             <span class="announcement-marker"></span>
             <div>

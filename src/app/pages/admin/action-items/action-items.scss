@@ -115,7 +115,7 @@ $radius: 16px;
 
 .content-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(260px, 0.8fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
   gap: 16px;
 }
@@ -156,8 +156,7 @@ $radius: 16px;
   text-align: center;
 }
 
-.action-list,
-.upcoming-list {
+.action-list {
   display: flex;
   flex-direction: column;
 }
@@ -196,8 +195,7 @@ $radius: 16px;
   }
 }
 
-.priority-marker,
-.upcoming-marker {
+.priority-marker {
   width: 9px;
   height: 9px;
   margin-top: 5px;
@@ -264,48 +262,6 @@ $radius: 16px;
   span {
     color: $text-muted;
     font-size: 10px;
-  }
-}
-
-.upcoming-item {
-  display: flex;
-  gap: 10px;
-  padding: 13px 0;
-  border-bottom: 1px solid $border;
-
-  &:first-child {
-    padding-top: 0;
-  }
-
-  &:last-child {
-    padding-bottom: 0;
-    border-bottom: 0;
-  }
-
-  > div {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-
-  strong {
-    color: $text;
-    font-size: 12px;
-    line-height: 1.4;
-  }
-
-  span:not(.upcoming-marker) {
-    color: $text-muted;
-    font-size: 11px;
-  }
-}
-
-.upcoming-marker {
-  flex-shrink: 0;
-  background: $purple;
-
-  &.governance {
-    background: $orange;
   }
 }
 

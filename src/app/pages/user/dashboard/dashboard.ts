@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 interface Task {
   title: string;
@@ -25,6 +26,7 @@ interface Recommendation {
 @Component({
   selector: 'app-user-dashboard',
   standalone: true,
+  imports: [RouterLink],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss'
 })
@@ -46,6 +48,7 @@ export class UserDashboard {
 
   timeIn = '08:42 AM';
   timeOut = '--:--';
+  readonly benchDays = 51;
   readonly rtoAttendance = '3/4';
   readonly deploymentReadiness = 60;
 
@@ -150,5 +153,9 @@ export class UserDashboard {
     );
 
     return Math.round(total / this.trainings.length);
+  }
+
+  get firstName(): string {
+    return this.profile.name.split(' ')[0];
   }
 }

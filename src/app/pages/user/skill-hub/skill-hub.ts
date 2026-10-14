@@ -1,4 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import {
+  Certification,
+  Cohort,
+  SkillHubContent
+} from '../../../services/skill-hub-content';
 
 interface ReadinessItem {
   title: string;
@@ -8,21 +13,7 @@ interface ReadinessItem {
 
 interface SkillProficiency {
   name: string;
-  level: string;
-  score: number;
-}
-
-interface Certification {
-  name: string;
-  detail: string;
-  status: 'Completed' | 'In Progress' | 'Recommended';
-}
-
-interface Cohort {
-  name: string;
-  focus: string;
-  duration: string;
-  joined: boolean;
+  level: 'P0' | 'P1' | 'P2' | 'P3' | 'P4' | 'P5';
 }
 
 @Component({
@@ -32,6 +23,8 @@ interface Cohort {
   templateUrl: './skill-hub.html',
 })
 export class SkillHub {
+  readonly content = inject(SkillHubContent);
+
   readonly readinessItems: ReadinessItem[] = [
     { title: 'Refresh your professional profile', description: 'Keep your experience and contact details current.', complete: true },
     { title: 'Validate primary skills and proficiency', description: 'Ensure your capability profile reflects your current skills.', complete: true },
@@ -41,40 +34,10 @@ export class SkillHub {
   ];
 
   readonly proficiencies: SkillProficiency[] = [
-    { name: 'Cloud engineering', level: 'Working proficiency', score: 72 },
-    { name: 'Infrastructure automation', level: 'Developing', score: 54 },
-    { name: 'Linux administration', level: 'Working proficiency', score: 68 },
-    { name: 'Python', level: 'Developing', score: 46 }
-  ];
-
-  readonly certifications: Certification[] = [
-    { name: 'Cloud Fundamentals', detail: 'Passed · Sep 2026', status: 'Completed' },
-    { name: 'Cloud Architecture Associate', detail: 'Learning path in progress', status: 'In Progress' },
-    { name: 'Infrastructure Automation', detail: 'Recommended for your capability', status: 'Recommended' }
-  ];
-
-  readonly cohorts: Cohort[] = [
-    { name: 'Cloud Elite', focus: 'Cloud engineering and operations missions', duration: '6-week mission', joined: true },
-    { name: 'Automation Mission', focus: 'Build reusable infrastructure automation', duration: '4-week mission', joined: false },
-    { name: 'Deployment Readiness Circle', focus: 'Practice technical interviews and profile reviews', duration: 'Weekly sessions', joined: false }
-  ];
-
-  readonly announcements = [
-    {
-      title: 'Onsite schedule reminder',
-      description: 'Follow the current team RTO schedule and reserve your office seat in advance.',
-      type: 'Attendance'
-    },
-    {
-      title: 'Keep your skills profile current',
-      description: 'Review your primary skill mapping and update completed certifications.',
-      type: 'Profile'
-    },
-    {
-      title: 'Bench learning opportunities',
-      description: 'Ask your Capability POC about current cohort missions and mentoring sessions.',
-      type: 'Learning'
-    }
+    { name: 'Cloud engineering', level: 'P2' },
+    { name: 'Infrastructure automation', level: 'P1' },
+    { name: 'Linux administration', level: 'P2' },
+    { name: 'Python', level: 'P1' }
   ];
 
   readonly contacts = [
@@ -118,7 +81,4 @@ export class SkillHub {
     }
   }
 
-  getScoreWidth(score: number): number {
-    return Math.min(Math.max(score, 0), 100);
-  }
 }

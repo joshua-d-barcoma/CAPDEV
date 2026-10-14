@@ -28,10 +28,6 @@ interface Recommendation {
   styleUrl: './tasks.scss'
 })
 export class Tasks {
-  eodSummary = '';
-  hoursSpent = 8;
-  eodSubmitted = false;
-
   mandatoryTasks: Task[] = [
     {
       title: 'Security Awareness',
@@ -140,11 +136,4 @@ export class Tasks {
     task.status = status;
   }
 
-  submitEodReport(): void {
-    if (!this.eodSummary.trim() || this.hoursSpent <= 0 || this.hoursSpent > 24) {
-      return;
-    }
-
-    this.eodSubmitted = true;
-  }
 }

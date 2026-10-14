@@ -31,7 +31,7 @@ export class SideBar {
       icon: 'grid'
     },
     {
-      label: 'Resources',
+      label: 'Employees',
       route: '/resources',
       icon: 'user'
     },
@@ -46,7 +46,7 @@ export class SideBar {
       icon: 'diamond'
     },
     {
-      label: 'Work Management',
+      label: 'Productivity',
       route: '/admin/work-management',
       icon: 'check'
     },

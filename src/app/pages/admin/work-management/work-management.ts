@@ -90,14 +90,6 @@ export class WorkManagement {
     }
   ];
 
-  get totalTasks(): number {
-    return this.capabilityWorkload.reduce(
-      (total, item) =>
-        total + item.completed + item.inProgress + item.notStarted + item.overdue,
-      0
-    );
-  }
-
   get overdueTasks(): number {
     return this.capabilityWorkload.reduce(
       (total, item) => total + item.overdue,

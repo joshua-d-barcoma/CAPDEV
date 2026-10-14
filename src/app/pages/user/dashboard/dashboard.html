@@ -4,6 +4,25 @@
 
 <div class="dashboard">
 
+  <section class="welcome-banner" aria-label="Welcome and quick actions">
+    <div class="welcome-content">
+      <h2>Good afternoon, {{ firstName }} <span aria-hidden="true">👋</span></h2>
+      <p>
+        {{ profile.capability }} · {{ profile.careerLevel }} ·
+        Capability Building · Day {{ benchDays }} on bench
+      </p>
+      <div class="welcome-actions">
+        <a class="welcome-button primary" routerLink="/user/time-in">
+          Check in at CG2
+        </a>
+        <a class="welcome-button secondary" routerLink="/user/tasks">
+          View Tasks
+        </a>
+      </div>
+    </div>
+    <span class="welcome-mark" aria-hidden="true">&gt;</span>
+  </section>
+
   <!-- Dashboard Header -->
   <div class="dashboard-header">
 
