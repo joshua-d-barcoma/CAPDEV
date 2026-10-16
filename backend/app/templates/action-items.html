@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-stack">
+  <header class="page-header" data-page-title="Action Items" data-page-subtitle="Follow up on bench operations">
+    <div class="page-heading"><span class="page-eyebrow">Follow-up</span><h1>Action Items</h1><p>Track open work across bench operations and follow-up owners.</p></div>
+  </header>
+  <div class="stat-grid" data-stats="actions"></div>
+  <section class="panel" data-api="/api/action-items" data-view="action-items">
+    <header class="panel-header"><div><span class="card-eyebrow">Operations</span><h2>Action item register</h2></div></header>
+    <p class="message" data-message>Loading action items…</p><div class="table-scroll" data-output></div>
+  </section>
+</div>
+{% endblock %}

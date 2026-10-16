@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-stack">
+  <header class="page-header" data-page-title="Productivity" data-page-subtitle="Tasks and productivity">
+    <div class="page-heading"><span class="page-eyebrow">Insights</span><h1>Productivity</h1><p>Organization metrics from recorded attendance, learning, and follow-up.</p></div>
+  </header>
+  <div class="stat-grid" data-stats="dashboard"></div>
+  <section class="panel" data-api="/api/dashboard/admin" data-view="productivity">
+    <header class="panel-header"><div><span class="card-eyebrow">Organization</span><h2>Productivity and readiness</h2></div></header>
+    <p class="message" data-message>Loading metrics…</p><div class="table-scroll" data-output></div>
+  </section>
+  <section class="visually-hidden" data-api="/api/dashboard/admin" data-view="dashboard-stats"><p data-message></p><div data-output></div></section>
+</div>
+{% endblock %}

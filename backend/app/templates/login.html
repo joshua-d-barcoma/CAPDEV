@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="login-card panel">
+  <form data-login-form class="stacked-form">
+    <label class="login-label" for="login-username">Username</label>
+    <input id="login-username" name="username" autocomplete="username" placeholder="Enter your username" required>
+    <label class="login-label" for="login-password">Password</label>
+    <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+    <button class="button button-primary login-submit" type="submit">Sign in</button>
+    <p class="message login-message" role="status" data-message></p>
+  </form>
+  <div class="login-divider"><span>or jump in as a demo user</span></div>
+  <section class="demo-accounts" aria-labelledby="demo-accounts-heading">
+    <h2 id="demo-accounts-heading">Demo accounts</h2>
+    <button class="demo-account" type="button" data-demo-username="user" aria-pressed="false">
+      <span class="demo-avatar user-avatar" aria-hidden="true">JM</span>
+      <span class="demo-account-copy"><strong>Juan Marcos Garcia</strong><small>User · Bench Resource</small></span>
+      <span class="demo-arrow" aria-hidden="true">→</span>
+    </button>
+    <button class="demo-account" type="button" data-demo-username="admin" aria-pressed="false">
+      <span class="demo-avatar admin-avatar" aria-hidden="true">KC</span>
+      <span class="demo-account-copy"><strong>Karoline Cayetano</strong><small>Administrator · Demo Admin</small></span>
+      <span class="demo-arrow" aria-hidden="true">→</span>
+    </button>
+  </section>
+</section>
+<footer class="login-security-note">
+  <span class="sso-badge">SSO COMING SOON</span>
+  <span>Demo accounts sign in automatically. Shared demo password: <code>bench-flow-portal</code>.</span>
+</footer>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-stack">
+  <header class="page-header" data-page-title="Skill Hub" data-page-subtitle="Learning and development">
+    <div class="page-heading"><span class="page-eyebrow">Capability Development</span><h1>Skill Hub</h1><p>Review the skills recorded on your employee profile.</p></div>
+  </header>
+  <section class="panel" data-api="/api/me/dashboard" data-view="skill-hub">
+    <header class="panel-header"><div><span class="card-eyebrow">Your profile</span><h2>Recorded skills</h2></div></header>
+    <p class="message" data-message>Loading profile…</p><div class="profile-card" data-output></div>
+  </section>
+  <section class="panel" data-api="/api/me/dashboard" data-view="personal-training">
+    <header class="panel-header"><div><span class="card-eyebrow">Development</span><h2>Your learning</h2></div></header>
+    <p class="message" data-message>Loading training…</p><div class="learning-list" data-output></div>
+  </section>
+</div>
+{% endblock %}
