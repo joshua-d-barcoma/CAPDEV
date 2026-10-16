@@ -1,0 +1,13 @@
+IMPLEMENTATION_PLAN.md
+
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.coverage
+*.py[cod]
+
+db/*
+!db/migrations/
+!db/migrations/**
