@@ -9,6 +9,30 @@ from fastapi.testclient import TestClient
 from backend.app.main import app
 
 
+def test_openapi_groups_endpoints_by_feature() -> None:
+    schema = app.openapi()
+    operations = [
+        operation
+        for path_item in schema["paths"].values()
+        for operation in path_item.values()
+        if isinstance(operation, dict) and "responses" in operation
+    ]
+
+    assert operations
+    assert all(len(operation.get("tags", [])) == 1 for operation in operations)
+    assert {operation["tags"][0] for operation in operations} == {
+        "Action Items",
+        "Attendance",
+        "Authentication",
+        "Dashboards",
+        "Employees",
+        "Health",
+        "Learning",
+        "Tasks",
+        "UI Pages",
+    }
+
+
 @pytest.fixture
 def demo_client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     backend_root = Path(__file__).resolve().parents[1]

@@ -12,15 +12,15 @@ from backend.app.api.routes.ui import router as ui_router
 
 
 router = APIRouter()
-for feature_router in (
-    health_router,
-    auth_router,
-    employees_router,
-    dashboards_router,
-    attendance_router,
-    learning_router,
-    action_items_router,
-    tasks_router,
-    ui_router,
+for feature_router, tag in (
+    (health_router, "Health"),
+    (auth_router, "Authentication"),
+    (employees_router, "Employees"),
+    (dashboards_router, "Dashboards"),
+    (attendance_router, "Attendance"),
+    (learning_router, "Learning"),
+    (action_items_router, "Action Items"),
+    (tasks_router, "Tasks"),
+    (ui_router, "UI Pages"),
 ):
-    router.include_router(feature_router)
+    router.include_router(feature_router, tags=[tag])
