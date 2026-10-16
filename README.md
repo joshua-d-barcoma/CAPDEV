@@ -1,59 +1,61 @@
-# BenchTrackerApp
+# BenchFlow
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.0.
+BenchFlow is a React single-page application for bench resource management. The UI is a demo application and persists its sample data in browser storage; it does not connect to a production backend.
 
-## Development server
+## Requirements
 
-To start a local development server, run:
+- Node.js 18.18 or later
+- npm 9 or later
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Development
 
 ```bash
-ng generate component component-name
+npm install
+npm run dev
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Vite prints the local development URL after startup.
+
+## Production build
 
 ```bash
-ng generate --help
+npm run build
+npm run preview
 ```
 
-## Building
+The optimized static build is written to `dist/`.
 
-To build the project run:
+## Tests
 
 ```bash
-ng build
+npm test
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Source organization
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
+```text
+src/
+├── api/          # Shared HTTP client and API configuration
+├── components/   # Reusable UI, forms, dialogs, tables, and application shell
+├── constants/    # Route paths, navigation, and stable app values
+├── hooks/        # Shared state and reusable business logic
+├── pages/        # Route-level page composition
+├── routes/       # Central route configuration and route rendering
+├── services/     # Data access and business operations
+├── utils/        # Formatting and validation helpers
+├── App.jsx       # Application composition
+├── main.jsx      # React entry point
+└── index.css     # Global design system and shared component styles
 ```
 
-## Running end-to-end tests
+Pages compose reusable components and call shared hooks; API and browser-storage access stay in `services/` and `api/`, never in presentation components. Route-level pages are lazy-loaded.
 
-For end-to-end (e2e) testing, run:
+## Demo data and backend integration
 
-```bash
-ng e2e
-```
+The current application has no backend API. `services/benchDataService.js` seeds and persists demo data in `localStorage`, keeping the existing prototype useful without pretending a remote API exists. The configurable fetch client is in `api/httpClient.js`. When an API becomes available, configure `VITE_API_BASE_URL` and replace the relevant service implementations; component and page contracts can remain unchanged.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Clear the `bench-flow:` keys from browser storage to restore the initial demo data.
 
-## Additional Resources
+## Shared create/edit form
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+The employee directory uses one `EmployeeForm` for both creation and editing. The same fields, constraints, and layout are used in both modes; only the dialog title, submit label, and submit handler vary.

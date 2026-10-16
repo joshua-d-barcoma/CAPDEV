@@ -4,39 +4,17 @@
   "tasks": [
     {
       "type": "npm",
-      "script": "start",
+      "script": "dev",
+      "label": "npm: dev",
       "isBackground": true,
-      "problemMatcher": {
-        "owner": "typescript",
-        "pattern": "$tsc",
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": {
-            "regexp": "Changes detected"
-          },
-          "endsPattern": {
-            "regexp": "bundle generation (complete|failed)"
-          }
-        }
-      }
+      "problemMatcher": []
     },
     {
       "type": "npm",
-      "script": "test",
-      "isBackground": true,
-      "problemMatcher": {
-        "owner": "typescript",
-        "pattern": "$tsc",
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": {
-            "regexp": "Changes detected"
-          },
-          "endsPattern": {
-            "regexp": "bundle generation (complete|failed)"
-          }
-        }
-      }
+      "script": "build",
+      "label": "npm: build",
+      "group": "build",
+      "problemMatcher": []
     }
   ]
 }
