@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-stack">
+  <header class="page-header" data-page-title="Employees" data-page-subtitle="Bench resource directory">
+    <div class="page-heading"><span class="page-eyebrow">Bench Management</span><h1>Employees</h1><p>Monitor bench employees, attendance, skills, and deployment readiness.</p></div>
+    <div class="page-header-actions"><a class="button button-secondary" href="/api/employees/export" data-download>Export CSV</a></div>
+  </header>
+  <div class="stat-grid" data-stats="employees"></div>
+  <section class="panel" id="employee-directory" data-api="/api/employees" data-view="employees">
+    <header class="panel-header"><div><span class="card-eyebrow" data-result-count>Employee directory</span><h2>Employee directory</h2></div><a class="text-link" href="/api/employees/export" data-download>Export CSV</a></header>
+    <div class="table-toolbar"><label class="search-control"><span class="search-icon" aria-hidden="true">⌕</span><input type="search" placeholder="Search name, capability, or skill" aria-label="Search employees" data-table-search></label><label class="select-control"><select aria-label="Filter by location" data-location-filter><option value="">All locations</option></select></label></div>
+    <p class="message" data-message>Loading employees…</p><div class="table-scroll" data-output></div>
+  </section>
+</div>
+{% endblock %}

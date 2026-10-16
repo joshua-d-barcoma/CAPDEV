@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en" data-page="{{ page_name|lower|replace(' ', '-') }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page_name }} · BenchFlow</title>
+    <link rel="stylesheet" href="/static/app.css">
+    <script defer src="/static/app.js"></script>
+  </head>
+  <body class="{% if page_name == 'Demo sign in' %}login-page{% endif %}">
+    {% if page_name == 'Demo sign in' %}
+      <div class="login-shell">
+        <a class="login-brand" href="/">
+          <span class="brand-logo" aria-hidden="true">&gt;</span>
+          <span class="brand-content"><strong>BenchFlow</strong><small>BENCH MANAGEMENT SYSTEM</small></span>
+        </a>
+    {% else %}
+      <div class="app-layout">
+        <aside class="sidebar" aria-label="Main navigation">
+          <a class="brand" href="/" aria-label="BenchFlow home">
+            <span class="brand-logo" aria-hidden="true">&gt;</span>
+            <span class="brand-content"><strong>BenchFlow</strong><small>BENCH MANAGEMENT SYSTEM</small></span>
+          </a>
+          <nav class="navigation" aria-label="Workspace">
+            <span class="navigation-title">MAIN MENU</span>
+            <a class="navigation-item" data-role="admin" href="/admin/dashboard"><span class="navigation-icon">▦</span><span class="navigation-label">Dashboard</span></a>
+            <a class="navigation-item" data-role="admin" href="/admin/employees"><span class="navigation-icon">♙</span><span class="navigation-label">Employees</span></a>
+            <a class="navigation-item" data-role="admin" href="/admin/attendance"><span class="navigation-icon">▣</span><span class="navigation-label">Attendance</span></a>
+            <a class="navigation-item" data-role="admin" href="/admin/learning"><span class="navigation-icon">◇</span><span class="navigation-label">Learning</span></a>
+            <a class="navigation-item" data-role="admin" href="/admin/productivity"><span class="navigation-icon">✓</span><span class="navigation-label">Productivity</span></a>
+            <a class="navigation-item" data-role="admin" href="/admin/action-items"><span class="navigation-icon">⚑</span><span class="navigation-label">Action Items</span></a>
+            <a class="navigation-item" data-role="user" href="/u/dashboard"><span class="navigation-icon">▦</span><span class="navigation-label">Dashboard</span></a>
+            <a class="navigation-item" data-role="user" href="/u/tasks"><span class="navigation-icon">✓</span><span class="navigation-label">Tasks</span></a>
+            <a class="navigation-item" data-role="user" href="/u/skill-hub"><span class="navigation-icon">◇</span><span class="navigation-label">Skill Hub</span></a>
+            <a class="navigation-item" data-role="user" href="/u/time-entry"><span class="navigation-icon">◷</span><span class="navigation-label">Time In</span></a>
+            <a class="navigation-item" data-role="user" href="/u/history"><span class="navigation-icon">◴</span><span class="navigation-label">History</span></a>
+            <a class="navigation-item" data-role="user" href="/u/calendar"><span class="navigation-icon">▣</span><span class="navigation-label">Calendar</span></a>
+          </nav>
+          <footer class="sidebar-footer">
+            <span class="footer-divider"></span>
+            <span data-role-label>Bench Management</span>
+            <small>Prototype · Demo data only</small>
+          </footer>
+        </aside>
+        <div class="main-area">
+          <header class="header">
+            <div class="header-left">
+              <button class="menu-button" type="button" data-sidebar-toggle aria-label="Toggle sidebar">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+              </button>
+              <div class="header-title">
+                <strong data-header-title>{{ page_name|replace('-', ' ')|title }}</strong>
+                <span data-header-subtitle>Bench management workspace</span>
+              </div>
+            </div>
+            <div class="header-right">
+              <button class="notification-button" type="button" aria-label="Notifications">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+                <i class="notification-dot"></i>
+              </button>
+              <div class="profile-container">
+                <button class="profile-button" type="button" aria-label="Signed-in demo profile">
+                  <span class="profile-avatar" data-avatar>?</span>
+                  <span class="profile-info"><strong data-profile-name>Demo account</strong><small data-profile-role>Sign in required</small></span>
+                  <span class="profile-arrow">⌄</span>
+                </button>
+              </div>
+              <a class="sign-out" href="/login" data-sign-out>Sign out</a>
+            </div>
+          </header>
+    {% endif %}
+    <main class="{% if page_name == 'Demo sign in' %}login-content{% else %}page-content{% endif %}" id="main-content">
+      {% block content %}{% endblock %}
+    </main>
+    {% if page_name == 'Demo sign in' %}
+      </div>
+    {% else %}
+        </div>
+      </div>
+    {% endif %}
+  </body>
+</html>

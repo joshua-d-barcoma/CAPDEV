@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-stack">
+  <header class="welcome-banner" data-page-title="My Dashboard" data-page-subtitle="Your bench workspace">
+    <div><span class="page-eyebrow">Your bench workspace</span><h1>Welcome back</h1><p data-welcome-copy>Here’s your personal development overview.</p><div class="welcome-actions"><a class="button button-light" href="/u/tasks">View my tasks</a><a class="button button-outline-light" href="/u/time-entry">Record time in</a></div></div>
+    <span class="welcome-mark" aria-hidden="true">&gt;</span>
+  </header>
+  <div class="stat-grid" data-stats="personal"></div>
+  <div class="two-column-grid">
+    <section class="panel" data-api="/api/me/dashboard" data-view="personal-training">
+      <header class="panel-header"><div><span class="card-eyebrow">Capability Development</span><h2>My learning</h2></div><a class="text-link" href="/u/skill-hub">Skill hub</a></header>
+      <p class="message" data-message>Loading training…</p><div class="learning-list" data-output></div>
+    </section>
+    <section class="panel" data-api="/api/me/dashboard" data-view="personal-tasks">
+      <header class="panel-header"><div><span class="card-eyebrow">Next steps</span><h2>My tasks</h2></div><a class="text-link" href="/u/tasks">View all</a></header>
+      <p class="message" data-message>Loading tasks…</p><div class="compact-list" data-output></div>
+    </section>
+  </div>
+  <section class="panel" data-api="/api/me/dashboard" data-view="recommendations">
+    <header class="panel-header"><div><span class="card-eyebrow">Development</span><h2>Recommendations</h2></div></header>
+    <p class="message" data-message>Loading recommendations…</p><div data-output></div>
+  </section>
+</div>
+{% endblock %}

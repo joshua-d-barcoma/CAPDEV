@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-stack">
+  <header class="page-header" data-page-title="Employee Profile" data-page-subtitle="Resource details and development">
+    <div class="page-heading"><span class="page-eyebrow">Bench Management</span><h1>Employee Profile</h1><p>Resource details, capability, and recorded skills.</p></div>
+  </header>
+  <section class="panel" data-api="/api/employees" data-view="employees">
+    <header class="panel-header"><div><span class="card-eyebrow">Directory</span><h2>Employees</h2></div></header>
+    <p class="message" data-message>Loading employees…</p><div class="table-scroll" data-output></div>
+  </section>
+</div>
+{% endblock %}

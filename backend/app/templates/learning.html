@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-stack">
+  <header class="page-header" data-page-title="Learning" data-page-subtitle="Capability development">
+    <div class="page-heading"><span class="page-eyebrow">Capability Development</span><h1>Learning</h1><p>Track training completion and capability development opportunities.</p></div>
+  </header>
+  <div class="stat-grid" data-stats="learning"></div>
+  <section class="panel" data-api="/api/learning" data-view="learning">
+    <header class="panel-header"><div><span class="card-eyebrow">Training overview</span><h2>Learning paths</h2></div><a class="text-link" href="/api/learning/export" data-download>Export report</a></header>
+    <p class="message" data-message>Loading training…</p><div class="learning-list" data-output></div>
+  </section>
+  <section class="panel" data-api="/api/learning/applicability" data-view="applicability">
+    <header class="panel-header"><div><span class="card-eyebrow">Administration</span><h2>Mandatory training applicability</h2></div></header>
+    <p class="message" data-message>Loading requirements…</p><div class="table-scroll" data-output></div>
+  </section>
+</div>
+{% endblock %}

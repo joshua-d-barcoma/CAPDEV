@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-stack">
+  <header class="page-header" data-page-title="Time In" data-page-subtitle="Record your workday attendance">
+    <div class="page-heading"><span class="page-eyebrow">Attendance</span><h1>Time In</h1><p>Record your workday attendance. Check-ins are self-reported demo records.</p></div>
+  </header>
+  <section class="panel">
+    <header class="panel-header"><div><span class="card-eyebrow">Daily attendance</span><h2>Record time in</h2></div></header>
+    <form class="form-grid attendance-form" data-check-in-form>
+      <label class="field">Work type<select name="work_type"><option>Onsite</option><option>Work from home</option></select></label>
+      <label class="field">Location<input name="location" maxlength="250" placeholder="Office or work location"></label>
+      <div class="form-actions field-wide"><button class="button button-primary" type="submit">Record time in</button></div>
+      <p class="message field-wide" role="status" data-message></p>
+    </form>
+  </section>
+  <section class="panel" data-api="/api/me/dashboard" data-view="personal-history">
+    <header class="panel-header"><div><span class="card-eyebrow">History</span><h2>My check-in history</h2></div></header>
+    <p class="message" data-message>Loading history…</p><div class="table-scroll" data-output></div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-stack">
+  <header class="page-header" data-page-title="Attendance History" data-page-subtitle="Review your attendance and schedule">
+    <div class="page-heading"><span class="page-eyebrow">Personal Workspace</span><h1>Attendance History</h1><p>Review attendance entries recorded for your employee account.</p></div>
+  </header>
+  <section class="panel" data-api="/api/me/dashboard" data-view="personal-history">
+    <header class="panel-header"><div><span class="card-eyebrow">Attendance</span><h2>My attendance</h2></div></header>
+    <p class="message" data-message>Loading attendance…</p><div class="table-scroll" data-output></div>
+  </section>
+  <section class="panel" data-api="/api/me/dashboard" data-view="personal-training">
+    <header class="panel-header"><div><span class="card-eyebrow">Capability Development</span><h2>Training history</h2></div></header>
+    <p class="message" data-message>Loading training…</p><div class="learning-list" data-output></div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-stack">
+  <header class="page-header" data-page-title="My Tasks" data-page-subtitle="Training and development tasks">
+    <div class="page-heading"><span class="page-eyebrow">Personal Workspace</span><h1>My Tasks</h1><p>Manage your own development tasks. Workday training status remains read-only.</p></div>
+  </header>
+  <div class="stat-grid" data-stats="tasks"></div>
+  <section class="panel">
+    <header class="panel-header"><div><span class="card-eyebrow">Create a task</span><h2>Add a personal task</h2></div></header>
+    <form class="form-grid" data-task-form>
+      <label class="field">Task title<input name="title" required maxlength="250"></label>
+      <label class="field">Category<input name="category" value="Development" required maxlength="100"></label>
+      <label class="field">Due date<input name="due_date" type="date"></label>
+      <label class="field">Priority<select name="priority"><option>Low</option><option selected>Medium</option><option>High</option></select></label>
+      <label class="field field-wide">Description<textarea name="description" maxlength="4000"></textarea></label>
+      <div class="form-actions field-wide"><button class="button button-primary" type="submit">Add task</button></div>
+      <p class="message field-wide" role="status" data-message></p>
+    </form>
+  </section>
+  <section class="panel" data-api="/api/me/tasks" data-view="tasks">
+    <header class="panel-header"><div><span class="card-eyebrow">Your work</span><h2>Task list</h2></div></header>
+    <p class="message" data-message>Loading tasks…</p><div class="table-scroll" data-output></div>
+  </section>
+</div>
+{% endblock %}

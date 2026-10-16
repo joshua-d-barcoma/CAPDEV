@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-stack">
+  <header class="page-header" data-page-title="My Calendar" data-page-subtitle="Attendance and planned leave">
+    <div class="page-heading"><span class="page-eyebrow">Personal Workspace</span><h1>My Calendar</h1><p>Review attendance and scheduled workdays recorded for your account.</p></div>
+  </header>
+  <section class="panel" data-api="/api/me/dashboard" data-view="personal-history">
+    <header class="panel-header"><div><span class="card-eyebrow">Attendance</span><h2>My recorded check-ins</h2></div></header>
+    <p class="message" data-message>Loading records…</p><div class="table-scroll" data-output></div>
+  </section>
+</div>
+{% endblock %}

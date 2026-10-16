@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-stack">
+  <header class="page-header" data-page-title="Bench Overview" data-page-subtitle="Bench management overview">
+    <div class="page-heading"><span class="page-eyebrow">Bench Management</span><h1>Bench Overview</h1><p>Capability counts and workforce readiness at a glance.</p></div>
+  </header>
+  <div class="stat-grid" data-stats="dashboard"></div>
+  <div class="two-column-grid">
+    <section class="panel" data-api="/api/employees" data-view="capabilities">
+      <header class="panel-header"><div><span class="card-eyebrow">Workforce</span><h2>Bench by capability</h2></div></header>
+      <p class="message" data-message>Loading workforce…</p><div class="bar-list" data-output></div>
+    </section>
+    <section class="panel" data-api="/api/attendance" data-view="attendance-preview">
+      <header class="panel-header"><div><span class="card-eyebrow">Attendance</span><h2>Recent attendance</h2></div><a class="text-link" href="/admin/attendance">View records</a></header>
+      <p class="message" data-message>Loading attendance…</p><div class="compact-list" data-output></div>
+    </section>
+  </div>
+  <section class="panel" data-api="/api/action-items" data-view="action-preview">
+    <header class="panel-header"><div><span class="card-eyebrow">Follow-up</span><h2>Action items</h2></div><a class="text-link" href="/admin/action-items">View all</a></header>
+    <p class="message" data-message>Loading action items…</p><div class="compact-list" data-output></div>
+  </section>
+  <section class="visually-hidden" data-api="/api/dashboard/admin" data-view="dashboard-stats"><p data-message></p><div data-output></div></section>
+</div>
+{% endblock %}

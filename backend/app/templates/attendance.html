@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-stack">
+  <header class="page-header" data-page-title="Attendance" data-page-subtitle="Attendance and RTO management">
+    <div class="page-heading"><span class="page-eyebrow">Attendance Management</span><h1>Attendance</h1><p>Monitor employee attendance and time-in records.</p></div>
+  </header>
+  <div class="stat-grid stat-grid-five" data-stats="attendance"></div>
+  <section class="visually-hidden" data-api="/api/attendance/summary" data-view="attendance-stats"><p data-message></p><div data-output></div></section>
+  <section class="panel" data-api="/api/attendance" data-view="attendance-capability">
+    <header class="panel-header"><div><span class="card-eyebrow">Attendance &amp; RTO</span><h2>RTO Compliance by Capability</h2></div></header>
+    <p class="panel-description">Compliance is calculated only for scheduled onsite days with recorded attendance.</p>
+    <p class="message" data-message>Loading compliance…</p><div class="bar-list" data-output></div>
+  </section>
+  <section class="panel" data-api="/api/attendance" data-view="attendance-table">
+    <header class="panel-header"><div><span class="card-eyebrow">Daily register</span><h2>Attendance records</h2></div><a class="text-link" href="/api/attendance/export" data-download>Export CSV</a></header>
+    <div class="table-toolbar"><label class="search-control"><span class="search-icon" aria-hidden="true">⌕</span><input type="search" placeholder="Search employee or location" aria-label="Search attendance" data-table-search></label><label class="select-control"><select aria-label="Filter by status" data-status-filter><option value="">All statuses</option><option>Present</option><option>Absent</option></select></label></div>
+    <p class="message" data-message>Loading attendance…</p><div class="table-scroll" data-output></div>
+  </section>
+</div>
+{% endblock %}
