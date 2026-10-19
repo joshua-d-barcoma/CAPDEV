@@ -11,3 +11,7 @@ __pycache__/
 db/*
 !db/migrations/
 !db/migrations/**
+!capdev_portal_schema.sql
+!capdev_portal.db
+!seed_capdev_portal.py
+!seed_capdev_portal_2.py
