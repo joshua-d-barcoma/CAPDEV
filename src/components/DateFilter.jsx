@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   formatDateKey,
   getCalendarDates,
@@ -28,6 +29,9 @@ export function DateFilter({ label, value, onChange, alignRight = false }) {
     return new Date(initialDate.getFullYear(), initialDate.getMonth(), 1);
   });
   const containerRef = useRef(null);
+  const buttonRef = useRef(null);
+  const popoverRef = useRef(null);
+  const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 });
   const calendarDates = useMemo(() => getCalendarDates(visibleMonth), [visibleMonth]);
   const monthLabel = new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric' }).format(
     visibleMonth,
@@ -38,7 +42,12 @@ export function DateFilter({ label, value, onChange, alignRight = false }) {
     if (!open) return undefined;
 
     function closeOnOutsideClick(event) {
-      if (!containerRef.current?.contains(event.target)) setOpen(false);
+      if (
+        !containerRef.current?.contains(event.target) &&
+        !popoverRef.current?.contains(event.target)
+      ) {
+        setOpen(false);
+      }
     }
     function closeOnEscape(event) {
       if (event.key === 'Escape') setOpen(false);
@@ -49,6 +58,42 @@ export function DateFilter({ label, value, onChange, alignRight = false }) {
     return () => {
       document.removeEventListener('pointerdown', closeOnOutsideClick);
       document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [open]);
+
+  useLayoutEffect(() => {
+    if (!open) return undefined;
+
+    function updatePopoverPosition() {
+      const buttonRect = buttonRef.current?.getBoundingClientRect();
+      const popoverRect = popoverRef.current?.getBoundingClientRect();
+      if (!buttonRect || !popoverRect) return;
+
+      const margin = 12;
+      const left = Math.max(
+        margin,
+        Math.min(buttonRect.left, window.innerWidth - popoverRect.width - margin),
+      );
+      const belowTop = buttonRect.bottom + 8;
+      const aboveTop = buttonRect.top - popoverRect.height - 8;
+      const preferredTop =
+        belowTop + popoverRect.height <= window.innerHeight - margin
+          ? belowTop
+          : aboveTop >= margin
+            ? aboveTop
+            : window.innerHeight - popoverRect.height - margin;
+      const maxTop = Math.max(margin, window.innerHeight - popoverRect.height - margin);
+      const top = Math.min(Math.max(preferredTop, margin), maxTop);
+
+      setPopoverPosition({ top, left });
+    }
+
+    updatePopoverPosition();
+    window.addEventListener('resize', updatePopoverPosition);
+    window.addEventListener('scroll', updatePopoverPosition, true);
+    return () => {
+      window.removeEventListener('resize', updatePopoverPosition);
+      window.removeEventListener('scroll', updatePopoverPosition, true);
     };
   }, [open]);
 
@@ -98,6 +143,7 @@ export function DateFilter({ label, value, onChange, alignRight = false }) {
     <div className={`date-filter-control${alignRight ? ' align-right' : ''}`} ref={containerRef}>
       <button
         type="button"
+        ref={buttonRef}
         className={`date-filter-button${open ? ' is-open' : ''}`}
         aria-label={`${label}${selectedLabel ? `: ${selectedLabel}` : ''}`}
         aria-expanded={open}
@@ -106,97 +152,107 @@ export function DateFilter({ label, value, onChange, alignRight = false }) {
       >
         <CalendarIcon />
         <span>{selectedLabel || label}</span>
-        <span className="date-filter-chevron" aria-hidden="true">
-          {open ? '⌃' : '⌄'}
+        <span className={`date-filter-chevron${open ? ' is-open' : ''}`} aria-hidden="true">
+          <svg viewBox="0 0 16 16">
+            <path d="m4 6 4 4 4-4" />
+          </svg>
         </span>
       </button>
-      {open && (
-        <section className="date-filter-popover" role="dialog" aria-label={`${label} date range`}>
-          <nav className="date-filter-presets" aria-label="Quick date ranges">
-            {PRESETS.map((preset) => (
-              <button type="button" key={preset} onClick={() => choosePreset(preset)}>
-                {preset}
-              </button>
-            ))}
-            <button className="date-filter-reset" type="button" onClick={resetSelection}>
-              Reset
-            </button>
-          </nav>
-          <div className="date-filter-calendar">
-            <header className="date-calendar-header">
-              <strong>{monthLabel}</strong>
-              <div>
-                <button
-                  type="button"
-                  aria-label="Previous month"
-                  onClick={() => setVisibleMonth((month) => shiftCalendarMonth(month, -1))}
-                >
-                  ‹
+      {open &&
+        createPortal(
+          <section
+            className="date-filter-popover"
+            role="dialog"
+            aria-label={`${label} date range`}
+            ref={popoverRef}
+            style={{ top: popoverPosition.top, left: popoverPosition.left }}
+          >
+            <nav className="date-filter-presets" aria-label="Quick date ranges">
+              {PRESETS.map((preset) => (
+                <button type="button" key={preset} onClick={() => choosePreset(preset)}>
+                  {preset}
                 </button>
-                <button
-                  type="button"
-                  aria-label="Next month"
-                  onClick={() => setVisibleMonth((month) => shiftCalendarMonth(month, 1))}
-                >
-                  ›
-                </button>
-              </div>
-            </header>
-            <div className="date-calendar-grid">
-              {WEEKDAYS.map((weekday) => (
-                <span className="date-calendar-weekday" key={weekday}>
-                  {weekday}
-                </span>
               ))}
-              {calendarDates.map((date) => {
-                const dateKey = toDateKey(date);
-                const inVisibleMonth = date.getMonth() === visibleMonth.getMonth();
-                const inSelectedRange =
-                  draftRange?.start &&
-                  draftRange?.end &&
-                  dateKey >= draftRange.start &&
-                  dateKey <= draftRange.end;
-                const isSelected = dateKey === draftRange?.start || dateKey === draftRange?.end;
-
-                return (
-                  <button
-                    className={[
-                      'date-calendar-day',
-                      !inVisibleMonth && 'outside-month',
-                      inSelectedRange && 'in-range',
-                      isSelected && 'selected',
-                    ]
-                      .filter(Boolean)
-                      .join(' ')}
-                    type="button"
-                    key={dateKey}
-                    aria-label={formatDateKey(dateKey, {
-                      weekday: 'long',
-                      month: 'long',
-                      day: 'numeric',
-                      year: 'numeric',
-                    })}
-                    aria-pressed={isSelected}
-                    onClick={() => chooseCalendarDate(date)}
-                  >
-                    {date.getDate()}
-                  </button>
-                );
-              })}
-            </div>
-            <footer className="date-calendar-footer">
-              <button
-                type="button"
-                className="date-filter-confirm"
-                disabled={!draftRange?.start}
-                onClick={confirmSelection}
-              >
-                Confirm
+              <button className="date-filter-reset" type="button" onClick={resetSelection}>
+                Reset
               </button>
-            </footer>
-          </div>
-        </section>
-      )}
+            </nav>
+            <div className="date-filter-calendar">
+              <header className="date-calendar-header">
+                <strong>{monthLabel}</strong>
+                <div>
+                  <button
+                    type="button"
+                    aria-label="Previous month"
+                    onClick={() => setVisibleMonth((month) => shiftCalendarMonth(month, -1))}
+                  >
+                    ‹
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Next month"
+                    onClick={() => setVisibleMonth((month) => shiftCalendarMonth(month, 1))}
+                  >
+                    ›
+                  </button>
+                </div>
+              </header>
+              <div className="date-calendar-grid">
+                {WEEKDAYS.map((weekday) => (
+                  <span className="date-calendar-weekday" key={weekday}>
+                    {weekday}
+                  </span>
+                ))}
+                {calendarDates.map((date) => {
+                  const dateKey = toDateKey(date);
+                  const inVisibleMonth = date.getMonth() === visibleMonth.getMonth();
+                  const inSelectedRange =
+                    draftRange?.start &&
+                    draftRange.end &&
+                    dateKey >= draftRange.start &&
+                    dateKey <= draftRange.end;
+                  const isSelected = dateKey === draftRange?.start || dateKey === draftRange?.end;
+
+                  return (
+                    <button
+                      className={[
+                        'date-calendar-day',
+                        !inVisibleMonth && 'outside-month',
+                        inSelectedRange && 'in-range',
+                        isSelected && 'selected',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                      type="button"
+                      key={dateKey}
+                      aria-label={formatDateKey(dateKey, {
+                        weekday: 'long',
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                      aria-pressed={isSelected}
+                      onClick={() => chooseCalendarDate(date)}
+                    >
+                      {date.getDate()}
+                    </button>
+                  );
+                })}
+              </div>
+              <footer className="date-calendar-footer">
+                <button
+                  type="button"
+                  className="date-filter-confirm"
+                  disabled={!draftRange?.start}
+                  onClick={confirmSelection}
+                >
+                  Confirm
+                </button>
+              </footer>
+            </div>
+          </section>,
+          document.body,
+        )}
     </div>
   );
 }

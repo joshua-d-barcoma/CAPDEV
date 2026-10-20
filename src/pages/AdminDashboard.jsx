@@ -131,7 +131,7 @@ export default function AdminDashboard() {
           title="Today's attendance"
           eyebrow="Attendance"
           action={
-            <Link className="text-link" to={ROUTES.attendance}>
+            <Link className="text-link dashboard-records-link" to={ROUTES.attendance}>
               View records
             </Link>
           }

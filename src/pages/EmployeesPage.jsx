@@ -174,16 +174,37 @@ export default function EmployeesPage() {
           <h1 id="employees-title">Employees</h1>
           <p>Monitor bench employees, attendance, skills, and deployment readiness.</p>
         </div>
-        <div className="page-header-actions">
-          <button
-            className="button button-light"
-            onClick={() => {
-              setDialogEmployee(null);
-              setFormOpen(true);
-            }}
-          >
-            ＋ Add employee
-          </button>
+        <div className="dashboard-filters">
+          <label className="dashboard-filter">
+            <span className="visually-hidden">Filter by location</span>
+            <select
+              aria-label="Filter by location"
+              value={filters.location}
+              onChange={(event) => updateFilter('location', event.target.value)}
+            >
+              <option value="">All Locations</option>
+              {filterOptions.locations.map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="dashboard-filter">
+            <span className="visually-hidden">Filter by capability</span>
+            <select
+              aria-label="Filter by capability"
+              value={filters.capability}
+              onChange={(event) => updateFilter('capability', event.target.value)}
+            >
+              <option value="">All Capabilities</option>
+              {filterOptions.capabilities.map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
       </section>
       <div className="stat-grid">
@@ -349,7 +370,23 @@ export default function EmployeesPage() {
         </Panel>
       </div>
 
-      <Panel title="Bench by capability" eyebrow="Workforce">
+      <Panel
+        title="Bench by capability"
+        eyebrow="Workforce"
+        action={
+          <button
+            type="button"
+            className="button button-primary employee-add-button"
+            onClick={() => {
+              setDialogEmployee(null);
+              setFormOpen(true);
+            }}
+          >
+            <span aria-hidden="true">+</span>
+            Add employee
+          </button>
+        }
+      >
         <div className="employee-filter-toolbar">
           <SearchInput
             value={search}
@@ -358,21 +395,6 @@ export default function EmployeesPage() {
             label="Search employees"
           />
           <div className="employee-filter-controls">
-            <label className="employee-filter-control">
-              <span className="visually-hidden">Filter by capability</span>
-              <select
-                aria-label="Filter by capability"
-                value={filters.capability}
-                onChange={(event) => updateFilter('capability', event.target.value)}
-              >
-                <option value="">All Capabilities</option>
-                {filterOptions.capabilities.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </label>
             <label className="employee-filter-control">
               <span className="visually-hidden">Filter by career level</span>
               <select
@@ -412,21 +434,6 @@ export default function EmployeesPage() {
               >
                 <option value="">All Attendance</option>
                 {filterOptions.attendanceStatuses.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="employee-filter-control">
-              <span className="visually-hidden">Filter by location</span>
-              <select
-                aria-label="Filter by location"
-                value={filters.location}
-                onChange={(event) => updateFilter('location', event.target.value)}
-              >
-                <option value="">All Locations</option>
-                {filterOptions.locations.map((value) => (
                   <option key={value} value={value}>
                     {value}
                   </option>
