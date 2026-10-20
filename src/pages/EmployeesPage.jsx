@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 import { ConfirmDialog } from '../components/ConfirmDialog.jsx';
 import { DataTable } from '../components/DataTable.jsx';
 import { EmployeeForm } from '../components/EmployeeForm.jsx';
-import { PageHeader } from '../components/PageHeader.jsx';
 import { Panel } from '../components/Panel.jsx';
 import { SearchInput } from '../components/SearchInput.jsx';
 import { StatCard } from '../components/StatCard.jsx';
 import { StatusBadge } from '../components/StatusBadge.jsx';
 import { getEmployeeRoute } from '../constants/routes.js';
 import { useBenchData } from '../hooks/useBenchData.js';
+import { getBenchTenureCounts, getCareerLevelCounts } from '../utils/employeeInsights.js';
 import { formatDate } from '../utils/formatters.js';
 
 export default function EmployeesPage() {
@@ -32,6 +32,18 @@ export default function EmployeesPage() {
       }),
     [employees, location, search],
   );
+  const tenureBuckets = useMemo(() => getBenchTenureCounts(employees), [employees]);
+  const careerLevels = useMemo(() => getCareerLevelCounts(employees), [employees]);
+  const careerLevelColors = ['#d9c1e9', '#c79be0', '#b875dc', '#a900e8', '#8700c7', '#5c1680'];
+  const careerLevelTotal = careerLevels.reduce((total, item) => total + item.count, 0);
+  let careerLevelProgress = 0;
+  const careerDonut = careerLevels
+    .map((item, index) => {
+      const start = careerLevelProgress;
+      careerLevelProgress += careerLevelTotal ? (item.count / careerLevelTotal) * 100 : 0;
+      return `${careerLevelColors[index]} ${start}% ${careerLevelProgress}%`;
+    })
+    .join(', ');
 
   function saveEmployee(values) {
     const saved = dialogEmployee ? updateEmployee(dialogEmployee.id, values) : addEmployee(values);
@@ -108,13 +120,14 @@ export default function EmployeesPage() {
 
   return (
     <div className="page-stack">
-      <PageHeader
-        eyebrow="Bench Management"
-        title="Employees"
-        description="Monitor bench employees, attendance, skills, and deployment readiness."
-        actions={
+      <section className="dashboard-banner employee-banner" aria-labelledby="employees-title">
+        <div className="dashboard-banner-copy">
+          <h1 id="employees-title">Employees</h1>
+          <p>Monitor bench employees, attendance, skills, and deployment readiness.</p>
+        </div>
+        <div className="page-header-actions">
           <button
-            className="button button-primary"
+            className="button button-light"
             onClick={() => {
               setDialogEmployee(null);
               setFormOpen(true);
@@ -122,8 +135,8 @@ export default function EmployeesPage() {
           >
             ＋ Add employee
           </button>
-        }
-      />
+        </div>
+      </section>
       <div className="stat-grid">
         <StatCard
           label="Total Bench Employees"
@@ -155,6 +168,49 @@ export default function EmployeesPage() {
           tone="blue"
           icon="◇"
         />
+      </div>
+
+      <div className="employee-insights-grid">
+        <Panel title="Time in bench" eyebrow="Employee aging">
+          <div className="tenure-grid">
+            {tenureBuckets.map((bucket) => (
+              <div className="tenure-card" key={bucket.label}>
+                <strong>{bucket.count}</strong>
+                <span>{bucket.label}</span>
+              </div>
+            ))}
+          </div>
+        </Panel>
+        <Panel title="Career levels" eyebrow="CL mix">
+          <div className="career-level-content">
+            <div
+              className={`career-level-donut${careerLevelTotal ? '' : ' is-empty'}`}
+              role="img"
+              aria-label={`${careerLevelTotal} employees across career levels`}
+              style={{
+                '--career-level-donut': careerLevelTotal
+                  ? `conic-gradient(${careerDonut})`
+                  : undefined,
+              }}
+            >
+              <span>
+                <strong>{careerLevelTotal}</strong>
+                <small>employees</small>
+              </span>
+            </div>
+            <ul className="career-level-legend" aria-label="Employee count by career level">
+              {careerLevels.map((item, index) => (
+                <li key={item.level}>
+                  <span className="career-level-key">
+                    <i style={{ backgroundColor: careerLevelColors[index] }} />
+                    {item.level}
+                  </span>
+                  <strong>{item.count}</strong>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Panel>
       </div>
 
       <Panel title="Employee directory" eyebrow={`${filteredEmployees.length} resources`}>
