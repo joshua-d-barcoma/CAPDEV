@@ -82,28 +82,28 @@ export default function AdminDashboard() {
           label="Total Bench Employees"
           value={employees.length}
           detail="Active bench employees"
-          icon="♙"
+          icon="people"
         />
         <StatCard
           label="Attendance Today"
           value={`${attendancePercent}%`}
           detail={`${presentCount} of ${employees.length} present`}
           tone="green"
-          icon="✓"
+          icon="check"
         />
         <StatCard
           label="Active Non-Compliance"
           value={exceptions}
           detail="Employees requiring follow-up"
           tone="orange"
-          icon="!"
+          icon="alert"
         />
         <StatCard
           label="Open Action Items"
           value={openActions.length}
           detail={`${openActions.filter((item) => item.priority === 'High').length} high priority`}
           tone="blue"
-          icon="⚑"
+          icon="flag"
         />
       </div>
 
