@@ -4,7 +4,7 @@ import { ROUTES } from '../constants/routes.js';
 import { getInitials } from '../utils/formatters.js';
 
 const titlesByPath = {
-  [ROUTES.adminDashboard]: ['Admin Dashboard', 'Bench management overview'],
+  [ROUTES.adminDashboard]: ['Admin Dashboard', 'Bench Management Overview'],
   [ROUTES.employees]: ['Employees', 'Bench resource directory'],
   [ROUTES.attendance]: ['Attendance', 'Attendance and RTO management'],
   [ROUTES.learning]: ['Learning', 'Capability development'],
