@@ -1166,15 +1166,6 @@ p {
   font-size: 20px;
   letter-spacing: -0.3px;
 }
-.productivity-banner-eyebrow {
-  display: block;
-  margin-bottom: 4px;
-  color: #eed6ff;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-}
 .productivity-banner-copy p {
   margin: 0;
   color: #f0ddfb;
