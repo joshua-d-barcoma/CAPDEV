@@ -372,6 +372,9 @@ export function deleteEmployee(data, employeeId) {
   return {
     ...data,
     employees: data.employees.filter((employee) => employee.id !== employeeId),
+    tasks: data.tasks.map((task) =>
+      task.assigneeId === employeeId ? { ...task, assigneeId: undefined } : task,
+    ),
     attendanceRecords: data.attendanceRecords.filter((record) => record.employeeId !== employeeId),
     employeeSchedules,
     scheduleRequests: data.scheduleRequests.filter((request) => request.employeeId !== employeeId),
@@ -382,6 +385,21 @@ export function updateTaskStatus(data, taskId, status) {
   return {
     ...data,
     tasks: data.tasks.map((task) => (task.id === taskId ? { ...task, status } : task)),
+  };
+}
+
+export function updateTaskAssignee(data, taskId, employeeId) {
+  if (!data.employees.some((employee) => employee.id === employeeId)) {
+    throw new Error('The selected employee does not exist.');
+  }
+  if (!data.tasks.some((task) => task.id === taskId)) {
+    throw new Error('The selected task does not exist.');
+  }
+  return {
+    ...data,
+    tasks: data.tasks.map((task) =>
+      task.id === taskId ? { ...task, assigneeId: employeeId } : task,
+    ),
   };
 }
 
