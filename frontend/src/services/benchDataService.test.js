@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   addMandatoryTraining,
+  addSkillHubItem,
   addEmployee,
   deleteEmployee,
   reviewEmployeeScheduleRequest,
@@ -108,6 +109,7 @@ test('adding mandatory training assigns it to current employees and edits the ca
     due: 'Oct 16',
     status: 'Active',
   });
+
   const training = withTraining.mandatoryTraining[0];
 
   assert.equal(withTraining.learningAssignments.length, 2);
@@ -121,4 +123,29 @@ test('adding mandatory training assigns it to current employees and edits the ca
     () => updateMandatoryTraining(updated, 'missing', { status: 'Inactive' }),
     /Mandatory training was not found/,
   );
+});
+
+test('adding Skill Hub offerings persists the matching certification, cohort, or announcement', () => {
+  const initial = { certifications: [], cohorts: [], announcements: [] };
+  const withCertification = addSkillHubItem(initial, 'certifications', {
+    title: 'Cloud Fundamentals',
+    detail: 'Recommended',
+    status: 'Recommended',
+  });
+  const withCohort = addSkillHubItem(initial, 'cohorts', {
+    name: 'Cloud Elite',
+    focus: 'Cloud engineering',
+    duration: '6 weeks',
+  });
+  const withAnnouncement = addSkillHubItem(initial, 'announcements', {
+    title: 'Learning update',
+    description: 'New offerings are available.',
+    category: 'Learning',
+  });
+
+  assert.equal(withCertification.certifications[0].title, 'Cloud Fundamentals');
+  assert.equal(withCohort.cohorts[0].joined, false);
+  assert.equal(withCohort.cohorts[0].duration, '6 weeks');
+  assert.equal(withAnnouncement.announcements[0].category, 'Learning');
+  assert.throws(() => addSkillHubItem(initial, 'invalid', {}), /Skill Hub category is invalid/);
 });

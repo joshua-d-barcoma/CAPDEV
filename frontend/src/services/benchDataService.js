@@ -296,6 +296,46 @@ const initialData = {
       joined: false,
     },
   ],
+  certifications: [
+    {
+      id: 'cert-cloud-fundamentals',
+      title: 'Cloud Fundamentals',
+      detail: 'Passed · Sep 2026',
+      status: 'Completed',
+    },
+    {
+      id: 'cert-cloud-architecture',
+      title: 'Cloud Architecture Associate',
+      detail: 'Learning path in progress',
+      status: 'In Progress',
+    },
+    {
+      id: 'cert-infrastructure-automation',
+      title: 'Infrastructure Automation',
+      detail: 'Recommended for your capability',
+      status: 'Recommended',
+    },
+  ],
+  announcements: [
+    {
+      id: 'announcement-onsite',
+      title: 'Onsite schedule reminder',
+      description: 'Follow the current team RTO schedule and reserve your office seat in advance.',
+      category: 'Attendance',
+    },
+    {
+      id: 'announcement-profile',
+      title: 'Keep your skills profile current',
+      description: 'Review your primary skill mapping and update completed certifications.',
+      category: 'Profile',
+    },
+    {
+      id: 'announcement-learning',
+      title: 'Bench learning opportunities',
+      description: 'Ask your Capability POC about current cohort missions and mentoring sessions.',
+      category: 'Learning',
+    },
+  ],
   mandatoryTraining: [
     {
       id: 'training-security',
@@ -309,6 +349,20 @@ const initialData = {
       title: 'Data Privacy & Protection',
       description: 'Mandatory data privacy and protection training.',
       due: 'Oct 26',
+      status: 'Active',
+    },
+    {
+      id: 'training-workplace-safety',
+      title: 'Workplace Safety',
+      description: 'Workplace safety policies and required procedures.',
+      due: 'Oct 16',
+      status: 'Active',
+    },
+    {
+      id: 'training-responsible-ai',
+      title: 'Responsible AI Awareness',
+      description: 'Introduction to responsible and secure AI usage.',
+      due: 'Oct 16',
       status: 'Active',
     },
   ],
@@ -376,6 +430,25 @@ const initialData = {
 
 const seedData = {
   ...initialData,
+  learningAssignments: [
+    ...initialData.learningAssignments,
+    ...initialData.mandatoryTraining
+      .filter(
+        (training) =>
+          !initialData.learningAssignments.some(
+            (assignment) => assignment.trainingId === training.id,
+          ),
+      )
+      .flatMap((training) =>
+        initialData.employees.map((employee) => ({
+          id: `learning-${employee.id}-${training.id}`,
+          employeeId: employee.id,
+          trainingId: training.id,
+          status: 'Not Started',
+          completionDate: null,
+        })),
+      ),
+  ],
   employeeSchedules: Object.fromEntries(
     initialData.employees.map((employee) => [employee.id, { ...DEFAULT_SCHEDULE }]),
   ),
@@ -417,12 +490,16 @@ export function loadBenchData() {
     'cohorts',
     'scheduleRequests',
   ];
-  if (
-    parsedData &&
-    Array.isArray(parsedData.employees) &&
-    !Array.isArray(parsedData.mandatoryTraining)
-  ) {
-    parsedData.mandatoryTraining = cloneData(initialData.mandatoryTraining);
+  if (parsedData && Array.isArray(parsedData.employees)) {
+    if (!Array.isArray(parsedData.mandatoryTraining)) {
+      parsedData.mandatoryTraining = [];
+    }
+    if (!Array.isArray(parsedData.learningAssignments)) {
+      parsedData.learningAssignments = cloneData(initialData.learningAssignments).filter(
+        (assignment) =>
+          parsedData.employees.some((employee) => employee.id === assignment.employeeId),
+      );
+    }
   }
   if (
     parsedData &&
@@ -434,7 +511,46 @@ export function loadBenchData() {
         parsedData.employees.some((employee) => employee.id === assignment.employeeId),
     );
   }
-  requiredArrays.push('mandatoryTraining', 'learningAssignments');
+  if (parsedData && Array.isArray(parsedData.employees)) {
+    const addedTrainingIds = [];
+    for (const seededTraining of initialData.mandatoryTraining) {
+      if (!parsedData.mandatoryTraining.some((training) => training.id === seededTraining.id)) {
+        parsedData.mandatoryTraining.push({ ...seededTraining });
+        addedTrainingIds.push(seededTraining.id);
+      }
+    }
+    for (const training of parsedData.mandatoryTraining.filter(
+      (item) => addedTrainingIds.includes(item.id) && item.status === 'Active',
+    )) {
+      for (const employee of parsedData.employees) {
+        const assignmentExists = parsedData.learningAssignments.some(
+          (assignment) =>
+            assignment.employeeId === employee.id && assignment.trainingId === training.id,
+        );
+        if (!assignmentExists) {
+          parsedData.learningAssignments.push({
+            id: createId('learning'),
+            employeeId: employee.id,
+            trainingId: training.id,
+            status: 'Not Started',
+            completionDate: null,
+          });
+        }
+      }
+    }
+  }
+  if (parsedData && !Array.isArray(parsedData.certifications)) {
+    parsedData.certifications = cloneData(initialData.certifications);
+  }
+  if (parsedData && !Array.isArray(parsedData.announcements)) {
+    parsedData.announcements = cloneData(initialData.announcements);
+  }
+  requiredArrays.push(
+    'mandatoryTraining',
+    'learningAssignments',
+    'certifications',
+    'announcements',
+  );
   if (
     !parsedData ||
     requiredArrays.some((key) => !Array.isArray(parsedData[key])) ||
@@ -548,6 +664,29 @@ export function updateMandatoryTraining(data, trainingId, changes) {
       training.id === trainingId ? { ...training, ...changes } : training,
     ),
   };
+}
+
+export function addSkillHubItem(data, category, item) {
+  const id = createId(category);
+  if (category === 'certifications') {
+    return {
+      ...data,
+      certifications: [...data.certifications, { ...item, id }],
+    };
+  }
+  if (category === 'cohorts') {
+    return {
+      ...data,
+      cohorts: [...data.cohorts, { ...item, id, joined: false }],
+    };
+  }
+  if (category === 'announcements') {
+    return {
+      ...data,
+      announcements: [...data.announcements, { ...item, id }],
+    };
+  }
+  throw new Error('Skill Hub category is invalid.');
 }
 
 export function updateActionItemStatus(data, actionId, status) {

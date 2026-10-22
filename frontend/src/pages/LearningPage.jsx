@@ -91,15 +91,20 @@ export default function LearningPage() {
     learningAssignments,
     mandatoryTraining,
     cohorts,
+    certifications,
+    announcements,
     updateLearningAssignment,
     addMandatoryTraining,
     updateMandatoryTraining,
+    addSkillHubItem,
     storageError,
   } = useBenchData();
   const [isTrainingDialogOpen, setIsTrainingDialogOpen] = useState(false);
   const [editingTraining, setEditingTraining] = useState(null);
   const [trainingForm, setTrainingForm] = useState(EMPTY_FORM);
   const [formError, setFormError] = useState('');
+  const [skillHubCategory, setSkillHubCategory] = useState(null);
+  const [skillHubForm, setSkillHubForm] = useState({ title: '', description: '', detail: '' });
   const [completionsPage, setCompletionsPage] = useState(1);
   const [noActivePage, setNoActivePage] = useState(1);
   const today = getToday();
@@ -229,6 +234,39 @@ export default function LearningPage() {
     }
     setIsTrainingDialogOpen(false);
     setEditingTraining(null);
+  }
+
+  function saveSkillHubItem(event) {
+    event.preventDefault();
+    if (!skillHubForm.title.trim()) {
+      setFormError('Enter a title.');
+      return;
+    }
+    const commonFields = {
+      title: skillHubForm.title.trim(),
+      detail: skillHubForm.description.trim(),
+    };
+    const item =
+      skillHubCategory === 'certifications'
+        ? { ...commonFields, status: 'Recommended' }
+        : skillHubCategory === 'cohorts'
+          ? {
+              name: commonFields.title,
+              focus: skillHubForm.description.trim(),
+              duration: skillHubForm.detail.trim(),
+            }
+          : {
+              title: commonFields.title,
+              description: skillHubForm.description.trim(),
+              category: skillHubForm.detail.trim() || 'Learning',
+            };
+    const saved = addSkillHubItem(skillHubCategory, item);
+    if (!saved) {
+      setFormError('Unable to save this Skill Hub offering. Please try again.');
+      return;
+    }
+    setSkillHubCategory(null);
+    setSkillHubForm({ title: '', description: '', detail: '' });
   }
 
   return (
@@ -435,8 +473,19 @@ export default function LearningPage() {
                 : 0;
               return (
                 <article className="learning-training-row" key={training.id}>
-                  <span className="learning-training-icon" aria-hidden="true">
-                    ◇
+                  <span
+                    className={`learning-training-icon learning-training-icon-${training.id}`}
+                    aria-hidden="true"
+                  >
+                    {training.id === 'training-security'
+                      ? '⬡'
+                      : training.id === 'training-privacy'
+                        ? '▤'
+                        : training.id === 'training-workplace-safety'
+                          ? '♡'
+                          : training.id === 'training-responsible-ai'
+                            ? '▦'
+                            : '◇'}
                   </span>
                   <div className="learning-training-copy">
                     <strong>{training.title}</strong>
@@ -480,23 +529,98 @@ export default function LearningPage() {
         )}
       </Panel>
 
-      <Panel title="Skill Hub offerings" eyebrow="Development opportunities">
-        {cohorts.length ? (
-          <div className="card-grid">
-            {cohorts.map((cohort) => (
-              <article className="opportunity-card" key={cohort.id}>
-                <div className="opportunity-top">
-                  <span className="tag">{cohort.duration}</span>
-                  <StatusBadge status={cohort.joined ? 'Joined' : 'Open'} />
-                </div>
-                <h3>{cohort.name}</h3>
-                <p>{cohort.focus}</p>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <p className="muted-copy">No Skill Hub offerings are currently available.</p>
-        )}
+      <Panel
+        title="Certifications, Cohorts, & Announcement"
+        eyebrow="Skill Hub"
+        className="learning-skill-hub-panel"
+      >
+        <p className="learning-panel-description">
+          Manage the content shown to employees in Skill Hub.
+        </p>
+        <div className="learning-skill-hub-columns">
+          <section className="learning-skill-hub-column">
+            <header>
+              <div>
+                <h3>Certifications</h3>
+                <span>{certifications.length} listed</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setSkillHubCategory('certifications');
+                  setSkillHubForm({ title: '', description: '', detail: '' });
+                  setFormError('');
+                }}
+              >
+                + Add
+              </button>
+            </header>
+            <div className="learning-skill-hub-items">
+              {certifications.map((item) => (
+                <article key={item.id}>
+                  <strong>{item.title}</strong>
+                  <span>{item.detail}</span>
+                </article>
+              ))}
+            </div>
+          </section>
+          <section className="learning-skill-hub-column">
+            <header>
+              <div>
+                <h3>Bench Cohorts</h3>
+                <span>{cohorts.length} listed</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setSkillHubCategory('cohorts');
+                  setSkillHubForm({ title: '', description: '', detail: '' });
+                  setFormError('');
+                }}
+              >
+                + Add
+              </button>
+            </header>
+            <div className="learning-skill-hub-items">
+              {cohorts.map((item) => (
+                <article key={item.id}>
+                  <strong>{item.name}</strong>
+                  <span>
+                    {item.focus} · {item.duration}
+                  </span>
+                </article>
+              ))}
+            </div>
+          </section>
+          <section className="learning-skill-hub-column">
+            <header>
+              <div>
+                <h3>Announcements</h3>
+                <span>{announcements.length} listed</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setSkillHubCategory('announcements');
+                  setSkillHubForm({ title: '', description: '', detail: '' });
+                  setFormError('');
+                }}
+              >
+                + Add
+              </button>
+            </header>
+            <div className="learning-skill-hub-items">
+              {announcements.map((item) => (
+                <article key={item.id}>
+                  <strong>{item.title}</strong>
+                  <span>
+                    {item.description} · {item.category}
+                  </span>
+                </article>
+              ))}
+            </div>
+          </section>
+        </div>
       </Panel>
 
       {isTrainingDialogOpen && (
@@ -559,6 +683,7 @@ export default function LearningPage() {
                 {formError}
               </p>
             )}
+
             <div className="learning-form-actions">
               <button
                 type="button"
@@ -569,6 +694,75 @@ export default function LearningPage() {
               </button>
               <button type="submit" className="button button-primary">
                 Save training
+              </button>
+            </div>
+          </form>
+        </Dialog>
+      )}
+      {skillHubCategory && (
+        <Dialog
+          title={`Add ${skillHubCategory === 'cohorts' ? 'bench cohort' : skillHubCategory.slice(0, -1)}`}
+          description="This content will be available to employees in Skill Hub."
+          onClose={() => setSkillHubCategory(null)}
+        >
+          <form className="learning-training-form" onSubmit={saveSkillHubItem}>
+            <label>
+              {skillHubCategory === 'cohorts' ? 'Cohort name' : 'Title'}
+              <input
+                autoFocus
+                value={skillHubForm.title}
+                onChange={(event) =>
+                  setSkillHubForm({ ...skillHubForm, title: event.target.value })
+                }
+                maxLength={100}
+                required
+              />
+            </label>
+            <label>
+              {skillHubCategory === 'certifications'
+                ? 'Description'
+                : skillHubCategory === 'cohorts'
+                  ? 'Focus'
+                  : 'Announcement'}
+              <textarea
+                value={skillHubForm.description}
+                onChange={(event) =>
+                  setSkillHubForm({ ...skillHubForm, description: event.target.value })
+                }
+                maxLength={250}
+                rows={3}
+              />
+            </label>
+            {skillHubCategory !== 'certifications' && (
+              <label>
+                {skillHubCategory === 'cohorts' ? 'Duration' : 'Category'}
+                <input
+                  value={skillHubForm.detail}
+                  onChange={(event) =>
+                    setSkillHubForm({ ...skillHubForm, detail: event.target.value })
+                  }
+                  maxLength={60}
+                  placeholder={
+                    skillHubCategory === 'cohorts' ? 'e.g. 6-week mission' : 'e.g. Learning'
+                  }
+                />
+              </label>
+            )}
+            {formError && (
+              <p className="learning-error" role="alert">
+                {formError}
+              </p>
+            )}
+            <div className="learning-form-actions">
+              <button
+                type="button"
+                className="button button-secondary"
+                onClick={() => setSkillHubCategory(null)}
+              >
+                Cancel
+              </button>
+              <button type="submit" className="button button-primary">
+                Save
               </button>
             </div>
           </form>

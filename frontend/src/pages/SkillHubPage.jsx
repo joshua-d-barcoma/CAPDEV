@@ -4,20 +4,6 @@ import { Panel } from '../components/Panel.jsx';
 import { StatusBadge } from '../components/StatusBadge.jsx';
 import { useBenchData } from '../hooks/useBenchData.js';
 
-const certifications = [
-  { title: 'Cloud Fundamentals', detail: 'Passed · Sep 2026', status: 'Completed' },
-  {
-    title: 'Cloud Architecture Associate',
-    detail: 'Learning path in progress',
-    status: 'In Progress',
-  },
-  {
-    title: 'Infrastructure Automation',
-    detail: 'Recommended for your capability',
-    status: 'Recommended',
-  },
-];
-
 const readiness = [
   { label: 'Technical profile updated', complete: true },
   { label: 'Resume uploaded', complete: true },
@@ -26,7 +12,7 @@ const readiness = [
 ];
 
 export default function SkillHubPage() {
-  const { cohorts, toggleCohort } = useBenchData();
+  const { cohorts, certifications, announcements, toggleCohort } = useBenchData();
   const [voucherRequested, setVoucherRequested] = useState(false);
   const [checkedItems, setCheckedItems] = useState(readiness.map((item) => item.complete));
   const completeCount = checkedItems.filter(Boolean).length;
@@ -113,27 +99,11 @@ export default function SkillHubPage() {
       </Panel>
       <Panel title="Announcements" eyebrow="For you">
         <div className="announcement-list">
-          {[
-            [
-              'Onsite schedule reminder',
-              'Follow the current team RTO schedule and reserve your office seat in advance.',
-              'Attendance',
-            ],
-            [
-              'Keep your skills profile current',
-              'Review your primary skill mapping and update completed certifications.',
-              'Profile',
-            ],
-            [
-              'Bench learning opportunities',
-              'Ask your Capability POC about current cohort missions and mentoring sessions.',
-              'Learning',
-            ],
-          ].map(([title, description, category]) => (
-            <article className="announcement-card" key={title}>
-              <span className="tag">{category}</span>
-              <h3>{title}</h3>
-              <p>{description}</p>
+          {announcements.map((announcement) => (
+            <article className="announcement-card" key={announcement.id}>
+              <span className="tag">{announcement.category}</span>
+              <h3>{announcement.title}</h3>
+              <p>{announcement.description}</p>
             </article>
           ))}
         </div>
