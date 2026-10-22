@@ -124,7 +124,6 @@ export default function ProductivityPage() {
     <div className="page-stack productivity-page">
       <section className="dashboard-banner productivity-banner">
         <div className="dashboard-banner-copy">
-          <span className="productivity-banner-eyebrow">BenchFlow</span>
           <h1>Tasks &amp; Productivity</h1>
           <p>Monitor training and work progress across the bench.</p>
         </div>
