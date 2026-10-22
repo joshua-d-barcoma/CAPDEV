@@ -1153,6 +1153,215 @@ p {
   border-radius: inherit;
   background: linear-gradient(90deg, #8700cd, #bf42fa);
 }
+.productivity-page {
+  gap: 16px;
+}
+.productivity-banner {
+  min-height: 86px;
+  padding: 16px 20px;
+  border-radius: 8px;
+}
+.productivity-banner-copy h1 {
+  margin: 0 0 4px;
+  font-size: 20px;
+  letter-spacing: -0.3px;
+}
+.productivity-banner-copy p {
+  margin: 0;
+  color: #f0ddfb;
+  font-size: 11px;
+}
+.productivity-chart-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr);
+  gap: 16px;
+}
+.productivity-chart-grid .panel {
+  min-height: 208px;
+}
+.productivity-status-chart,
+.productivity-category-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+.productivity-status-row,
+.productivity-category-row {
+  display: grid;
+  grid-template-columns: minmax(90px, 1.1fr) minmax(80px, 3fr) 28px;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 10px;
+}
+.productivity-status-row > strong,
+.productivity-category-row > strong {
+  color: var(--ink);
+  font-size: 10px;
+  text-align: right;
+}
+.productivity-status-track {
+  display: flex;
+  height: 9px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #f0ebf2;
+}
+.productivity-status-segment {
+  display: block;
+  height: 100%;
+}
+.productivity-status-segment.completed,
+.productivity-legend .completed {
+  background: #16885e;
+}
+.productivity-status-segment.in-progress,
+.productivity-legend .in-progress {
+  background: #4d86d3;
+}
+.productivity-status-segment.not-started,
+.productivity-legend .not-started {
+  background: #dd8b13;
+}
+.productivity-status-segment.overdue,
+.productivity-legend .overdue {
+  background: #e31b23;
+}
+.productivity-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-top: 15px;
+  color: var(--muted);
+  font-size: 9px;
+}
+.productivity-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.productivity-legend i {
+  width: 8px;
+  height: 8px;
+}
+.productivity-eod-chart {
+  display: grid;
+  height: 135px;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 4px;
+  overflow: hidden;
+}
+.productivity-eod-column {
+  display: grid;
+  min-width: 0;
+  grid-template-rows: 16px minmax(70px, 1fr) 15px;
+  justify-items: center;
+  align-items: end;
+  gap: 4px;
+}
+.productivity-eod-column > strong {
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 500;
+}
+.productivity-eod-track {
+  display: flex;
+  width: min(30px, 90%);
+  height: 100%;
+  align-items: flex-end;
+  background: #f4eef8;
+}
+.productivity-eod-track i {
+  display: block;
+  width: 100%;
+  background: #7831a7;
+}
+.productivity-eod-column > span {
+  color: var(--muted);
+  font-size: 8px;
+  white-space: nowrap;
+}
+.productivity-category-row {
+  grid-template-columns: minmax(125px, 1fr) minmax(100px, 2.3fr) 36px;
+}
+.productivity-category-track {
+  height: 5px;
+  overflow: hidden;
+  background: #f2edf4;
+}
+.productivity-category-track i {
+  display: block;
+  height: 100%;
+  background: var(--purple);
+}
+.productivity-unassigned-count {
+  padding: 5px 8px;
+  border-radius: 4px;
+  background: var(--purple-soft);
+  color: var(--purple-dark);
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.productivity-distribution-table .data-table {
+  min-width: 770px;
+}
+.productivity-distribution-table .data-table th {
+  background: #f7f5f8;
+}
+.productivity-priority {
+  display: inline-block;
+  padding: 2px 7px;
+  border: 1px solid currentColor;
+  border-radius: 10px;
+  font-size: 9px;
+  font-weight: 600;
+}
+.productivity-priority-high {
+  background: #fff0f1;
+  color: #b33340;
+}
+.productivity-priority-medium {
+  background: #fff5e9;
+  color: #af6408;
+}
+.productivity-priority-low {
+  background: #eff8f3;
+  color: #24764f;
+}
+.productivity-due-cell {
+  display: flex;
+  min-width: max-content;
+  align-items: center;
+  gap: 6px;
+}
+.productivity-overdue-badge {
+  padding: 2px 6px;
+  border-radius: 10px;
+  background: #fff0f1;
+  color: #b33340;
+  font-size: 9px;
+  font-weight: 700;
+}
+.productivity-assign-button {
+  border-color: #b94be5;
+  color: var(--purple-dark);
+}
+.productivity-table-note {
+  margin: 12px 0 0;
+  font-size: 10px;
+}
+.productivity-assignment-dialog {
+  width: min(460px, 100%);
+}
+.productivity-assignment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.productivity-assignment-form .field select {
+  width: 100%;
+}
 .attendance-trend {
   display: flex;
   flex-direction: column;
@@ -2906,6 +3115,7 @@ p {
   }
   .two-column-grid,
   .calendar-layout,
+  .productivity-chart-grid,
   .employee-insights-grid,
   .employee-breakdown-grid,
   .deployment-insights-grid {

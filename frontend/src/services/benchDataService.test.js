@@ -14,6 +14,7 @@ import {
 function createData() {
   return {
     employees: [{ id: 'employee-1', name: 'Alex Santos' }],
+    tasks: [],
     attendanceRecords: [{ id: 'attendance-1', employeeId: 'employee-1' }],
     employeeSchedules: { 'employee-1': { Monday: 'Onsite', Friday: 'Work from home' } },
     scheduleRequests: [],
@@ -22,6 +23,7 @@ function createData() {
 
 test('employee create and delete operations return updated immutable data', () => {
   const initial = createData();
+  initial.tasks = [{ id: 'task-1', assigneeId: 'employee-1' }];
   const withNewEmployee = addEmployee(initial, { name: 'Maria Cruz' });
   const created = withNewEmployee.employees.find((employee) => employee.name === 'Maria Cruz');
 
@@ -33,6 +35,8 @@ test('employee create and delete operations return updated immutable data', () =
   assert.equal(afterDelete.employees.length, 1);
   assert.equal(afterDelete.attendanceRecords.length, 0);
   assert.equal(afterDelete.employeeSchedules['employee-1'], undefined);
+  assert.equal(afterDelete.tasks[0].assigneeId, undefined);
+  assert.equal(initial.tasks[0].assigneeId, 'employee-1');
 });
 
 test('approving a pending schedule request updates the employee schedule', () => {
@@ -148,4 +152,19 @@ test('adding Skill Hub offerings persists the matching certification, cohort, or
   assert.equal(withCohort.cohorts[0].duration, '6 weeks');
   assert.equal(withAnnouncement.announcements[0].category, 'Learning');
   assert.throws(() => addSkillHubItem(initial, 'invalid', {}), /Skill Hub category is invalid/);
+});
+test('assigning a task stores the employee id without mutating the original task', () => {
+  const initial = {
+    employees: [{ id: 'employee-1', name: 'Alex Santos' }],
+    tasks: [{ id: 'task-1', title: 'Review requirements', status: 'Not Started' }],
+  };
+
+  const assigned = updateTaskAssignee(initial, 'task-1', 'employee-1');
+
+  assert.equal(assigned.tasks[0].assigneeId, 'employee-1');
+  assert.equal(initial.tasks[0].assigneeId, undefined);
+  assert.throws(
+    () => updateTaskAssignee(initial, 'task-1', 'missing-employee'),
+    /selected employee does not exist/,
+  );
 });

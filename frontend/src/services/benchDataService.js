@@ -604,6 +604,9 @@ export function deleteEmployee(data, employeeId) {
   return {
     ...data,
     employees: data.employees.filter((employee) => employee.id !== employeeId),
+    tasks: data.tasks.map((task) =>
+      task.assigneeId === employeeId ? { ...task, assigneeId: undefined } : task,
+    ),
     attendanceRecords: data.attendanceRecords.filter((record) => record.employeeId !== employeeId),
     learningAssignments: (data.learningAssignments ?? []).filter(
       (assignment) => assignment.employeeId !== employeeId,
@@ -620,73 +623,19 @@ export function updateTaskStatus(data, taskId, status) {
   };
 }
 
-export function updateLearningAssignment(data, assignmentId, status) {
-  if (!['Not Started', 'In Progress', 'Completed'].includes(status)) {
-    throw new Error('Learning assignment status is invalid.');
+export function updateTaskAssignee(data, taskId, employeeId) {
+  if (!data.employees.some((employee) => employee.id === employeeId)) {
+    throw new Error('The selected employee does not exist.');
   }
-  const assignment = data.learningAssignments.find((item) => item.id === assignmentId);
-  if (!assignment) throw new Error('Learning assignment was not found.');
+  if (!data.tasks.some((task) => task.id === taskId)) {
+    throw new Error('The selected task does not exist.');
+  }
   return {
     ...data,
-    learningAssignments: data.learningAssignments.map((item) =>
-      item.id === assignmentId
-        ? { ...item, status, completionDate: status === 'Completed' ? todayDate() : null }
-        : item,
+    tasks: data.tasks.map((task) =>
+      task.id === taskId ? { ...task, assigneeId: employeeId } : task,
     ),
   };
-}
-
-export function addMandatoryTraining(data, training) {
-  const id = createId('training');
-  return {
-    ...data,
-    mandatoryTraining: [...data.mandatoryTraining, { ...training, id }],
-    learningAssignments: [
-      ...data.learningAssignments,
-      ...data.employees.map((employee) => ({
-        id: createId('learning'),
-        employeeId: employee.id,
-        trainingId: id,
-        status: 'Not Started',
-        completionDate: null,
-      })),
-    ],
-  };
-}
-
-export function updateMandatoryTraining(data, trainingId, changes) {
-  if (!data.mandatoryTraining.some((training) => training.id === trainingId)) {
-    throw new Error('Mandatory training was not found.');
-  }
-  return {
-    ...data,
-    mandatoryTraining: data.mandatoryTraining.map((training) =>
-      training.id === trainingId ? { ...training, ...changes } : training,
-    ),
-  };
-}
-
-export function addSkillHubItem(data, category, item) {
-  const id = createId(category);
-  if (category === 'certifications') {
-    return {
-      ...data,
-      certifications: [...data.certifications, { ...item, id }],
-    };
-  }
-  if (category === 'cohorts') {
-    return {
-      ...data,
-      cohorts: [...data.cohorts, { ...item, id, joined: false }],
-    };
-  }
-  if (category === 'announcements') {
-    return {
-      ...data,
-      announcements: [...data.announcements, { ...item, id }],
-    };
-  }
-  throw new Error('Skill Hub category is invalid.');
 }
 
 export function updateActionItemStatus(data, actionId, status) {

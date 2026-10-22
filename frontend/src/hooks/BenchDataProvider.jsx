@@ -55,6 +55,11 @@ export function BenchDataProvider({ children }) {
       addSkillHubItem(category, item) {
         return updateData((current) => benchDataService.addSkillHubItem(current, category, item));
       },
+      updateTaskAssignee(taskId, employeeId) {
+        return updateData((current) =>
+          benchDataService.updateTaskAssignee(current, taskId, employeeId),
+        );
+      },
       updateActionItem(actionId, status) {
         return updateData((current) =>
           benchDataService.updateActionItemStatus(current, actionId, status),
