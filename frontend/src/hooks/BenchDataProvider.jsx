@@ -39,6 +39,19 @@ export function BenchDataProvider({ children }) {
       updateTask(taskId, status) {
         return updateData((current) => benchDataService.updateTaskStatus(current, taskId, status));
       },
+      updateLearningAssignment(assignmentId, status) {
+        return updateData((current) =>
+          benchDataService.updateLearningAssignment(current, assignmentId, status),
+        );
+      },
+      addMandatoryTraining(training) {
+        return updateData((current) => benchDataService.addMandatoryTraining(current, training));
+      },
+      updateMandatoryTraining(trainingId, changes) {
+        return updateData((current) =>
+          benchDataService.updateMandatoryTraining(current, trainingId, changes),
+        );
+      },
       updateActionItem(actionId, status) {
         return updateData((current) =>
           benchDataService.updateActionItemStatus(current, actionId, status),

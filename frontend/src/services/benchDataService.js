@@ -7,6 +7,14 @@ const DEFAULT_SCHEDULE = Object.freeze({
   Friday: 'Work from home',
 });
 
+function todayDate() {
+  const today = new Date();
+  const offset = today.getTimezoneOffset();
+  return new Date(today.getTime() - offset * 60_000).toISOString().slice(0, 10);
+}
+
+const today = todayDate();
+
 const initialData = {
   employees: [
     {
@@ -288,6 +296,80 @@ const initialData = {
       joined: false,
     },
   ],
+  mandatoryTraining: [
+    {
+      id: 'training-security',
+      title: 'Security Awareness',
+      description: 'Annual security awareness and information security training.',
+      due: 'Oct 16',
+      status: 'Active',
+    },
+    {
+      id: 'training-privacy',
+      title: 'Data Privacy & Protection',
+      description: 'Mandatory data privacy and protection training.',
+      due: 'Oct 26',
+      status: 'Active',
+    },
+  ],
+  learningAssignments: [
+    {
+      id: 'learning-alex-security',
+      employeeId: 'employee-alex-santos',
+      trainingId: 'training-security',
+      status: 'Completed',
+      completionDate: today,
+    },
+    {
+      id: 'learning-alex-privacy',
+      employeeId: 'employee-alex-santos',
+      trainingId: 'training-privacy',
+      status: 'Completed',
+      completionDate: today,
+    },
+    {
+      id: 'learning-maria-security',
+      employeeId: 'employee-maria-cruz',
+      trainingId: 'training-security',
+      status: 'Completed',
+      completionDate: today,
+    },
+    {
+      id: 'learning-maria-privacy',
+      employeeId: 'employee-maria-cruz',
+      trainingId: 'training-privacy',
+      status: 'In Progress',
+      completionDate: null,
+    },
+    {
+      id: 'learning-michael-security',
+      employeeId: 'employee-michael-tan',
+      trainingId: 'training-security',
+      status: 'Completed',
+      completionDate: today,
+    },
+    {
+      id: 'learning-michael-privacy',
+      employeeId: 'employee-michael-tan',
+      trainingId: 'training-privacy',
+      status: 'In Progress',
+      completionDate: null,
+    },
+    {
+      id: 'learning-sarah-security',
+      employeeId: 'employee-sarah-garcia',
+      trainingId: 'training-security',
+      status: 'In Progress',
+      completionDate: null,
+    },
+    {
+      id: 'learning-sarah-privacy',
+      employeeId: 'employee-sarah-garcia',
+      trainingId: 'training-privacy',
+      status: 'Not Started',
+      completionDate: null,
+    },
+  ],
   scheduleRequests: [],
   checkedIn: false,
 };
@@ -336,6 +418,24 @@ export function loadBenchData() {
     'scheduleRequests',
   ];
   if (
+    parsedData &&
+    Array.isArray(parsedData.employees) &&
+    !Array.isArray(parsedData.mandatoryTraining)
+  ) {
+    parsedData.mandatoryTraining = cloneData(initialData.mandatoryTraining);
+  }
+  if (
+    parsedData &&
+    Array.isArray(parsedData.employees) &&
+    !Array.isArray(parsedData.learningAssignments)
+  ) {
+    parsedData.learningAssignments = cloneData(initialData.learningAssignments).filter(
+      (assignment) =>
+        parsedData.employees.some((employee) => employee.id === assignment.employeeId),
+    );
+  }
+  requiredArrays.push('mandatoryTraining', 'learningAssignments');
+  if (
     !parsedData ||
     requiredArrays.some((key) => !Array.isArray(parsedData[key])) ||
     !parsedData.employeeSchedules ||
@@ -354,7 +454,23 @@ export function saveBenchData(data) {
 }
 
 export function addEmployee(data, employee) {
-  return { ...data, employees: [...data.employees, { ...employee, id: createId('employee') }] };
+  const createdEmployee = { ...employee, id: createId('employee') };
+  return {
+    ...data,
+    employees: [...data.employees, createdEmployee],
+    learningAssignments: [
+      ...(data.learningAssignments ?? []),
+      ...(data.mandatoryTraining ?? [])
+        .filter((training) => training.status === 'Active')
+        .map((training) => ({
+          id: createId('learning'),
+          employeeId: createdEmployee.id,
+          trainingId: training.id,
+          status: 'Not Started',
+          completionDate: null,
+        })),
+    ],
+  };
 }
 
 export function updateEmployee(data, employeeId, changes) {
@@ -373,6 +489,9 @@ export function deleteEmployee(data, employeeId) {
     ...data,
     employees: data.employees.filter((employee) => employee.id !== employeeId),
     attendanceRecords: data.attendanceRecords.filter((record) => record.employeeId !== employeeId),
+    learningAssignments: (data.learningAssignments ?? []).filter(
+      (assignment) => assignment.employeeId !== employeeId,
+    ),
     employeeSchedules,
     scheduleRequests: data.scheduleRequests.filter((request) => request.employeeId !== employeeId),
   };
@@ -382,6 +501,52 @@ export function updateTaskStatus(data, taskId, status) {
   return {
     ...data,
     tasks: data.tasks.map((task) => (task.id === taskId ? { ...task, status } : task)),
+  };
+}
+
+export function updateLearningAssignment(data, assignmentId, status) {
+  if (!['Not Started', 'In Progress', 'Completed'].includes(status)) {
+    throw new Error('Learning assignment status is invalid.');
+  }
+  const assignment = data.learningAssignments.find((item) => item.id === assignmentId);
+  if (!assignment) throw new Error('Learning assignment was not found.');
+  return {
+    ...data,
+    learningAssignments: data.learningAssignments.map((item) =>
+      item.id === assignmentId
+        ? { ...item, status, completionDate: status === 'Completed' ? todayDate() : null }
+        : item,
+    ),
+  };
+}
+
+export function addMandatoryTraining(data, training) {
+  const id = createId('training');
+  return {
+    ...data,
+    mandatoryTraining: [...data.mandatoryTraining, { ...training, id }],
+    learningAssignments: [
+      ...data.learningAssignments,
+      ...data.employees.map((employee) => ({
+        id: createId('learning'),
+        employeeId: employee.id,
+        trainingId: id,
+        status: 'Not Started',
+        completionDate: null,
+      })),
+    ],
+  };
+}
+
+export function updateMandatoryTraining(data, trainingId, changes) {
+  if (!data.mandatoryTraining.some((training) => training.id === trainingId)) {
+    throw new Error('Mandatory training was not found.');
+  }
+  return {
+    ...data,
+    mandatoryTraining: data.mandatoryTraining.map((training) =>
+      training.id === trainingId ? { ...training, ...changes } : training,
+    ),
   };
 }
 
