@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { DataTable } from '../components/DataTable.jsx';
-import { PageHeader } from '../components/PageHeader.jsx';
 import { Panel } from '../components/Panel.jsx';
 import { SearchInput } from '../components/SearchInput.jsx';
 import { StatCard } from '../components/StatCard.jsx';
@@ -40,6 +39,44 @@ export default function AttendancePage() {
     (record) => record.timeIn !== '—' && record.timeIn > '09:00 AM',
   ).length;
 
+  const handleExport = () => {
+    if (records.length === 0) return;
+
+    const csvRows = [
+      ['Employee', 'Date', 'Time In', 'Work Type', 'Location', 'Status'],
+      ...records.map((record) => [
+        getEmployeeName(record.employeeId, employees),
+        record.date,
+        record.timeIn,
+        record.workType,
+        record.location,
+        record.status,
+      ]),
+    ];
+    // Quote every field and double embedded quotes so commas and quotes remain valid CSV.
+    const csvContent = csvRows
+      .map((row) =>
+        row.map((value) => `"${String(value ?? '').replace(/"/g, '""')}"`).join(','),
+      )
+      .join('\r\n');
+    const date = new Date();
+    const dateStamp = [
+      date.getFullYear(),
+      String(date.getMonth() + 1).padStart(2, '0'),
+      String(date.getDate()).padStart(2, '0'),
+    ].join('-');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const downloadUrl = URL.createObjectURL(blob);
+    const downloadLink = document.createElement('a');
+
+    downloadLink.href = downloadUrl;
+    downloadLink.download = `attendance-report-${dateStamp}.csv`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    downloadLink.remove();
+    window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 0);
+  };
+
   const columns = [
     {
       key: 'employee',
@@ -55,11 +92,20 @@ export default function AttendancePage() {
 
   return (
     <div className="page-stack">
-      <PageHeader
-        eyebrow="Attendance Management"
-        title="Attendance"
-        description="Monitor employee attendance and time-in records."
-      />
+      <section className="dashboard-banner" aria-labelledby="attendance-title">
+        <div className="dashboard-banner-copy">
+          <h1 id="attendance-title">Attendance</h1>
+          <p>Monitor employee attendance, time-in records, compliance, and follow-up exceptions.</p>
+        </div>
+        <button
+          className="button button-light"
+          type="button"
+          onClick={handleExport}
+          disabled={records.length === 0}
+        >
+          Export Report
+        </button>
+      </section>
       <div className="stat-grid stat-grid-five">
         <StatCard label="Total Bench" value={employees.length} detail="Active resources" icon="♙" />
         <StatCard
