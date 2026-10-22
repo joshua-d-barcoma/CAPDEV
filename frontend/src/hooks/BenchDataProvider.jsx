@@ -39,6 +39,22 @@ export function BenchDataProvider({ children }) {
       updateTask(taskId, status) {
         return updateData((current) => benchDataService.updateTaskStatus(current, taskId, status));
       },
+      updateLearningAssignment(assignmentId, status) {
+        return updateData((current) =>
+          benchDataService.updateLearningAssignment(current, assignmentId, status),
+        );
+      },
+      addMandatoryTraining(training) {
+        return updateData((current) => benchDataService.addMandatoryTraining(current, training));
+      },
+      updateMandatoryTraining(trainingId, changes) {
+        return updateData((current) =>
+          benchDataService.updateMandatoryTraining(current, trainingId, changes),
+        );
+      },
+      addSkillHubItem(category, item) {
+        return updateData((current) => benchDataService.addSkillHubItem(current, category, item));
+      },
       updateTaskAssignee(taskId, employeeId) {
         return updateData((current) =>
           benchDataService.updateTaskAssignee(current, taskId, employeeId),

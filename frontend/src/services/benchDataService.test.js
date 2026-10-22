@@ -1,11 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  addMandatoryTraining,
+  addSkillHubItem,
   addEmployee,
   deleteEmployee,
   reviewEmployeeScheduleRequest,
   submitEmployeeScheduleRequest,
-  updateTaskAssignee,
+  updateLearningAssignment,
+  updateMandatoryTraining,
 } from './benchDataService.js';
 
 function createData() {
@@ -73,6 +76,83 @@ test('a second pending request of the same kind is rejected', () => {
   );
 });
 
+test('recording a learning completion updates status and completion date', () => {
+  const initial = {
+    learningAssignments: [
+      {
+        id: 'learning-1',
+        employeeId: 'employee-1',
+        trainingId: 'training-1',
+        status: 'In Progress',
+        completionDate: null,
+      },
+    ],
+  };
+
+  const updated = updateLearningAssignment(initial, 'learning-1', 'Completed');
+
+  assert.equal(initial.learningAssignments[0].status, 'In Progress');
+  assert.equal(updated.learningAssignments[0].status, 'Completed');
+  assert.match(updated.learningAssignments[0].completionDate, /^\d{4}-\d{2}-\d{2}$/);
+  assert.throws(
+    () => updateLearningAssignment(updated, 'missing', 'Completed'),
+    /Learning assignment was not found/,
+  );
+});
+
+test('adding mandatory training assigns it to current employees and edits the catalog', () => {
+  const initial = {
+    employees: [{ id: 'employee-1' }, { id: 'employee-2' }],
+    mandatoryTraining: [],
+    learningAssignments: [],
+  };
+
+  const withTraining = addMandatoryTraining(initial, {
+    title: 'Security Awareness',
+    description: 'Required annual training.',
+    due: 'Oct 16',
+    status: 'Active',
+  });
+
+  const training = withTraining.mandatoryTraining[0];
+
+  assert.equal(withTraining.learningAssignments.length, 2);
+  assert.ok(withTraining.learningAssignments.every((item) => item.trainingId === training.id));
+  assert.ok(withTraining.learningAssignments.every((item) => item.status === 'Not Started'));
+  assert.equal(initial.mandatoryTraining.length, 0);
+
+  const updated = updateMandatoryTraining(withTraining, training.id, { status: 'Inactive' });
+  assert.equal(updated.mandatoryTraining[0].status, 'Inactive');
+  assert.throws(
+    () => updateMandatoryTraining(updated, 'missing', { status: 'Inactive' }),
+    /Mandatory training was not found/,
+  );
+});
+
+test('adding Skill Hub offerings persists the matching certification, cohort, or announcement', () => {
+  const initial = { certifications: [], cohorts: [], announcements: [] };
+  const withCertification = addSkillHubItem(initial, 'certifications', {
+    title: 'Cloud Fundamentals',
+    detail: 'Recommended',
+    status: 'Recommended',
+  });
+  const withCohort = addSkillHubItem(initial, 'cohorts', {
+    name: 'Cloud Elite',
+    focus: 'Cloud engineering',
+    duration: '6 weeks',
+  });
+  const withAnnouncement = addSkillHubItem(initial, 'announcements', {
+    title: 'Learning update',
+    description: 'New offerings are available.',
+    category: 'Learning',
+  });
+
+  assert.equal(withCertification.certifications[0].title, 'Cloud Fundamentals');
+  assert.equal(withCohort.cohorts[0].joined, false);
+  assert.equal(withCohort.cohorts[0].duration, '6 weeks');
+  assert.equal(withAnnouncement.announcements[0].category, 'Learning');
+  assert.throws(() => addSkillHubItem(initial, 'invalid', {}), /Skill Hub category is invalid/);
+});
 test('assigning a task stores the employee id without mutating the original task', () => {
   const initial = {
     employees: [{ id: 'employee-1', name: 'Alex Santos' }],

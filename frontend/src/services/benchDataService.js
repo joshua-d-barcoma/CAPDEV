@@ -7,6 +7,14 @@ const DEFAULT_SCHEDULE = Object.freeze({
   Friday: 'Work from home',
 });
 
+function todayDate() {
+  const today = new Date();
+  const offset = today.getTimezoneOffset();
+  return new Date(today.getTime() - offset * 60_000).toISOString().slice(0, 10);
+}
+
+const today = todayDate();
+
 const initialData = {
   employees: [
     {
@@ -288,12 +296,159 @@ const initialData = {
       joined: false,
     },
   ],
+  certifications: [
+    {
+      id: 'cert-cloud-fundamentals',
+      title: 'Cloud Fundamentals',
+      detail: 'Passed · Sep 2026',
+      status: 'Completed',
+    },
+    {
+      id: 'cert-cloud-architecture',
+      title: 'Cloud Architecture Associate',
+      detail: 'Learning path in progress',
+      status: 'In Progress',
+    },
+    {
+      id: 'cert-infrastructure-automation',
+      title: 'Infrastructure Automation',
+      detail: 'Recommended for your capability',
+      status: 'Recommended',
+    },
+  ],
+  announcements: [
+    {
+      id: 'announcement-onsite',
+      title: 'Onsite schedule reminder',
+      description: 'Follow the current team RTO schedule and reserve your office seat in advance.',
+      category: 'Attendance',
+    },
+    {
+      id: 'announcement-profile',
+      title: 'Keep your skills profile current',
+      description: 'Review your primary skill mapping and update completed certifications.',
+      category: 'Profile',
+    },
+    {
+      id: 'announcement-learning',
+      title: 'Bench learning opportunities',
+      description: 'Ask your Capability POC about current cohort missions and mentoring sessions.',
+      category: 'Learning',
+    },
+  ],
+  mandatoryTraining: [
+    {
+      id: 'training-security',
+      title: 'Security Awareness',
+      description: 'Annual security awareness and information security training.',
+      due: 'Oct 16',
+      status: 'Active',
+    },
+    {
+      id: 'training-privacy',
+      title: 'Data Privacy & Protection',
+      description: 'Mandatory data privacy and protection training.',
+      due: 'Oct 26',
+      status: 'Active',
+    },
+    {
+      id: 'training-workplace-safety',
+      title: 'Workplace Safety',
+      description: 'Workplace safety policies and required procedures.',
+      due: 'Oct 16',
+      status: 'Active',
+    },
+    {
+      id: 'training-responsible-ai',
+      title: 'Responsible AI Awareness',
+      description: 'Introduction to responsible and secure AI usage.',
+      due: 'Oct 16',
+      status: 'Active',
+    },
+  ],
+  learningAssignments: [
+    {
+      id: 'learning-alex-security',
+      employeeId: 'employee-alex-santos',
+      trainingId: 'training-security',
+      status: 'Completed',
+      completionDate: today,
+    },
+    {
+      id: 'learning-alex-privacy',
+      employeeId: 'employee-alex-santos',
+      trainingId: 'training-privacy',
+      status: 'Completed',
+      completionDate: today,
+    },
+    {
+      id: 'learning-maria-security',
+      employeeId: 'employee-maria-cruz',
+      trainingId: 'training-security',
+      status: 'Completed',
+      completionDate: today,
+    },
+    {
+      id: 'learning-maria-privacy',
+      employeeId: 'employee-maria-cruz',
+      trainingId: 'training-privacy',
+      status: 'In Progress',
+      completionDate: null,
+    },
+    {
+      id: 'learning-michael-security',
+      employeeId: 'employee-michael-tan',
+      trainingId: 'training-security',
+      status: 'Completed',
+      completionDate: today,
+    },
+    {
+      id: 'learning-michael-privacy',
+      employeeId: 'employee-michael-tan',
+      trainingId: 'training-privacy',
+      status: 'In Progress',
+      completionDate: null,
+    },
+    {
+      id: 'learning-sarah-security',
+      employeeId: 'employee-sarah-garcia',
+      trainingId: 'training-security',
+      status: 'In Progress',
+      completionDate: null,
+    },
+    {
+      id: 'learning-sarah-privacy',
+      employeeId: 'employee-sarah-garcia',
+      trainingId: 'training-privacy',
+      status: 'Not Started',
+      completionDate: null,
+    },
+  ],
   scheduleRequests: [],
   checkedIn: false,
 };
 
 const seedData = {
   ...initialData,
+  learningAssignments: [
+    ...initialData.learningAssignments,
+    ...initialData.mandatoryTraining
+      .filter(
+        (training) =>
+          !initialData.learningAssignments.some(
+            (assignment) => assignment.trainingId === training.id,
+          ),
+      )
+      .flatMap((training) =>
+        initialData.employees.map((employee) => ({
+          id: `learning-${employee.id}-${training.id}`,
+          employeeId: employee.id,
+          trainingId: training.id,
+          status: 'Not Started',
+          completionDate: null,
+        })),
+      ),
+  ],
   employeeSchedules: Object.fromEntries(
     initialData.employees.map((employee) => [employee.id, { ...DEFAULT_SCHEDULE }]),
   ),
@@ -335,6 +490,67 @@ export function loadBenchData() {
     'cohorts',
     'scheduleRequests',
   ];
+  if (parsedData && Array.isArray(parsedData.employees)) {
+    if (!Array.isArray(parsedData.mandatoryTraining)) {
+      parsedData.mandatoryTraining = [];
+    }
+    if (!Array.isArray(parsedData.learningAssignments)) {
+      parsedData.learningAssignments = cloneData(initialData.learningAssignments).filter(
+        (assignment) =>
+          parsedData.employees.some((employee) => employee.id === assignment.employeeId),
+      );
+    }
+  }
+  if (
+    parsedData &&
+    Array.isArray(parsedData.employees) &&
+    !Array.isArray(parsedData.learningAssignments)
+  ) {
+    parsedData.learningAssignments = cloneData(initialData.learningAssignments).filter(
+      (assignment) =>
+        parsedData.employees.some((employee) => employee.id === assignment.employeeId),
+    );
+  }
+  if (parsedData && Array.isArray(parsedData.employees)) {
+    const addedTrainingIds = [];
+    for (const seededTraining of initialData.mandatoryTraining) {
+      if (!parsedData.mandatoryTraining.some((training) => training.id === seededTraining.id)) {
+        parsedData.mandatoryTraining.push({ ...seededTraining });
+        addedTrainingIds.push(seededTraining.id);
+      }
+    }
+    for (const training of parsedData.mandatoryTraining.filter(
+      (item) => addedTrainingIds.includes(item.id) && item.status === 'Active',
+    )) {
+      for (const employee of parsedData.employees) {
+        const assignmentExists = parsedData.learningAssignments.some(
+          (assignment) =>
+            assignment.employeeId === employee.id && assignment.trainingId === training.id,
+        );
+        if (!assignmentExists) {
+          parsedData.learningAssignments.push({
+            id: createId('learning'),
+            employeeId: employee.id,
+            trainingId: training.id,
+            status: 'Not Started',
+            completionDate: null,
+          });
+        }
+      }
+    }
+  }
+  if (parsedData && !Array.isArray(parsedData.certifications)) {
+    parsedData.certifications = cloneData(initialData.certifications);
+  }
+  if (parsedData && !Array.isArray(parsedData.announcements)) {
+    parsedData.announcements = cloneData(initialData.announcements);
+  }
+  requiredArrays.push(
+    'mandatoryTraining',
+    'learningAssignments',
+    'certifications',
+    'announcements',
+  );
   if (
     !parsedData ||
     requiredArrays.some((key) => !Array.isArray(parsedData[key])) ||
@@ -354,7 +570,23 @@ export function saveBenchData(data) {
 }
 
 export function addEmployee(data, employee) {
-  return { ...data, employees: [...data.employees, { ...employee, id: createId('employee') }] };
+  const createdEmployee = { ...employee, id: createId('employee') };
+  return {
+    ...data,
+    employees: [...data.employees, createdEmployee],
+    learningAssignments: [
+      ...(data.learningAssignments ?? []),
+      ...(data.mandatoryTraining ?? [])
+        .filter((training) => training.status === 'Active')
+        .map((training) => ({
+          id: createId('learning'),
+          employeeId: createdEmployee.id,
+          trainingId: training.id,
+          status: 'Not Started',
+          completionDate: null,
+        })),
+    ],
+  };
 }
 
 export function updateEmployee(data, employeeId, changes) {
@@ -376,6 +608,9 @@ export function deleteEmployee(data, employeeId) {
       task.assigneeId === employeeId ? { ...task, assigneeId: undefined } : task,
     ),
     attendanceRecords: data.attendanceRecords.filter((record) => record.employeeId !== employeeId),
+    learningAssignments: (data.learningAssignments ?? []).filter(
+      (assignment) => assignment.employeeId !== employeeId,
+    ),
     employeeSchedules,
     scheduleRequests: data.scheduleRequests.filter((request) => request.employeeId !== employeeId),
   };

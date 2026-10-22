@@ -2,10 +2,11 @@ import { useMemo, useState } from 'react';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { Panel } from '../components/Panel.jsx';
 import { StatCard } from '../components/StatCard.jsx';
+import { StatusBadge } from '../components/StatusBadge.jsx';
 import { useBenchData } from '../hooks/useBenchData.js';
 
 export default function TasksPage() {
-  const { tasks, updateTask } = useBenchData();
+  const { tasks, mandatoryTraining, updateTask } = useBenchData();
   const [filter, setFilter] = useState('All');
   const visibleTasks = useMemo(
     () => tasks.filter((task) => filter === 'All' || task.status === filter),
@@ -117,6 +118,30 @@ export default function TasksPage() {
           ))}
           {visibleTasks.length === 0 && <p className="muted-copy">No tasks match this status.</p>}
         </div>
+      </Panel>
+      <Panel title="Mandatory training" eyebrow="Required learning">
+        {mandatoryTraining.filter((training) => training.status === 'Active').length ? (
+          <div className="learning-list">
+            {mandatoryTraining
+              .filter((training) => training.status === 'Active')
+              .map((training) => (
+                <article className="learning-row" key={training.id}>
+                  <span className="learning-icon" aria-hidden="true">
+                    ◇
+                  </span>
+                  <div className="learning-main">
+                    <strong>{training.title}</strong>
+                    <span>
+                      {training.description} · Due {training.due || 'date not set'}
+                    </span>
+                  </div>
+                  <StatusBadge status="Required" />
+                </article>
+              ))}
+          </div>
+        ) : (
+          <p className="muted-copy">No active mandatory training is configured.</p>
+        )}
       </Panel>
       <Panel title="Recommended for you" eyebrow="Development opportunities">
         <div className="card-grid">
