@@ -1521,20 +1521,6 @@ p {
   width: 100%;
   border-color: #e5c9f2;
 }
-.employee-add-button {
-  gap: 7px;
-}
-.button-primary.employee-add-button {
-  background: var(--purple);
-  color: #fff;
-}
-.button-primary.employee-add-button:hover {
-  background: #9200df;
-}
-.employee-add-button > span {
-  font-size: 19px;
-  line-height: 1;
-}
 .employee-panel-actions {
   display: flex;
   flex-wrap: wrap;

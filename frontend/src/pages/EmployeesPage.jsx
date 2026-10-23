@@ -42,7 +42,6 @@ const EMPTY_FILTERS = {
 export default function EmployeesPage() {
   const {
     employees,
-    addEmployee,
     importEmployees: importEmployeeBatch,
     updateEmployee,
     deleteEmployee,
@@ -115,8 +114,7 @@ export default function EmployeesPage() {
   }
 
   function saveEmployee(values) {
-    const saved = dialogEmployee ? updateEmployee(dialogEmployee.id, values) : addEmployee(values);
-    if (saved) {
+    if (updateEmployee(dialogEmployee.id, values)) {
       setFormOpen(false);
       setDialogEmployee(null);
     }
@@ -432,17 +430,6 @@ export default function EmployeesPage() {
               onClick={() => setImportOpen(true)}
             >
               Import
-            </button>
-            <button
-              type="button"
-              className="button button-primary employee-add-button"
-              onClick={() => {
-                setDialogEmployee(null);
-                setFormOpen(true);
-              }}
-            >
-              <span aria-hidden="true">+</span>
-              Add employee
             </button>
           </div>
         }
