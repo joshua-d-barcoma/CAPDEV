@@ -1527,15 +1527,6 @@ p {
   align-items: center;
   gap: 8px;
 }
-.employee-panel-actions .button-secondary {
-  border-color: var(--purple-dark);
-  background: var(--purple-dark);
-  color: #fff;
-}
-.employee-panel-actions .button-secondary:hover {
-  border-color: #491165;
-  background: #491165;
-}
 .employee-list-pagination {
   display: flex;
   flex-wrap: wrap;

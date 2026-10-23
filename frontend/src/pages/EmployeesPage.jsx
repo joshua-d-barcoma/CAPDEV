@@ -36,7 +36,6 @@ const EMPTY_FILTERS = {
   attendance: '',
   location: '',
   joiningDate: '',
-  rollInDate: '',
 };
 
 const EMPLOYEE_PAGE_SIZE = 10;
@@ -60,8 +59,7 @@ export default function EmployeesPage() {
   const benchEmployees = useMemo(
     () =>
       employees.filter(
-        (employee) =>
-          normalizeEmployeeStatus(employee.employeeStatus) === DEFAULT_EMPLOYEE_STATUS,
+        (employee) => normalizeEmployeeStatus(employee.employeeStatus) === DEFAULT_EMPLOYEE_STATUS,
       ),
     [employees],
   );
@@ -70,10 +68,7 @@ export default function EmployeesPage() {
     () => filterEmployees(benchEmployees, filters, search),
     [benchEmployees, filters, search],
   );
-  const employeePageCount = Math.max(
-    1,
-    Math.ceil(filteredEmployees.length / EMPLOYEE_PAGE_SIZE),
-  );
+  const employeePageCount = Math.max(1, Math.ceil(filteredEmployees.length / EMPLOYEE_PAGE_SIZE));
   const currentEmployeePage = Math.min(employeePage, employeePageCount);
   const employeePageNumbers =
     employeePageCount <= 5
@@ -180,7 +175,7 @@ export default function EmployeesPage() {
   const columns = [
     {
       key: 'employee',
-      label: 'Employee',
+      label: 'EID',
       render: (employee) => (
         <Link className="employee-link" to={getEmployeeRoute(employee.name)}>
           <span className="avatar-small">
@@ -191,16 +186,16 @@ export default function EmployeesPage() {
           </span>
           <span>
             <strong>{employee.name}</strong>
-            <small>{employee.careerLevel}</small>
           </span>
         </Link>
       ),
     },
+    { key: 'careerLevel', label: 'Level' },
     { key: 'capability', label: 'Capability' },
     { key: 'workLocation', label: 'Location' },
     {
       key: 'skills',
-      label: 'Key skills',
+      label: 'Primary Skill',
       render: (employee) => (
         <span className="skill-inline">{employee.skills.slice(0, 3).join(' · ')}</span>
       ),
@@ -211,9 +206,9 @@ export default function EmployeesPage() {
       render: (employee) => <StatusBadge status={employee.attendanceStatus} />,
     },
     {
-      key: 'rollInDate',
-      label: 'Roll-in date',
-      render: (employee) => formatDate(employee.rollInDate),
+      key: 'joiningDate',
+      label: 'Join Date',
+      render: (employee) => formatDate(employee.joiningDate),
     },
     {
       key: 'actions',
@@ -466,7 +461,7 @@ export default function EmployeesPage() {
             </Link>
             <button
               type="button"
-              className="button button-secondary"
+              className="button button-primary"
               onClick={() => setImportOpen(true)}
             >
               Import
@@ -532,12 +527,6 @@ export default function EmployeesPage() {
               value={filters.joiningDate}
               onChange={(value) => updateFilter('joiningDate', value)}
             />
-            <DateFilter
-              label="Roll-in date"
-              value={filters.rollInDate}
-              onChange={(value) => updateFilter('rollInDate', value)}
-              alignRight
-            />
             <button
               type="button"
               className="button button-reset"
@@ -592,7 +581,9 @@ export default function EmployeesPage() {
               <button
                 type="button"
                 className="button button-secondary"
-                onClick={() => setEmployeePage((current) => Math.min(employeePageCount, current + 1))}
+                onClick={() =>
+                  setEmployeePage((current) => Math.min(employeePageCount, current + 1))
+                }
                 disabled={currentEmployeePage === employeePageCount}
               >
                 Next
