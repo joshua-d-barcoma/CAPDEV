@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
 import { Dialog } from '../components/Dialog.jsx';
+import { EmployeeScopeFilters } from '../components/EmployeeScopeFilters.jsx';
 import { Panel } from '../components/Panel.jsx';
 import { StatCard } from '../components/StatCard.jsx';
 import { StatusBadge } from '../components/StatusBadge.jsx';
 import { useBenchData } from '../hooks/useBenchData.js';
+import { filterEmployees } from '../utils/employeeInsights.js';
 
 const EMPTY_FORM = { title: '', description: '', due: '', status: 'Active' };
 const EMPLOYEES_PER_PAGE = 10;
@@ -107,8 +109,17 @@ export default function LearningPage() {
   const [skillHubForm, setSkillHubForm] = useState({ title: '', description: '', detail: '' });
   const [completionsPage, setCompletionsPage] = useState(1);
   const [noActivePage, setNoActivePage] = useState(1);
+  const [scopeFilters, setScopeFilters] = useState({ location: '', capability: '' });
   const today = getToday();
 
+  const scopedEmployees = useMemo(
+    () => filterEmployees(employees, scopeFilters),
+    [employees, scopeFilters],
+  );
+  const scopedEmployeeIds = useMemo(
+    () => new Set(scopedEmployees.map((employee) => employee.id)),
+    [scopedEmployees],
+  );
   const employeeById = useMemo(
     () => new Map(employees.map((employee) => [employee.id, employee])),
     [employees],
@@ -122,7 +133,9 @@ export default function LearningPage() {
       learningAssignments
         .filter(
           (assignment) =>
-            employeeById.has(assignment.employeeId) && trainingById.has(assignment.trainingId),
+            scopedEmployeeIds.has(assignment.employeeId) &&
+            employeeById.has(assignment.employeeId) &&
+            trainingById.has(assignment.trainingId),
         )
         .map((assignment) => {
           const employee = employeeById.get(assignment.employeeId);
@@ -141,7 +154,7 @@ export default function LearningPage() {
                   : 0,
           };
         }),
-    [employeeById, learningAssignments, trainingById],
+    [employeeById, learningAssignments, scopedEmployeeIds, trainingById],
   );
   const completedToday = assignments.filter(
     (assignment) => assignment.status === 'Completed' && assignment.completionDate === today,
@@ -152,7 +165,7 @@ export default function LearningPage() {
   const completionRate = assignments.length
     ? Math.round((completedCount / assignments.length) * 100)
     : 0;
-  const noActiveEmployees = employees.filter(
+  const noActiveEmployees = scopedEmployees.filter(
     (employee) =>
       !assignments.some(
         (assignment) => assignment.employeeId === employee.id && assignment.status !== 'Completed',
@@ -162,7 +175,7 @@ export default function LearningPage() {
     .filter((assignment) => assignment.status === 'Completed')
     .sort((left, right) => (right.completionDate ?? '').localeCompare(left.completionDate ?? ''))
     .slice(0, 5);
-  const employeeStats = employees.map((employee) => {
+  const employeeStats = scopedEmployees.map((employee) => {
     const items = assignments.filter((assignment) => assignment.employeeId === employee.id);
     const completed = items.filter((assignment) => assignment.status === 'Completed').length;
     const daily = items.filter(
@@ -193,6 +206,12 @@ export default function LearningPage() {
     ...assignment,
     completionDate: assignment.completionDate ?? '',
   }));
+
+  function updateScopeFilter(name, value) {
+    setScopeFilters((current) => ({ ...current, [name]: value }));
+    setCompletionsPage(1);
+    setNoActivePage(1);
+  }
 
   function openAddTraining() {
     setEditingTraining(null);
@@ -271,25 +290,22 @@ export default function LearningPage() {
 
   return (
     <div className="page-stack learning-dashboard">
-      <header className="learning-banner">
-        <div className="learning-banner-copy">
-          <h1>Learning</h1>
-          <p>Monitor bench employees, training, skills, and development progress.</p>
+      <header className="learning-banner employee-scope-banner">
+        <div className="employee-scope-banner-heading">
+          <div className="learning-banner-copy">
+            <h1>Learning</h1>
+            <p>Monitor bench employees, training, skills, and development progress.</p>
+          </div>
         </div>
-        <div className="learning-banner-actions">
-          <button
-            type="button"
-            className="button button-secondary"
-            onClick={() => downloadReport(reportRows)}
-          >
-            Export report
-          </button>
-          <button type="button" className="button learning-add-button" onClick={openAddTraining}>
-            Add Training <span aria-hidden="true">＋</span>
-          </button>
+        <div className="employee-scope-banner-controls">
+          <EmployeeScopeFilters
+            employees={employees}
+            location={scopeFilters.location}
+            capability={scopeFilters.capability}
+            onChange={updateScopeFilter}
+          />
         </div>
       </header>
-
       {storageError && (
         <p className="learning-error" role="alert">
           {storageError}
@@ -363,6 +379,15 @@ export default function LearningPage() {
           title="Employee Completions"
           eyebrow="Daily statistics"
           className="learning-paginated-panel"
+          action={
+            <button
+              type="button"
+              className="button button-secondary"
+              onClick={() => downloadReport(reportRows)}
+            >
+              Export report
+            </button>
+          }
         >
           <p className="learning-panel-description">
             Learning activities completed today and overall assigned progress.
@@ -455,6 +480,11 @@ export default function LearningPage() {
         title="Mandatory Trainings"
         eyebrow="Training management"
         className="learning-training-panel"
+        action={
+          <button type="button" className="button learning-add-button" onClick={openAddTraining}>
+            Add Training <span aria-hidden="true">＋</span>
+          </button>
+        }
       >
         <p className="learning-panel-description">
           Manage required training programs assigned to bench employees.

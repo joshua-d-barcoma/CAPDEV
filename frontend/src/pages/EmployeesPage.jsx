@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ConfirmDialog } from '../components/ConfirmDialog.jsx';
 import { DataTable } from '../components/DataTable.jsx';
 import { DateFilter } from '../components/DateFilter.jsx';
+import { EmployeeScopeFilters } from '../components/EmployeeScopeFilters.jsx';
 import { EmployeeImportDialog } from '../components/EmployeeImportDialog.jsx';
 import { EmployeeImportReviewPage } from '../components/EmployeeImportReviewPage.jsx';
 import { EmployeeForm } from '../components/EmployeeForm.jsx';
@@ -36,6 +37,7 @@ const EMPTY_FILTERS = {
   attendance: '',
   location: '',
   joiningDate: '',
+  rollInDate: '',
 };
 
 const EMPLOYEE_PAGE_SIZE = 10;
@@ -211,6 +213,11 @@ export default function EmployeesPage() {
       render: (employee) => formatDate(employee.joiningDate),
     },
     {
+      key: 'rollInDate',
+      label: 'Roll-in Date',
+      render: (employee) => formatDate(employee.rollInDate),
+    },
+    {
       key: 'actions',
       label: 'Actions',
       render: (employee) => (
@@ -255,38 +262,12 @@ export default function EmployeesPage() {
           <h1 id="employees-title">Employees</h1>
           <p>Monitor bench employees, attendance, skills, and deployment readiness.</p>
         </div>
-        <div className="dashboard-filters">
-          <label className="dashboard-filter">
-            <span className="visually-hidden">Filter by location</span>
-            <select
-              aria-label="Filter by location"
-              value={filters.location}
-              onChange={(event) => updateFilter('location', event.target.value)}
-            >
-              <option value="">All Locations</option>
-              {filterOptions.locations.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="dashboard-filter">
-            <span className="visually-hidden">Filter by capability</span>
-            <select
-              aria-label="Filter by capability"
-              value={filters.capability}
-              onChange={(event) => updateFilter('capability', event.target.value)}
-            >
-              <option value="">All Capabilities</option>
-              {filterOptions.capabilities.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+        <EmployeeScopeFilters
+          employees={benchEmployees}
+          location={filters.location}
+          capability={filters.capability}
+          onChange={updateFilter}
+        />
       </section>
       <div className="stat-grid">
         <StatCard
@@ -452,7 +433,7 @@ export default function EmployeesPage() {
       </div>
 
       <Panel
-        title="Bench by capability"
+        title="All Employees"
         eyebrow="Workforce"
         action={
           <div className="employee-panel-actions">
@@ -526,6 +507,11 @@ export default function EmployeesPage() {
               label="Join date"
               value={filters.joiningDate}
               onChange={(value) => updateFilter('joiningDate', value)}
+            />
+            <DateFilter
+              label="Roll-in date"
+              value={filters.rollInDate}
+              onChange={(value) => updateFilter('rollInDate', value)}
             />
             <button
               type="button"

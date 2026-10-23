@@ -1,11 +1,3 @@
-export const DASHBOARD_LOCATIONS = ['Manila', 'Cebu'];
-export const DASHBOARD_CAPABILITIES = [
-  'Hybrid Cloud',
-  'Network',
-  'Security',
-  'Data & AI',
-];
-
 function matchesCapability(employee, capability) {
   return employee.capability.toLowerCase().includes(capability.toLowerCase());
 }

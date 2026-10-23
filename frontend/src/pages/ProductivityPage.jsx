@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
 import { DataTable } from '../components/DataTable.jsx';
 import { Dialog } from '../components/Dialog.jsx';
+import { EmployeeScopeFilters } from '../components/EmployeeScopeFilters.jsx';
 import { Panel } from '../components/Panel.jsx';
 import { StatCard } from '../components/StatCard.jsx';
 import { useBenchData } from '../hooks/useBenchData.js';
+import { filterEmployees } from '../utils/employeeInsights.js';
 import { getTaskStatus, getTasksForDistribution } from '../utils/productivityTasks.js';
 
 const EOD_TREND = [
@@ -41,12 +43,33 @@ export default function ProductivityPage() {
   const { employees, tasks, updateTaskAssignee } = useBenchData();
   const [taskToAssign, setTaskToAssign] = useState(null);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState('');
-  const completed = tasks.filter((task) => task.status === 'Completed').length;
-  const inProgress = tasks.filter((task) => task.status === 'In Progress').length;
-  const notStarted = tasks.filter((task) => task.status === 'Not Started').length;
+  const [scopeFilters, setScopeFilters] = useState({ location: '', capability: '' });
+  const scopedEmployees = useMemo(
+    () => filterEmployees(employees, scopeFilters),
+    [employees, scopeFilters],
+  );
+  const scopedEmployeeIds = useMemo(
+    () => new Set(scopedEmployees.map((employee) => employee.id)),
+    [scopedEmployees],
+  );
+  const scopedTasks = useMemo(
+    () =>
+      tasks.filter(
+        (task) =>
+          (task.assigneeId && scopedEmployeeIds.has(task.assigneeId)) ||
+          (!task.assigneeId && findSkillMatch(task, scopedEmployees)),
+      ),
+    [scopedEmployeeIds, scopedEmployees, tasks],
+  );
+  const completed = scopedTasks.filter((task) => task.status === 'Completed').length;
+  const inProgress = scopedTasks.filter((task) => task.status === 'In Progress').length;
+  const notStarted = scopedTasks.filter((task) => task.status === 'Not Started').length;
 
-  const categories = useMemo(() => [...new Set(tasks.map((task) => task.category))], [tasks]);
-  const pendingTasks = getTasksForDistribution(tasks);
+  const categories = useMemo(
+    () => [...new Set(scopedTasks.map((task) => task.category))],
+    [scopedTasks],
+  );
+  const pendingTasks = getTasksForDistribution(scopedTasks);
 
   const distributionColumns = [
     {
@@ -63,7 +86,7 @@ export default function ProductivityPage() {
     {
       key: 'skill',
       label: 'Skill needed',
-      render: (task) => findSkillMatch(task, employees)?.skills.join(', ') ?? '—',
+      render: (task) => findSkillMatch(task, scopedEmployees)?.skills.join(', ') ?? '—',
     },
     {
       key: 'due',
@@ -91,7 +114,7 @@ export default function ProductivityPage() {
     {
       key: 'match',
       label: 'Suggested match',
-      render: (task) => findSkillMatch(task, employees)?.employee.name ?? 'No skill match',
+      render: (task) => findSkillMatch(task, scopedEmployees)?.employee.name ?? 'No skill match',
     },
     {
       key: 'assign',
@@ -102,7 +125,7 @@ export default function ProductivityPage() {
           className="button button-secondary button-small productivity-assign-button"
           onClick={() => {
             setTaskToAssign(task);
-            setSelectedEmployeeId(findSkillMatch(task, employees)?.employee.id ?? '');
+            setSelectedEmployeeId(findSkillMatch(task, scopedEmployees)?.employee.id ?? '');
           }}
         >
           Assign
@@ -122,17 +145,27 @@ export default function ProductivityPage() {
 
   return (
     <div className="page-stack productivity-page">
-      <section className="dashboard-banner productivity-banner">
-        <div className="dashboard-banner-copy">
-          <h1>Tasks &amp; Productivity</h1>
-          <p>Monitor training and work progress across the bench.</p>
+      <section className="dashboard-banner productivity-banner employee-scope-banner">
+        <div className="employee-scope-banner-heading">
+          <div className="dashboard-banner-copy">
+            <h1>Tasks &amp; Productivity</h1>
+            <p>Monitor training and work progress across the bench.</p>
+          </div>
+        </div>
+        <div className="employee-scope-banner-controls">
+          <EmployeeScopeFilters
+            employees={employees}
+            location={scopeFilters.location}
+            capability={scopeFilters.capability}
+            onChange={(name, value) => setScopeFilters((current) => ({ ...current, [name]: value }))}
+          />
         </div>
       </section>
 
       <div className="stat-grid">
         <StatCard
           label="Assigned tasks"
-          value={tasks.length}
+          value={scopedTasks.length}
           detail="Across active resources"
           icon="✓"
         />
@@ -163,12 +196,12 @@ export default function ProductivityPage() {
         <Panel title="Task status by category" eyebrow="Completion state of tracked work">
           <div className="productivity-status-chart">
             {categories.map((category) => {
-              const scopedTasks = tasks.filter((task) => task.category === category);
+              const categoryTasks = scopedTasks.filter((task) => task.category === category);
               const statusCounts = TASK_STATUSES.map(({ key, label, className }) => ({
                 key,
                 label,
                 className,
-                count: scopedTasks.filter((task) => getTaskStatus(task) === key).length,
+                count: categoryTasks.filter((task) => getTaskStatus(task) === key).length,
               }));
               return (
                 <div className="productivity-status-row" key={category}>
@@ -183,12 +216,12 @@ export default function ProductivityPage() {
                         <i
                           className={`productivity-status-segment ${className}`}
                           key={key}
-                          style={{ width: `${(count / scopedTasks.length) * 100}%` }}
+                          style={{ width: `${(count / categoryTasks.length) * 100}%` }}
                         />
                       ) : null,
                     )}
                   </div>
-                  <strong>{scopedTasks.length}</strong>
+                  <strong>{categoryTasks.length}</strong>
                 </div>
               );
             })}
@@ -221,10 +254,12 @@ export default function ProductivityPage() {
       <Panel title="Productivity by task category" eyebrow="Completed tasks / assigned tasks">
         <div className="productivity-category-chart">
           {categories.map((category) => {
-            const scopedTasks = tasks.filter((task) => task.category === category);
-            const completedTasks = scopedTasks.filter((task) => task.status === 'Completed').length;
-            const completion = scopedTasks.length
-              ? Math.round((completedTasks / scopedTasks.length) * 100)
+            const categoryTasks = scopedTasks.filter((task) => task.category === category);
+            const completedTasks = categoryTasks.filter(
+              (task) => task.status === 'Completed',
+            ).length;
+            const completion = categoryTasks.length
+              ? Math.round((completedTasks / categoryTasks.length) * 100)
               : 0;
             return (
               <div className="productivity-category-row" key={category}>
@@ -233,7 +268,7 @@ export default function ProductivityPage() {
                   <i style={{ width: `${completion}%` }} />
                 </div>
                 <strong>
-                  {completedTasks}/{scopedTasks.length}
+                  {completedTasks}/{categoryTasks.length}
                 </strong>
               </div>
             );
@@ -278,7 +313,7 @@ export default function ProductivityPage() {
                 onChange={(event) => setSelectedEmployeeId(event.target.value)}
               >
                 <option value="">Select an employee</option>
-                {employees.map((employee) => (
+                {scopedEmployees.map((employee) => (
                   <option key={employee.id} value={employee.id}>
                     {employee.name} · {employee.capability}
                   </option>

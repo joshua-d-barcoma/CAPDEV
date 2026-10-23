@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react';
 import { DataTable } from '../components/DataTable.jsx';
+import { EmployeeScopeFilters } from '../components/EmployeeScopeFilters.jsx';
 import { Panel } from '../components/Panel.jsx';
 import { SearchInput } from '../components/SearchInput.jsx';
 import { StatCard } from '../components/StatCard.jsx';
 import { StatusBadge } from '../components/StatusBadge.jsx';
 import { useBenchData } from '../hooks/useBenchData.js';
+import { filterEmployees } from '../utils/employeeInsights.js';
 import { getEmployeeName } from '../utils/formatters.js';
 
 const compliance = [
@@ -18,9 +20,27 @@ export default function AttendancePage() {
   const { employees, attendanceRecords } = useBenchData();
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All statuses');
+  const [scopeFilters, setScopeFilters] = useState({ location: '', capability: '' });
+  const scopedEmployees = useMemo(
+    () => filterEmployees(employees, scopeFilters),
+    [employees, scopeFilters],
+  );
+  const scopedEmployeeIds = useMemo(
+    () => new Set(scopedEmployees.map((employee) => employee.id)),
+    [scopedEmployees],
+  );
+  const scopedAttendanceRecords = useMemo(
+    () =>
+      attendanceRecords.filter(
+        (record) =>
+          (!scopeFilters.location && !scopeFilters.capability) ||
+          scopedEmployeeIds.has(record.employeeId),
+      ),
+    [attendanceRecords, scopeFilters, scopedEmployeeIds],
+  );
   const records = useMemo(
     () =>
-      attendanceRecords.filter((record) => {
+      scopedAttendanceRecords.filter((record) => {
         const name = getEmployeeName(record.employeeId, employees);
         return (
           `${name} ${record.workType} ${record.location}`
@@ -29,13 +49,13 @@ export default function AttendancePage() {
           (statusFilter === 'All statuses' || record.status === statusFilter)
         );
       }),
-    [attendanceRecords, employees, query, statusFilter],
+    [employees, query, scopedAttendanceRecords, statusFilter],
   );
-  const present = attendanceRecords.filter((record) => record.status === 'Present').length;
-  const exceptions = attendanceRecords.filter(
+  const present = scopedAttendanceRecords.filter((record) => record.status === 'Present').length;
+  const exceptions = scopedAttendanceRecords.filter(
     (record) => record.status === 'Unapproved Absence',
   ).length;
-  const late = attendanceRecords.filter(
+  const late = scopedAttendanceRecords.filter(
     (record) => record.timeIn !== '—' && record.timeIn > '09:00 AM',
   ).length;
 
@@ -55,9 +75,7 @@ export default function AttendancePage() {
     ];
     // Quote every field and double embedded quotes so commas and quotes remain valid CSV.
     const csvContent = csvRows
-      .map((row) =>
-        row.map((value) => `"${String(value ?? '').replace(/"/g, '""')}"`).join(','),
-      )
+      .map((row) => row.map((value) => `"${String(value ?? '').replace(/"/g, '""')}"`).join(','))
       .join('\r\n');
     const date = new Date();
     const dateStamp = [
@@ -92,28 +110,42 @@ export default function AttendancePage() {
 
   return (
     <div className="page-stack">
-      <section className="dashboard-banner" aria-labelledby="attendance-title">
-        <div className="dashboard-banner-copy">
-          <h1 id="attendance-title">Attendance</h1>
-          <p>Monitor employee attendance, time-in records, compliance, and follow-up exceptions.</p>
+      <section
+        className="dashboard-banner employee-scope-banner"
+        aria-labelledby="attendance-title"
+      >
+        <div className="employee-scope-banner-heading">
+          <div className="dashboard-banner-copy">
+            <h1 id="attendance-title">Attendance</h1>
+            <p>
+              Monitor employee attendance, time-in records, compliance, and follow-up exceptions.
+            </p>
+          </div>
         </div>
-        <button
-          className="button button-light"
-          type="button"
-          onClick={handleExport}
-          disabled={records.length === 0}
-        >
-          Export Report
-        </button>
+        <div className="employee-scope-banner-controls">
+          <EmployeeScopeFilters
+            employees={employees}
+            location={scopeFilters.location}
+            capability={scopeFilters.capability}
+            onChange={(name, value) =>
+              setScopeFilters((current) => ({ ...current, [name]: value }))
+            }
+          />
+        </div>
       </section>
       <div className="stat-grid stat-grid-five">
-        <StatCard label="Total Bench" value={employees.length} detail="Active resources" icon="♙" />
+        <StatCard
+          label="Total Bench"
+          value={scopedEmployees.length}
+          detail="Active resources"
+          icon="♙"
+        />
         <StatCard
           label="Present Today"
           value={present}
           detail={
-            employees.length
-              ? `${Math.round((present / employees.length) * 100)}% attendance`
+            scopedEmployees.length
+              ? `${Math.round((present / scopedEmployees.length) * 100)}% attendance`
               : 'No employees'
           }
           tone="green"
@@ -161,7 +193,20 @@ export default function AttendancePage() {
           ))}
         </div>
       </Panel>
-      <Panel title="Attendance records" eyebrow="Daily register">
+      <Panel
+        title="Attendance records"
+        eyebrow="Daily register"
+        action={
+          <button
+            className="button button-secondary"
+            type="button"
+            onClick={handleExport}
+            disabled={records.length === 0}
+          >
+            Export Report
+          </button>
+        }
+      >
         <div className="table-toolbar">
           <SearchInput
             value={query}

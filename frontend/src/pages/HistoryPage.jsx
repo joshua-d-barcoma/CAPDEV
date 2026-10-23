@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { DataTable } from '../components/DataTable.jsx';
+import { EmployeeScopeFilters } from '../components/EmployeeScopeFilters.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { Panel } from '../components/Panel.jsx';
 import { StatusBadge } from '../components/StatusBadge.jsx';
 import { useBenchData } from '../hooks/useBenchData.js';
+import { filterEmployees } from '../utils/employeeInsights.js';
 import { formatDate } from '../utils/formatters.js';
 
 const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -20,8 +22,12 @@ export default function HistoryPage() {
   const [schedule, setSchedule] = useState(null);
   const [editing, setEditing] = useState(false);
   const [notice, setNotice] = useState('');
+  const [scopeFilters, setScopeFilters] = useState({ location: '', capability: '' });
   const currentSchedule = alex ? employeeSchedules[alex.id] : null;
-  const personalHistory = attendanceRecords.filter((record) => record.employeeId === alex?.id);
+  const scopedEmployee = alex ? filterEmployees([alex], scopeFilters)[0] : null;
+  const personalHistory = attendanceRecords.filter(
+    (record) => record.employeeId === scopedEmployee?.id,
+  );
   const columns = [
     { key: 'date', label: 'Date', render: (record) => formatDate(record.date) },
     { key: 'timeIn', label: 'Time in' },
@@ -65,6 +71,12 @@ export default function HistoryPage() {
           {notice}
         </div>
       )}
+      <EmployeeScopeFilters
+        employees={employees}
+        location={scopeFilters.location}
+        capability={scopeFilters.capability}
+        onChange={(name, value) => setScopeFilters((current) => ({ ...current, [name]: value }))}
+      />
       <Panel title="My attendance" eyebrow="Recent records">
         <DataTable
           columns={columns}

@@ -504,6 +504,64 @@ p {
   align-items: center;
   gap: 10px;
 }
+.employee-scope-banner {
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 14px 18px;
+}
+.employee-scope-banner-heading {
+  min-width: 0;
+  flex: 1 1 300px;
+}
+.employee-scope-banner-controls {
+  min-width: 0;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.employee-scope-banner-controls > .learning-banner-actions {
+  width: auto;
+  flex: 0 1 auto;
+}
+.employee-scope-banner-controls > .employee-scope-header-filters {
+  flex: 0 0 auto;
+}
+.employee-scope-banner-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.employee-scope-banner-controls {
+  display: flex;
+  align-items: center;
+}
+.employee-scope-banner-controls > .button,
+.employee-scope-banner-controls > .learning-banner-actions {
+  order: 0;
+}
+.employee-scope-banner-controls > .employee-scope-header-filters {
+  order: 1;
+}
+.employee-scope-header-filters {
+  width: auto;
+  flex-wrap: nowrap;
+}
+.employee-scope-header-filters .dashboard-filter {
+  width: 112px;
+  min-width: 0;
+  flex: 0 1 112px;
+}
+.employee-scope-header-filters .dashboard-filter select {
+  min-height: 36px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 7px;
+  font-size: 11px;
+}
 .dashboard-filter {
   display: flex;
   width: 160px;
@@ -2068,12 +2126,14 @@ p {
   align-items: center;
   gap: 8px;
 }
-.learning-banner .button-secondary {
+.learning-banner .button-secondary,
+.employee-scope-banner .button-secondary {
   border-color: rgb(255 255 255 / 38%);
   background: rgb(255 255 255 / 12%);
   color: #fff;
 }
-.learning-banner .button-secondary:hover {
+.learning-banner .button-secondary:hover,
+.employee-scope-banner .button-secondary:hover {
   background: rgb(255 255 255 / 22%);
 }
 .learning-add-button {
@@ -3078,11 +3138,71 @@ p {
     gap: 17px;
     padding: 17px;
   }
+  .employee-scope-banner {
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
   .page-header-actions {
     width: 100%;
   }
   .dashboard-filters {
     width: 100%;
+  }
+  .employee-scope-banner-heading {
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+  }
+  .employee-scope-banner-controls {
+    flex-wrap: wrap;
+    margin-left: auto;
+  }
+  .employee-scope-banner-controls > .learning-banner-actions {
+    width: auto;
+    flex: 0 1 auto;
+  }
+  .employee-scope-banner-heading > .button {
+    width: auto;
+    flex: 0 0 auto;
+    padding: 0 12px;
+    font-size: 10px;
+  }
+  .employee-scope-banner-heading .learning-banner-actions {
+    width: auto;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+  .employee-scope-banner-heading .learning-banner-actions > .button {
+    flex: 0 0 auto;
+    padding: 0 10px;
+    font-size: 10px;
+  }
+  .employee-scope-banner-heading .dashboard-banner-copy,
+  .employee-scope-banner-heading .learning-banner-copy {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  .employee-scope-banner-heading .dashboard-banner-copy p,
+  .employee-scope-banner-heading .learning-banner-copy p {
+    font-size: 11px;
+  }
+  .employee-scope-header-filters {
+    width: auto;
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+  .employee-scope-header-filters .dashboard-filter {
+    width: auto;
+    max-width: 112px;
+    flex: 1 1 0;
+  }
+  .employee-scope-header-filters .dashboard-filter select {
+    min-height: 36px;
+    padding: 0 8px;
+    font-size: 11px;
   }
   .dashboard-filter {
     width: auto;
@@ -3100,6 +3220,17 @@ p {
   .stat-grid-five {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 9px;
+  }
+
+  @media (max-width: 480px) {
+    .employee-scope-banner-controls {
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .employee-scope-banner-controls .employee-scope-header-filters {
+      order: 0;
+      width: auto;
+    }
   }
   .stat-card {
     min-height: 95px;
