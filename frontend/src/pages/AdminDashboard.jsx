@@ -41,7 +41,7 @@ export default function AdminDashboard() {
     <div className="page-stack">
       <section className="dashboard-banner" aria-labelledby="dashboard-title">
         <div className="dashboard-banner-copy">
-          <h1 id="dashboard-title">DASHBOARD</h1>
+          <h1 id="dashboard-title">Dashboard</h1>
           <p>Overview of bench resources and workforce readiness.</p>
         </div>
         <div className="dashboard-filters">

@@ -1159,7 +1159,6 @@ p {
 .productivity-banner {
   min-height: 86px;
   padding: 16px 20px;
-  border-radius: 8px;
 }
 .productivity-banner-copy h1 {
   margin: 0 0 4px;
@@ -2042,7 +2041,6 @@ p {
   justify-content: space-between;
   gap: 18px;
   padding: 14px 18px;
-  border-radius: 8px;
   background: linear-gradient(105deg, #38105c 0%, #a900d8 73%, #50116e 100%);
   color: #fff;
 }
@@ -2072,8 +2070,8 @@ p {
 .learning-add-button {
   gap: 8px;
   border: 0;
-  background: #a900ff;
-  color: #fff;
+  background: #ffffff;
+  color: #32094d;
 }
 .learning-add-button:hover {
   background: #9200df;
