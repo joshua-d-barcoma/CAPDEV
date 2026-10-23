@@ -59,3 +59,7 @@ Clear the `bench-flow:` keys from browser storage to restore the initial demo da
 ## Shared create/edit form
 
 The employee directory uses one `EmployeeForm` for both creation and editing. The same fields, constraints, and layout are used in both modes; only the dialog title, submit label, and submit handler vary.
+
+## Employee imports
+
+From **Employees**, choose **Import** to upload a CSV or `.xlsx` workbook and review the records before applying them. The review keeps existing matching employees unchanged and adds only new records. **History** opens saved import snapshots, with pagination for large files. A 20-employee CSV sample is available at `public/sample-employee-import-actions.csv`.

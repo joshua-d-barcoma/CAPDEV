@@ -1,3 +1,5 @@
+import { DEFAULT_EMPLOYEE_STATUS, normalizeEmployeeStatus } from '../constants/employeeStatuses.js';
+
 const STORAGE_KEY = 'bench-flow:data:v2';
 const DEFAULT_SCHEDULE = Object.freeze({
   Monday: 'Onsite',
@@ -425,6 +427,7 @@ const initialData = {
     },
   ],
   scheduleRequests: [],
+  employeeImportHistory: [],
   checkedIn: false,
 };
 
@@ -545,11 +548,15 @@ export function loadBenchData() {
   if (parsedData && !Array.isArray(parsedData.announcements)) {
     parsedData.announcements = cloneData(initialData.announcements);
   }
+  if (parsedData && !Array.isArray(parsedData.employeeImportHistory)) {
+    parsedData.employeeImportHistory = [];
+  }
   requiredArrays.push(
     'mandatoryTraining',
     'learningAssignments',
     'certifications',
     'announcements',
+    'employeeImportHistory',
   );
   if (
     !parsedData ||
@@ -570,7 +577,11 @@ export function saveBenchData(data) {
 }
 
 export function addEmployee(data, employee) {
-  const createdEmployee = { ...employee, id: createId('employee') };
+  const createdEmployee = {
+    ...employee,
+    employeeStatus: normalizeEmployeeStatus(employee.employeeStatus || DEFAULT_EMPLOYEE_STATUS),
+    id: createId('employee'),
+  };
   return {
     ...data,
     employees: [...data.employees, createdEmployee],
@@ -587,6 +598,66 @@ export function addEmployee(data, employee) {
         })),
     ],
   };
+}
+
+export function importEmployees(data, changesToApply, fileName, importDetails = {}) {
+  const importedAt = new Date().toISOString();
+  const updatedData = changesToApply.reduce(
+    (currentData, change) =>
+      change.existingEmployeeId
+        ? {
+            ...currentData,
+            employees: currentData.employees.map((employee) =>
+              employee.id === change.existingEmployeeId
+                ? { ...employee, ...change.employee }
+                : employee,
+            ),
+          }
+        : addEmployee(currentData, change.employee),
+    data,
+  );
+  return {
+    ...updatedData,
+    employeeImportHistory: [
+      {
+        id: createId('import'),
+        fileName,
+        count:
+          importDetails.sourceRows?.length ??
+          importDetails.employees?.length ??
+          changesToApply.length,
+        changesApplied: changesToApply.length,
+        importedAt,
+        sourceHeaders: importDetails.sourceHeaders ?? [],
+        sourceRows: importDetails.sourceRows ?? [],
+        employees: (importDetails.employees ?? []).map((employee) => {
+          const { providedFields, ...snapshot } = employee;
+          return {
+            id: createId('import-record'),
+            ...snapshot,
+            employeeStatus: normalizeEmployeeStatus(
+              snapshot.employeeStatus || DEFAULT_EMPLOYEE_STATUS,
+            ),
+          };
+        }),
+      },
+      ...(data.employeeImportHistory ?? []),
+    ],
+  };
+}
+
+export function deleteEmployeeImportHistoryEntry(data, importId) {
+  return {
+    ...data,
+    employeeImportHistory: (data.employeeImportHistory ?? []).filter((entry, index) => {
+      const entryId = entry.id || `legacy-${entry.importedAt}-${index}`;
+      return entryId !== importId;
+    }),
+  };
+}
+
+export function clearEmployeeImportHistory(data) {
+  return { ...data, employeeImportHistory: [] };
 }
 
 export function updateEmployee(data, employeeId, changes) {
@@ -620,6 +691,70 @@ export function updateTaskStatus(data, taskId, status) {
   return {
     ...data,
     tasks: data.tasks.map((task) => (task.id === taskId ? { ...task, status } : task)),
+  };
+}
+
+export function updateLearningAssignment(data, assignmentId, status) {
+  if (!data.learningAssignments.some((assignment) => assignment.id === assignmentId)) {
+    throw new Error('Learning assignment was not found.');
+  }
+  return {
+    ...data,
+    learningAssignments: data.learningAssignments.map((assignment) =>
+      assignment.id === assignmentId
+        ? {
+            ...assignment,
+            status,
+            completionDate: status === 'Completed' ? todayDate() : null,
+          }
+        : assignment,
+    ),
+  };
+}
+
+export function addMandatoryTraining(data, training) {
+  const createdTraining = { ...training, id: createId('training') };
+  const assignments =
+    createdTraining.status === 'Active'
+      ? (data.employees ?? []).map((employee) => ({
+          id: createId('learning'),
+          employeeId: employee.id,
+          trainingId: createdTraining.id,
+          status: 'Not Started',
+          completionDate: null,
+        }))
+      : [];
+  return {
+    ...data,
+    mandatoryTraining: [...(data.mandatoryTraining ?? []), createdTraining],
+    learningAssignments: [...(data.learningAssignments ?? []), ...assignments],
+  };
+}
+
+export function updateMandatoryTraining(data, trainingId, changes) {
+  if (!data.mandatoryTraining.some((training) => training.id === trainingId)) {
+    throw new Error('Mandatory training was not found.');
+  }
+  return {
+    ...data,
+    mandatoryTraining: data.mandatoryTraining.map((training) =>
+      training.id === trainingId ? { ...training, ...changes } : training,
+    ),
+  };
+}
+
+export function addSkillHubItem(data, category, item) {
+  if (!['certifications', 'cohorts', 'announcements'].includes(category)) {
+    throw new Error('Skill Hub category is invalid.');
+  }
+  const createdItem = {
+    ...item,
+    ...(category === 'cohorts' ? { joined: false } : {}),
+    id: createId(category.slice(0, -1)),
+  };
+  return {
+    ...data,
+    [category]: [...(data[category] ?? []), createdItem],
   };
 }
 

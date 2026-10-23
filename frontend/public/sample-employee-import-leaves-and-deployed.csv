@@ -1,0 +1,8 @@
+EID,Activity Type,Level,Primary Skill,Join Date,Capability,Location,Email,Attendance,Absence Days
+Sam Rivera,Bench,CL7,"AWS, Terraform",2021-04-12,Cloud Engineering,Manila,sam.rivera@example.com,Sick Leave,1
+Jamie Cruz,Bench,CL8,"Python, SQL",2020-08-24,Data Engineering,Cebu,jamie.cruz@example.com,Vacation Leave,0
+Taylor Santos,Bench,CL6,"Routing, Cisco",2022-02-07,Network,Manila,taylor.santos@example.com,Unapproved Absence,1
+Alex Morgan,Bench,CL7,"Automation, Playwright",2021-11-15,Quality Engineering,Cebu,alex.morgan@example.com,Emergency Leave,1
+Casey Flores,Project,CL8,"Azure, Kubernetes",2019-06-10,Cloud Engineering,Manila,casey.flores@example.com,Present,0
+Riley Gomez,Project,CL7,"Spark, Python",2020-09-21,Data Engineering,Cebu,riley.gomez@example.com,Present,0
+Jordan Reyes,Project,CL8,"Network Security, Cisco",2018-12-03,Network,Manila,jordan.reyes@example.com,Present,0

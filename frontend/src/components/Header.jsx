@@ -6,6 +6,7 @@ import { getInitials } from '../utils/formatters.js';
 const titlesByPath = {
   [ROUTES.adminDashboard]: ['Admin Dashboard', 'Bench Management Overview'],
   [ROUTES.employees]: ['Employees', 'Bench resource directory'],
+  [ROUTES.employeeImportHistory]: ['Import History', 'Employee CSV import records'],
   [ROUTES.attendance]: ['Attendance', 'Attendance and RTO management'],
   [ROUTES.learning]: ['Learning', 'Capability development'],
   [ROUTES.productivity]: ['Productivity', 'Tasks and productivity'],
@@ -23,10 +24,11 @@ export function Header({ role, onToggleSidebar, onSwitchRole }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const profileRef = useRef(null);
   const location = useLocation();
-  const title = titlesByPath[location.pathname] ?? [
-    'Employee Profile',
-    'Resource details and development',
-  ];
+  const title =
+    titlesByPath[location.pathname] ??
+    (location.pathname.startsWith(ROUTES.employeeImportHistory)
+      ? ['Import History', 'Employee CSV import records']
+      : ['Employee Profile', 'Resource details and development']);
   const name = role === 'admin' ? 'Admin User' : 'Alex Santos';
   const roleDescription = role === 'admin' ? 'Admin / Bench Lead' : 'User / Bench Resource';
 

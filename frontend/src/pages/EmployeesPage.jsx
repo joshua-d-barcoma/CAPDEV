@@ -3,11 +3,14 @@ import { Link } from 'react-router-dom';
 import { ConfirmDialog } from '../components/ConfirmDialog.jsx';
 import { DataTable } from '../components/DataTable.jsx';
 import { DateFilter } from '../components/DateFilter.jsx';
+import { EmployeeImportDialog } from '../components/EmployeeImportDialog.jsx';
+import { EmployeeImportReviewPage } from '../components/EmployeeImportReviewPage.jsx';
 import { EmployeeForm } from '../components/EmployeeForm.jsx';
 import { Panel } from '../components/Panel.jsx';
 import { SearchInput } from '../components/SearchInput.jsx';
 import { StatCard } from '../components/StatCard.jsx';
 import { StatusBadge } from '../components/StatusBadge.jsx';
+import { DEFAULT_EMPLOYEE_STATUS, normalizeEmployeeStatus } from '../constants/employeeStatuses.js';
 import { getEmployeeRoute, ROUTES } from '../constants/routes.js';
 import { useBenchData } from '../hooks/useBenchData.js';
 import {
@@ -37,18 +40,35 @@ const EMPTY_FILTERS = {
 };
 
 export default function EmployeesPage() {
-  const { employees, addEmployee, updateEmployee, deleteEmployee } = useBenchData();
+  const {
+    employees,
+    addEmployee,
+    importEmployees: importEmployeeBatch,
+    updateEmployee,
+    deleteEmployee,
+    storageError,
+  } = useBenchData();
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [dialogEmployee, setDialogEmployee] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+  const [importReview, setImportReview] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const benchEmployees = useMemo(
+    () =>
+      employees.filter(
+        (employee) =>
+          normalizeEmployeeStatus(employee.employeeStatus) === DEFAULT_EMPLOYEE_STATUS,
+      ),
+    [employees],
+  );
 
   const filteredEmployees = useMemo(
-    () => filterEmployees(employees, filters, search),
-    [employees, filters, search],
+    () => filterEmployees(benchEmployees, filters, search),
+    [benchEmployees, filters, search],
   );
-  const filterOptions = useMemo(() => getEmployeeFilterOptions(employees), [employees]);
+  const filterOptions = useMemo(() => getEmployeeFilterOptions(benchEmployees), [benchEmployees]);
   const tenureBuckets = useMemo(() => getBenchTenureCounts(filteredEmployees), [filteredEmployees]);
   const careerLevels = useMemo(() => getCareerLevelCounts(filteredEmployees), [filteredEmployees]);
   const capabilityReadiness = useMemo(
@@ -100,6 +120,23 @@ export default function EmployeesPage() {
       setFormOpen(false);
       setDialogEmployee(null);
     }
+  }
+
+  function importEmployees(review) {
+    return importEmployeeBatch(review.changesToApply, review.fileName, {
+      employees: review.employees,
+      sourceHeaders: review.sourceHeaders,
+      sourceRows: review.sourceRows,
+    });
+  }
+
+  function stageEmployeeImport(review) {
+    setImportReview(review);
+    setImportOpen(false);
+  }
+
+  function confirmEmployeeImport() {
+    if (importEmployees(importReview)) setImportReview(null);
   }
 
   const columns = [
@@ -166,6 +203,17 @@ export default function EmployeesPage() {
       ),
     },
   ];
+
+  if (importReview) {
+    return (
+      <EmployeeImportReviewPage
+        review={importReview}
+        onConfirm={confirmEmployeeImport}
+        onCancel={() => setImportReview(null)}
+        storageError={storageError}
+      />
+    );
+  }
 
   return (
     <div className="page-stack employee-page">
@@ -374,17 +422,29 @@ export default function EmployeesPage() {
         title="Bench by capability"
         eyebrow="Workforce"
         action={
-          <button
-            type="button"
-            className="button button-primary employee-add-button"
-            onClick={() => {
-              setDialogEmployee(null);
-              setFormOpen(true);
-            }}
-          >
-            <span aria-hidden="true">+</span>
-            Add employee
-          </button>
+          <div className="employee-panel-actions">
+            <Link className="button button-secondary" to={ROUTES.employeeImportHistory}>
+              History
+            </Link>
+            <button
+              type="button"
+              className="button button-secondary"
+              onClick={() => setImportOpen(true)}
+            >
+              Import
+            </button>
+            <button
+              type="button"
+              className="button button-primary employee-add-button"
+              onClick={() => {
+                setDialogEmployee(null);
+                setFormOpen(true);
+              }}
+            >
+              <span aria-hidden="true">+</span>
+              Add employee
+            </button>
+          </div>
         }
       >
         <div className="employee-filter-toolbar">
@@ -599,6 +659,14 @@ export default function EmployeesPage() {
           employee={dialogEmployee}
           onSubmit={saveEmployee}
           onClose={() => setFormOpen(false)}
+        />
+      )}
+      {importOpen && (
+        <EmployeeImportDialog
+          onReview={stageEmployeeImport}
+          onClose={() => setImportOpen(false)}
+          storageError={storageError}
+          existingEmployees={employees}
         />
       )}
       {deleteTarget && (

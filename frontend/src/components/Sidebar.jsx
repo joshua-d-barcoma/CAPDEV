@@ -1,4 +1,4 @@
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { NAVIGATION } from '../constants/navigation.js';
 import { ROUTES } from '../constants/routes.js';
 
@@ -54,6 +54,9 @@ function NavigationIcon({ name }) {
 }
 
 export function Sidebar({ role, collapsed }) {
+  const location = useLocation();
+  const isEmployeeHistory = location.pathname.startsWith(ROUTES.employeeImportHistory);
+
   return (
     <aside className={`sidebar${collapsed ? ' collapsed' : ''}`} aria-label="Main navigation">
       <Link
@@ -79,7 +82,10 @@ export function Sidebar({ role, collapsed }) {
             key={item.path}
             to={item.path}
             end
-            className={({ isActive }) => `navigation-item${isActive ? ' active' : ''}`}
+            className={({ isActive }) =>
+              `navigation-item${isActive || (item.path === ROUTES.employees && isEmployeeHistory) ? ' active' : ''}`
+            }
+            aria-current={item.path === ROUTES.employees && isEmployeeHistory ? 'page' : undefined}
             aria-label={item.label}
             title={collapsed ? item.label : undefined}
           >

@@ -5,6 +5,7 @@ import { DEFAULT_ROUTE, ROUTES } from '../constants/routes.js';
 
 const AdminDashboard = lazy(() => import('../pages/AdminDashboard.jsx'));
 const EmployeesPage = lazy(() => import('../pages/EmployeesPage.jsx'));
+const EmployeeImportHistoryPage = lazy(() => import('../pages/EmployeeImportHistoryPage.jsx'));
 const AttendancePage = lazy(() => import('../pages/AttendancePage.jsx'));
 const LearningPage = lazy(() => import('../pages/LearningPage.jsx'));
 const ProductivityPage = lazy(() => import('../pages/ProductivityPage.jsx'));
@@ -34,6 +35,11 @@ export function AppRoutes() {
           <Route index element={<Navigate to={DEFAULT_ROUTE} replace />} />
           <Route path={ROUTES.adminDashboard} element={<AdminDashboard />} />
           <Route path={ROUTES.employees} element={<EmployeesPage />} />
+          <Route path={ROUTES.employeeImportHistory} element={<EmployeeImportHistoryPage />} />
+          <Route
+            path={ROUTES.employeeImportHistoryEntry}
+            element={<EmployeeImportHistoryPage />}
+          />
           <Route path={ROUTES.employee} element={<EmployeeProfilePage />} />
           <Route path={ROUTES.attendance} element={<AttendancePage />} />
           <Route path={ROUTES.learning} element={<LearningPage />} />

@@ -1,0 +1,5 @@
+EID,Activity Type,Level,Primary Skill,Join Date,Capability,Location,Email,Attendance,Absence Days
+Alex Santos,Bench,CL9,"AWS, Azure, Kubernetes, Terraform, Python",2020-02-10,SRE / Hybrid Cloud,Manila,,Present,0
+Maria Cruz,Project,CL7,"Azure, Networking, Terraform",2022-06-20,Cloud Customer Edge,Cebu,,Present,0
+John Reyes,Bench,CL6,"Routing, Switching, Cisco",2021-11-01,Network,Manila,,Unapproved Absence,1
+Jordan Lee,Bench,CL8,"AWS, Kubernetes, Terraform",2021-03-15,Cloud Engineering,Manila,jordan.lee@example.com,Present,0

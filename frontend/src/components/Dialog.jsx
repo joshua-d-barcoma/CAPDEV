@@ -1,6 +1,14 @@
 import { useEffect } from 'react';
 
-export function Dialog({ title, description, onClose, children, className = '' }) {
+export function Dialog({
+  title,
+  description,
+  onClose,
+  children,
+  className = '',
+  headerAction = null,
+  showCloseButton = true,
+}) {
   useEffect(() => {
     function closeOnEscape(event) {
       if (event.key === 'Escape') onClose();
@@ -27,9 +35,17 @@ export function Dialog({ title, description, onClose, children, className = '' }
             <h2 id="dialog-title">{title}</h2>
             {description && <p>{description}</p>}
           </div>
-          <button type="button" className="icon-button" onClick={onClose} aria-label="Close dialog">
-            ×
-          </button>
+          {headerAction}
+          {showCloseButton && (
+            <button
+              type="button"
+              className="icon-button"
+              onClick={onClose}
+              aria-label="Close dialog"
+            >
+              ×
+            </button>
+          )}
         </div>
         {children}
       </section>
