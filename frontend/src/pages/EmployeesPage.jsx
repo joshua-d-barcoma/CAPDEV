@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ConfirmDialog } from '../components/ConfirmDialog.jsx';
 import { DataTable } from '../components/DataTable.jsx';
@@ -39,6 +39,8 @@ const EMPTY_FILTERS = {
   rollInDate: '',
 };
 
+const EMPLOYEE_PAGE_SIZE = 10;
+
 export default function EmployeesPage() {
   const {
     employees,
@@ -48,6 +50,7 @@ export default function EmployeesPage() {
     storageError,
   } = useBenchData();
   const [search, setSearch] = useState('');
+  const [employeePage, setEmployeePage] = useState(1);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [dialogEmployee, setDialogEmployee] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
@@ -67,6 +70,36 @@ export default function EmployeesPage() {
     () => filterEmployees(benchEmployees, filters, search),
     [benchEmployees, filters, search],
   );
+  const employeePageCount = Math.max(
+    1,
+    Math.ceil(filteredEmployees.length / EMPLOYEE_PAGE_SIZE),
+  );
+  const currentEmployeePage = Math.min(employeePage, employeePageCount);
+  const employeePageNumbers =
+    employeePageCount <= 5
+      ? Array.from({ length: employeePageCount }, (_, index) => index + 1)
+      : [
+          1,
+          ...(currentEmployeePage > 3 ? ['left-ellipsis'] : []),
+          ...Array.from(
+            {
+              length:
+                Math.min(employeePageCount - 1, currentEmployeePage + 1) -
+                Math.max(2, currentEmployeePage - 1) +
+                1,
+            },
+            (_, index) => Math.max(2, currentEmployeePage - 1) + index,
+          ),
+          ...(currentEmployeePage < employeePageCount - 2 ? ['right-ellipsis'] : []),
+          employeePageCount,
+        ];
+  const displayedEmployees = filteredEmployees.slice(
+    (currentEmployeePage - 1) * EMPLOYEE_PAGE_SIZE,
+    currentEmployeePage * EMPLOYEE_PAGE_SIZE,
+  );
+  useEffect(() => {
+    if (employeePage > employeePageCount) setEmployeePage(employeePageCount);
+  }, [employeePage, employeePageCount]);
   const filterOptions = useMemo(() => getEmployeeFilterOptions(benchEmployees), [benchEmployees]);
   const tenureBuckets = useMemo(() => getBenchTenureCounts(filteredEmployees), [filteredEmployees]);
   const careerLevels = useMemo(() => getCareerLevelCounts(filteredEmployees), [filteredEmployees]);
@@ -106,11 +139,18 @@ export default function EmployeesPage() {
 
   function updateFilter(name, value) {
     setFilters((current) => ({ ...current, [name]: value }));
+    setEmployeePage(1);
+  }
+
+  function updateSearch(value) {
+    setSearch(value);
+    setEmployeePage(1);
   }
 
   function resetFilters() {
     setSearch('');
     setFilters({ ...EMPTY_FILTERS });
+    setEmployeePage(1);
   }
 
   function saveEmployee(values) {
@@ -437,7 +477,7 @@ export default function EmployeesPage() {
         <div className="employee-filter-toolbar">
           <SearchInput
             value={search}
-            onChange={setSearch}
+            onChange={updateSearch}
             placeholder="Search name, capability, or skill"
             label="Search employees"
           />
@@ -510,11 +550,56 @@ export default function EmployeesPage() {
         </div>
         <DataTable
           columns={columns}
-          rows={filteredEmployees}
+          rows={displayedEmployees}
           rowKey={(employee) => employee.id}
           emptyTitle="No employees found"
           emptyDescription="Adjust the search or location filter."
         />
+        {filteredEmployees.length > EMPLOYEE_PAGE_SIZE && (
+          <div className="employee-list-pagination">
+            <span aria-live="polite">
+              Showing {(currentEmployeePage - 1) * EMPLOYEE_PAGE_SIZE + 1}–
+              {Math.min(currentEmployeePage * EMPLOYEE_PAGE_SIZE, filteredEmployees.length)} of{' '}
+              {filteredEmployees.length} employees
+            </span>
+            <div className="employee-import-pagination" aria-label="Employee table pages">
+              <button
+                type="button"
+                className="button button-secondary"
+                onClick={() => setEmployeePage((current) => Math.max(1, current - 1))}
+                disabled={currentEmployeePage === 1}
+              >
+                Previous
+              </button>
+              {employeePageNumbers.map((pageNumber) =>
+                typeof pageNumber === 'string' ? (
+                  <span className="employee-import-pagination-ellipsis" key={pageNumber}>
+                    …
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    className={`button button-secondary${pageNumber === currentEmployeePage ? ' is-current' : ''}`}
+                    aria-label={`Employee page ${pageNumber}`}
+                    aria-current={pageNumber === currentEmployeePage ? 'page' : undefined}
+                    key={pageNumber}
+                    onClick={() => setEmployeePage(pageNumber)}
+                  >
+                    {pageNumber}
+                  </button>
+                ),
+              )}
+              <button
+                type="button"
+                className="button button-secondary"
+                onClick={() => setEmployeePage((current) => Math.min(employeePageCount, current + 1))}
+                disabled={currentEmployeePage === employeePageCount}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
       </Panel>
 
       <Panel

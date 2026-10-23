@@ -1536,6 +1536,21 @@ p {
   border-color: #491165;
   background: #491165;
 }
+.employee-list-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-top: 12px;
+}
+.employee-list-pagination > span {
+  color: var(--muted);
+  font-size: 10px;
+}
+.employee-list-pagination .employee-import-pagination {
+  margin-top: 0;
+}
 .employee-filter-controls {
   display: flex;
   flex-wrap: wrap;
