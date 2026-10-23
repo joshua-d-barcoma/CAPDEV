@@ -7,7 +7,7 @@ const FIELD_HEADERS = {
   name: ['name', 'full name', 'employee name', 'eid'],
   capability: ['capability'],
   careerLevel: ['career level', 'careerlevel', 'level'],
-  workLocation: ['work location', 'worklocation', 'location'],
+  workLocation: ['work location', 'worklocation', 'location', 'home loc', 'home location'],
   skills: ['skills', 'key skills', 'primary skill'],
   attendanceStatus: ['attendance status', 'attendance'],
   employeeStatus: ['employee status', 'status', 'activity type'],

@@ -99,6 +99,23 @@ test('parses the employee file headers and join-date-only layout', () => {
   assert.deepEqual(result.sourceRows, [['Alex Santos', 'Bench', 'CL8', 'AWS', '2020-02-10']]);
 });
 
+test('parses the standard HC export headers and maps Home Loc', () => {
+  const result = parseEmployeeCsv(
+    'Data Source,EID,Activity Type,Resource Type,Business Group,Delivery Lead,People Lead,Capability Owner,Project,Client,Project Industry Sector,FTE,Join Date,Org 5,Home Loc,Level,Market,Country,Cloud Elite,FDE Nominated,FDE Training Status,Claude Code Foundation Architect,RDE Workshop,Reinvention Garage Completers,Capability,MD Sponsor,Primary Skill,Proficiency,Met / Not Met\n' +
+      'DUMMY,dummy.employee01,Bench,Employee - Regular,Tech_Cloud First,lead.one,lead.two,Cloud Engineering,Project Demo,Cross Client,Products,1.0,8/14/2026,Cloud First,Quezon City,10,Growth Markets,Philippines,No,No,Incomplete,No,No,Yes,Cloud Engineering,sponsor.one,Microsoft Azure,P3,Met',
+  );
+
+  assert.deepEqual(result.errors, []);
+  assert.equal(result.employees.length, 1);
+  assert.equal(result.employees[0].name, 'dummy.employee01');
+  assert.equal(result.employees[0].employeeStatus, 'Bench');
+  assert.equal(result.employees[0].joiningDate, '2026-08-14');
+  assert.equal(result.employees[0].workLocation, 'Quezon City');
+  assert.equal(result.employees[0].careerLevel, '10');
+  assert.deepEqual(result.employees[0].skills, ['Microsoft Azure']);
+  assert.equal(result.sourceHeaders.length, 29);
+});
+
 test('preserves every uploaded column and raw cell for history', () => {
   const result = parseEmployeeCsv(
     'EID,Activity Type,Level,Primary Skill,Join Date,Project Name,Manager,Allocation %\n' +
