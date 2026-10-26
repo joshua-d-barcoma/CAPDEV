@@ -1,6 +1,6 @@
-export function PageHeader({ eyebrow, title, description, actions, children }) {
+export function PageHeader({ eyebrow, title, description, actions, children, className = '' }) {
   return (
-    <div className="page-header">
+    <div className={`page-header ${className}`.trim()}>
       <div className="page-heading">
         {eyebrow && <span className="page-eyebrow">{eyebrow}</span>}
         <h1>{title}</h1>

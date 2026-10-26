@@ -17,7 +17,9 @@ export function AppLayout() {
   }, [location.key]);
 
   return (
-    <div className={`app-layout${sidebarCollapsed ? ' sidebar-is-collapsed' : ''}`}>
+    <div
+      className={`app-layout${sidebarCollapsed ? ' sidebar-is-collapsed' : ''}${role === 'user' ? ' user-role' : ''}`}
+    >
       <Sidebar role={role} collapsed={sidebarCollapsed} />
       <div className="main-area">
         <Header

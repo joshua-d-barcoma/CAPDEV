@@ -13,27 +13,25 @@ export default function UserDashboard() {
 
   return (
     <div className="page-stack">
-      <section className="welcome-banner">
-        <div>
+      <section className="dashboard-banner user-dashboard-banner">
+        <div className="dashboard-banner-copy">
           <span className="page-eyebrow">Personal Workspace</span>
           <h1>
             Good afternoon, Alex <span aria-hidden="true">👋</span>
           </h1>
           <p>SRE / Hybrid Cloud · CL8 · Capability Building · Day 51 on bench</p>
-          <div className="welcome-actions">
-            <Link className="button button-light" to={ROUTES.timeIn}>
-              {checkedIn ? 'View check-in' : 'Check in at CG2'}
-            </Link>
-            <Link className="button button-outline-light" to={ROUTES.tasks}>
-              View tasks
-            </Link>
-          </div>
         </div>
-        <span className="welcome-mark" aria-hidden="true">
-          &gt;
-        </span>
+        <div className="welcome-actions">
+          <Link className="button button-light" to={ROUTES.timeIn}>
+            {checkedIn ? 'View check-in' : 'Check in at CG2'}
+          </Link>
+          <Link className="button button-outline-light" to={ROUTES.tasks}>
+            View tasks
+          </Link>
+        </div>
       </section>
       <PageHeader
+        className="user-dashboard-page-header"
         eyebrow="Your workspace"
         title="My Dashboard"
         description="Track your tasks, training, attendance, and development."

@@ -278,9 +278,12 @@ p {
   align-items: center;
 }
 .header-left {
+  min-width: 0;
+  flex: 1;
   gap: 15px;
 }
 .header-right {
+  flex-shrink: 0;
   gap: 17px;
 }
 .menu-button,
@@ -313,17 +316,24 @@ p {
   stroke-width: 1.8;
 }
 .header-title {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 .header-title strong {
+  overflow: hidden;
   color: var(--ink);
   font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .header-title span {
+  overflow: hidden;
   color: var(--subtle);
   font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .notification-button {
   position: relative;
@@ -473,6 +483,42 @@ p {
   line-height: 1.2;
 }
 .dashboard-banner-copy p {
+  margin: 0;
+  color: #ead8f4;
+  font-size: 13px;
+}
+.user-role .user-dashboard-banner {
+  min-height: 88px;
+  border-radius: 0;
+  background: linear-gradient(105deg, #38105c 0%, #a900d8 73%, #50116e 100%);
+}
+.user-role .user-dashboard-banner .page-eyebrow {
+  color: #ead8f4;
+}
+.user-role .user-dashboard-banner .dashboard-banner-copy h1 {
+  margin-bottom: 7px;
+  font-size: 18px;
+  line-height: 1.2;
+}
+.user-role .page-header:not(.user-dashboard-page-header) {
+  min-height: 88px;
+  align-items: center;
+  padding: 18px;
+  border-radius: 0;
+  background: linear-gradient(105deg, #38105c 0%, #a900d8 73%, #50116e 100%);
+  box-shadow: var(--box-shadow);
+  color: #fff;
+}
+.user-role .page-header:not(.user-dashboard-page-header) .page-eyebrow {
+  color: #ead8f4;
+}
+.user-role .page-header:not(.user-dashboard-page-header) .page-heading h1 {
+  margin: 0 0 7px;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1.2;
+}
+.user-role .page-header:not(.user-dashboard-page-header) .page-heading p {
   margin: 0;
   color: #ead8f4;
   font-size: 13px;
@@ -3136,6 +3182,15 @@ p {
     align-items: stretch;
     flex-direction: column;
     gap: 17px;
+    padding: 17px;
+  }
+  .user-role .user-dashboard-banner {
+    min-height: 88px;
+  }
+  .user-role .page-header:not(.user-dashboard-page-header) {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
     padding: 17px;
   }
   .employee-scope-banner {
