@@ -19,7 +19,7 @@ export default function UserDashboard() {
           <h1>
             Good afternoon, Alex <span aria-hidden="true">👋</span>
           </h1>
-          <p>SRE / Hybrid Cloud · CL8 · Capability Building · Day 51 on bench</p>
+          <p>SRE / Hybrid Cloud · CL8 · CapabilVity Building · Day 51 on bench</p>
         </div>
         <div className="welcome-actions">
           <Link className="button button-light" to={ROUTES.timeIn}>
@@ -30,12 +30,6 @@ export default function UserDashboard() {
           </Link>
         </div>
       </section>
-      <PageHeader
-        className="user-dashboard-page-header"
-        eyebrow="Your workspace"
-        title="My Dashboard"
-        description="Track your tasks, training, attendance, and development."
-      />
       <section className="profile-card panel">
         <img
           src="/assets/images/profile-placeholder.jpg"
