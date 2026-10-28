@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useBenchData } from '../hooks/useBenchData.js';
 import { useRole } from '../hooks/useRole.js';
+import { ROUTES } from '../constants/routes.js';
 import { Header } from './Header.jsx';
 import { Sidebar } from './Sidebar.jsx';
 
@@ -11,6 +12,7 @@ export function AppLayout() {
   const location = useLocation();
   const { role, switchRole } = useRole();
   const { storageError, clearStorageError } = useBenchData();
+  const isAdminDashboard = role === 'admin' && location.pathname === ROUTES.adminDashboard;
 
   useLayoutEffect(() => {
     mainContentRef.current?.scrollTo({ top: 0, left: 0 });
@@ -18,7 +20,7 @@ export function AppLayout() {
 
   return (
     <div
-      className={`app-layout${sidebarCollapsed ? ' sidebar-is-collapsed' : ''}${role === 'user' ? ' user-role' : ''}`}
+      className={`app-layout${sidebarCollapsed ? ' sidebar-is-collapsed' : ''}${role === 'user' ? ' user-role' : ''}${isAdminDashboard ? ' admin-dashboard-layout' : ''}`}
     >
       <Sidebar role={role} collapsed={sidebarCollapsed} />
       <div className="main-area">
