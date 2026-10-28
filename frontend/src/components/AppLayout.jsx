@@ -4,6 +4,7 @@ import { useBenchData } from '../hooks/useBenchData.js';
 import { useRole } from '../hooks/useRole.js';
 import { Header } from './Header.jsx';
 import { Sidebar } from './Sidebar.jsx';
+import { ROUTES } from '../constants/routes.js';
 
 export function AppLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -11,15 +12,21 @@ export function AppLayout() {
   const location = useLocation();
   const { role, switchRole } = useRole();
   const { storageError, clearStorageError } = useBenchData();
+  const layoutClassName = [
+    'app-layout',
+    sidebarCollapsed && 'sidebar-is-collapsed',
+    role === 'user' && 'user-role',
+    location.pathname === ROUTES.attendance && 'attendance-layout',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   useLayoutEffect(() => {
     mainContentRef.current?.scrollTo({ top: 0, left: 0 });
   }, [location.key]);
 
   return (
-    <div
-      className={`app-layout${sidebarCollapsed ? ' sidebar-is-collapsed' : ''}${role === 'user' ? ' user-role' : ''}`}
-    >
+    <div className={layoutClassName}>
       <Sidebar role={role} collapsed={sidebarCollapsed} />
       <div className="main-area">
         <Header
