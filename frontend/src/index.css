@@ -5123,3 +5123,660 @@ p {
     font-size: 8px;
   }
 }
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+/* ==============================
+   PAGE
+============================== */
+
+.login-page {
+  --page-bg-1: #f4efff;
+  --page-bg-2: #f7fafc;
+  --page-bg-3: #fff2f0;
+
+  --card-bg: rgba(255, 255, 255, 0.93);
+  --text: #10172a;
+  --muted: #65708a;
+  --label: #66738f;
+  --border: #dfe3eb;
+  --footer-bg: #faf7ff;
+
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+  padding: 45px 20px;
+
+  color: var(--text);
+
+  background:
+    radial-gradient(
+      circle at 18% 25%,
+      rgba(183, 138, 255, 0.17),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 90% 75%,
+      rgba(255, 176, 157, 0.16),
+      transparent 37%
+    ),
+    linear-gradient(
+      110deg,
+      var(--page-bg-1),
+      var(--page-bg-2) 50%,
+      var(--page-bg-3)
+    );
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.login-container {
+  width: min(100%, 590px);
+  margin: 0 auto;
+}
+
+/* ==============================
+   BRAND CARD
+============================== */
+
+.brand-card {
+  min-height: 123px;
+  padding: 30px 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: rgba(255, 255, 255, 0.53);
+
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 17px;
+
+  box-shadow:
+    0 18px 50px rgba(34, 30, 74, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.brand-logo {
+  position: relative;
+  width: 36px;
+  height: 39px;
+}
+
+/* Recreates the BenchFlow > style logo */
+
+.logo-top,
+.logo-bottom {
+  position: absolute;
+  left: 0;
+
+  width: 32px;
+  height: 8px;
+
+  border-radius: 2px;
+
+  background: linear-gradient(
+    90deg,
+    #8c00ff,
+    #da00ff
+  );
+
+  transform-origin: right center;
+}
+
+.logo-top {
+  top: 8px;
+  transform: rotate(20deg);
+}
+
+.logo-bottom {
+  bottom: 8px;
+  transform: rotate(-20deg);
+}
+
+.brand-copy h1 {
+  margin: 0;
+
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 800;
+
+  letter-spacing: -0.7px;
+}
+
+.brand-copy p {
+  margin: 9px 0 0;
+
+  font-size: 10px;
+  font-weight: 500;
+
+  letter-spacing: 0.15px;
+}
+
+.theme-toggle {
+  height: 37px;
+  padding: 0 14px;
+
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.7);
+
+  border: 1px solid #d9dce5;
+  border-radius: 18px;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  background: #fff;
+}
+
+.theme-icon {
+  color: #d87639;
+  font-size: 15px;
+}
+
+/* ==============================
+   LOGIN CARD
+============================== */
+
+.login-card {
+  margin-top: 24px;
+
+  overflow: hidden;
+
+  background: var(--card-bg);
+
+  border: 1px solid rgba(220, 224, 234, 0.9);
+  border-radius: 23px;
+
+  box-shadow:
+    0 20px 55px rgba(36, 39, 72, 0.09),
+    0 4px 15px rgba(36, 39, 72, 0.025);
+}
+
+.login-header {
+  padding: 37px 40px 22px;
+}
+
+.login-header h2 {
+  margin: 0 0 10px;
+
+  font-size: 21px;
+  font-weight: 800;
+
+  letter-spacing: -0.6px;
+}
+
+.login-header p {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: 12px;
+}
+
+.divider {
+  height: 1px;
+  margin: 0 16px;
+
+  background: var(--border);
+}
+
+/* ==============================
+   FORM
+============================== */
+
+.login-form {
+  padding: 22px 15px 0;
+}
+
+.field {
+  margin-bottom: 15px;
+}
+
+.field label {
+  display: block;
+
+  margin-bottom: 9px;
+
+  color: var(--label);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 1.1px;
+}
+
+.field input {
+  width: 100%;
+  height: 44px;
+
+  padding: 0 14px;
+
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.72);
+
+  border: 1px solid var(--border);
+  border-radius: 13px;
+
+  outline: none;
+
+  font-size: 13px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.field input::placeholder {
+  color: #77829b;
+}
+
+.field input:focus {
+  border-color: #bc63f8;
+
+  box-shadow:
+    0 0 0 3px rgba(188, 99, 248, 0.11);
+}
+
+.sign-in-button {
+  width: 100%;
+  height: 45px;
+
+  margin-top: 8px;
+
+  color: white;
+
+  background: linear-gradient(
+    100deg,
+    #dc62e7 0%,
+    #b45ff3 38%,
+    #9264e7 60%,
+    #cd5f37 100%
+  );
+
+  border: none;
+  border-radius: 24px;
+
+  font-weight: 700;
+  font-size: 13px;
+
+  letter-spacing: 0.3px;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 12px 25px rgba(188, 84, 222, 0.28);
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.sign-in-button:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 14px 30px rgba(188, 84, 222, 0.35);
+}
+
+.sign-in-button:active {
+  transform: translateY(1px);
+}
+
+/* ==============================
+   DEMO DIVIDER
+============================== */
+
+.demo-separator {
+  padding: 19px 26px 18px;
+
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+}
+
+.demo-separator span {
+  height: 1px;
+  background: var(--border);
+}
+
+.demo-separator p {
+  margin: 0;
+
+  color: #66738e;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 1.2px;
+}
+
+/* ==============================
+   DEMO ACCOUNTS
+============================== */
+
+.demo-section {
+  padding: 0 15px 24px;
+}
+
+.demo-section h3 {
+  margin: 0 0 9px 10px;
+
+  color: #64708b;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 1.1px;
+}
+
+.demo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.demo-account {
+  width: 100%;
+  min-height: 61px;
+
+  padding: 8px 12px;
+
+  display: flex;
+  align-items: center;
+
+  text-align: left;
+
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.58);
+
+  border: 1px solid var(--border);
+  border-radius: 13px;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.demo-account:hover {
+  position: relative;
+  z-index: 1;
+
+  background: rgba(250, 245, 255, 0.95);
+  border-color: #cfb2ee;
+
+  transform: translateX(2px);
+}
+
+.avatar {
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  margin-right: 13px;
+
+  color: white;
+
+  border-radius: 50%;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.account-info {
+  min-width: 0;
+
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.account-info strong {
+  overflow: hidden;
+
+  font-size: 12px;
+  font-weight: 750;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-info span {
+  overflow: hidden;
+
+  color: var(--muted);
+
+  font-size: 9px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arrow {
+  margin-left: 15px;
+
+  color: #ee9c79;
+
+  font-size: 21px;
+  font-weight: 300;
+
+  transition: transform 0.15s ease;
+}
+
+.demo-account:hover .arrow {
+  transform: translateX(3px);
+}
+
+/* ==============================
+   FOOTER
+============================== */
+
+.login-footer {
+  min-height: 45px;
+
+  padding: 0 31px;
+
+  display: flex;
+  align-items: center;
+
+  background: var(--footer-bg);
+
+  border-top: 1px solid var(--border);
+}
+
+.sso-badge {
+  padding: 5px 9px;
+
+  color: #d29deb;
+  background: #f2dcff;
+
+  border-radius: 12px;
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: 0.8px;
+
+  white-space: nowrap;
+}
+
+.login-footer p {
+  margin: 0 0 0 8px;
+
+  color: var(--muted);
+
+  font-size: 9px;
+}
+
+.login-footer strong {
+  color: var(--text);
+}
+
+/* ==============================
+   DARK MODE
+============================== */
+
+.login-page.dark {
+  --page-bg-1: #17121f;
+  --page-bg-2: #10131d;
+  --page-bg-3: #211611;
+
+  --card-bg: rgba(24, 26, 37, 0.95);
+  --text: #f5f5fa;
+  --muted: #a9aec1;
+  --label: #afb4c8;
+  --border: #343746;
+  --footer-bg: #211d2a;
+}
+
+.dark .brand-card {
+  background: rgba(24, 25, 35, 0.64);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+.dark .theme-toggle {
+  color: #eee;
+  background: #262936;
+  border-color: #383b4a;
+}
+
+.dark .theme-toggle:hover {
+  background: #303442;
+}
+
+.dark .field input {
+  color: #f8f8fc;
+  background: #20232d;
+}
+
+.dark .demo-account {
+  color: #fff;
+  background: #20232d;
+}
+
+.dark .demo-account:hover {
+  background: #292535;
+}
+
+/* ==============================
+   MOBILE
+============================== */
+
+@media (max-width: 600px) {
+  .login-page {
+    padding: 20px 14px;
+  }
+
+  .brand-card {
+    min-height: 105px;
+    padding: 22px;
+  }
+
+  .brand {
+    gap: 13px;
+  }
+
+  .brand-copy h1 {
+    font-size: 20px;
+  }
+
+  .brand-copy p {
+    font-size: 8px;
+  }
+
+  .theme-toggle {
+    padding: 0 11px;
+  }
+
+  .login-header {
+    padding:
+      30px
+      26px
+      21px;
+  }
+
+  .login-form {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .demo-section {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .login-footer {
+    padding: 12px 18px;
+
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 6px;
+  }
+
+  .login-footer p {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 410px) {
+  .brand-card {
+    padding: 20px 17px;
+  }
+
+  .theme-toggle {
+    font-size: 0;
+  }
+
+  .theme-icon {
+    font-size: 17px;
+  }
+
+  .demo-separator {
+    gap: 7px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .demo-separator p {
+    font-size: 8px;
+  }
+}
