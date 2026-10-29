@@ -8,7 +8,65 @@ import { ROUTES } from '../constants/routes.js';
 import { useBenchData } from '../hooks/useBenchData.js';
 import { buildAttendanceTrend, filterDashboardData } from '../utils/dashboardFilters.js';
 import { getEmployeeFilterOptions } from '../utils/employeeInsights.js';
-import { getEmployeeName } from '../utils/formatters.js';
+import { getEmployeeName, getInitials } from '../utils/formatters.js';
+
+function AttendanceTrendChart({ trend }) {
+  const visibleTrend = trend.slice(-7);
+  const points = visibleTrend.map((day, index) => {
+    const x = visibleTrend.length === 1 ? 220 : 38 + (index * 364) / (visibleTrend.length - 1);
+    const y = 132 - day.percentage;
+    return { ...day, x, y };
+  });
+  const line = points.map(({ x, y }, index) => `${index ? 'L' : 'M'} ${x} ${y}`).join(' ');
+  const area = points.length
+    ? `${line} L ${points[points.length - 1].x} 138 L ${points[0].x} 138 Z`
+    : '';
+
+  return (
+    <div className="admin-trend-chart">
+      <svg
+        viewBox="0 0 440 166"
+        role="img"
+        aria-label={`Attendance trend: ${visibleTrend.map((day) => `${day.date}, ${day.percentage}%`).join('; ')}`}
+      >
+        <defs>
+          <linearGradient id="attendance-area-fill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="#9741f5" stopOpacity=".24" />
+            <stop offset="100%" stopColor="#9741f5" stopOpacity=".02" />
+          </linearGradient>
+        </defs>
+        {[0, 25, 50, 75, 100].map((percentage) => {
+          const y = 132 - percentage;
+          return (
+            <g key={percentage}>
+              <text x="0" y={y + 3} className="admin-chart-axis-label">
+                {percentage}%
+              </text>
+              <line x1="35" x2="432" y1={y} y2={y} className="admin-chart-gridline" />
+            </g>
+          );
+        })}
+        {points.length > 0 && (
+          <>
+            <path d={area} fill="url(#attendance-area-fill)" />
+            <path d={line} className="admin-chart-line" />
+            {points.map((point) => (
+              <g key={point.date}>
+                <circle cx={point.x} cy={point.y} r="3" className="admin-chart-point" />
+                <text x={point.x} y="157" textAnchor="middle" className="admin-chart-date">
+                  {new Date(`${point.date}T00:00:00`).toLocaleDateString('en', {
+                    month: 'short',
+                    day: 'numeric',
+                  })}
+                </text>
+              </g>
+            ))}
+          </>
+        )}
+      </svg>
+    </div>
+  );
+}
 
 export default function AdminDashboard() {
   const data = useBenchData();
@@ -18,10 +76,7 @@ export default function AdminDashboard() {
     () => filterDashboardData(data, { location, capability }),
     [data, location, capability],
   );
-  const capabilities = useMemo(
-    () => getEmployeeFilterOptions(data.employees).capabilities,
-    [data.employees],
-  );
+  const capabilities = useMemo(() => getEmployeeFilterOptions(employees).capabilities, [employees]);
   const attendanceTrend = useMemo(
     () => buildAttendanceTrend(attendanceRecords),
     [attendanceRecords],
@@ -36,10 +91,14 @@ export default function AdminDashboard() {
   const attendancePercent = employees.length
     ? Math.round((presentCount / employees.length) * 100)
     : 0;
+  const employeesOnLeave = employees.filter(
+    (employee) => employee.attendanceStatus === 'Vacation Leave',
+  ).length;
+  const trackedSkills = new Set(employees.flatMap((employee) => employee.skills ?? [])).size;
   const hasActiveFilters = Boolean(location || capability);
 
   return (
-    <div className="page-stack">
+    <div className="page-stack admin-dashboard">
       <section className="dashboard-banner employee-scope-banner" aria-labelledby="dashboard-title">
         <div className="employee-scope-banner-heading">
           <div className="dashboard-banner-copy">
@@ -57,11 +116,11 @@ export default function AdminDashboard() {
           }}
         />
       </section>
-      <div className="stat-grid">
+      <div className="stat-grid admin-dashboard-metrics">
         <StatCard
           label="Total Bench Employees"
           value={employees.length}
-          detail="Active bench employees"
+          detail="Across all capabilities"
           icon="people"
         />
         <StatCard
@@ -72,28 +131,50 @@ export default function AdminDashboard() {
           icon="check"
         />
         <StatCard
-          label="Active Non-Compliance"
+          label="Non-Compliant Employees"
           value={exceptions}
-          detail="Employees requiring follow-up"
-          tone="orange"
+          detail="Require RTO follow-up"
+          tone="red"
           icon="alert"
+        />
+        <StatCard
+          label="Employees on Leave"
+          value={employeesOnLeave}
+          detail="Approved leave today"
+          tone="blue"
+          icon="◷"
+        />
+        <StatCard
+          label="Active Capabilities"
+          value={capabilities.length}
+          detail="Across filtered resources"
+          tone="blue"
+          icon="capability"
+        />
+        <StatCard
+          label="Skills Tracked"
+          value={trackedSkills}
+          detail="Unique employee skills"
+          icon="✦"
         />
         <StatCard
           label="Open Action Items"
           value={openActions.length}
           detail={`${openActions.filter((item) => item.priority === 'High').length} high priority`}
-          tone="blue"
+          tone="orange"
           icon="flag"
         />
       </div>
 
-      <div className="two-column-grid">
-        <Panel title="Bench by capability" eyebrow="Workforce">
+      <div className="admin-dashboard-overview-grid">
+        <Panel
+          title="Bench by capability"
+          eyebrow="Bench distribution"
+          className="admin-dashboard-panel"
+        >
           <div className="bar-list">
             {capabilities.map((item) => {
-              const count = employees.filter((employee) =>
-                employee.capability.toLowerCase().includes(item.toLowerCase()),
-              ).length;
+              const count = employees.filter((employee) => employee.capability === item).length;
               const width = employees.length ? Math.max(8, (count / employees.length) * 100) : 0;
               return (
                 <div className="bar-row" key={item}>
@@ -110,21 +191,17 @@ export default function AdminDashboard() {
         <Panel
           title="Today's attendance"
           eyebrow="Attendance"
+          className="admin-dashboard-panel"
           action={
             <Link className="text-link dashboard-records-link" to={ROUTES.attendance}>
-              View records
+              View roster <span aria-hidden="true">↗</span>
             </Link>
           }
         >
-          <div className="compact-list">
+          <div className="compact-list admin-attendance-list">
             {employees.slice(0, 5).map((employee) => (
               <div className="compact-row" key={employee.id}>
-                <span className="avatar-small">
-                  {employee.name
-                    .split(' ')
-                    .map((part) => part[0])
-                    .join('')}
-                </span>
+                <span className="avatar-small">{getInitials(employee.name)}</span>
                 <span className="compact-row-main">
                   <strong>{employee.name}</strong>
                   <small>
@@ -138,74 +215,96 @@ export default function AdminDashboard() {
               <p className="muted-copy">No employees match these filters.</p>
             )}
           </div>
+          {employees.length > 0 && (
+            <p className="admin-list-note">
+              Showing {Math.min(employees.length, 5)} of {employees.length} employees
+            </p>
+          )}
         </Panel>
       </div>
 
-      <Panel title="Attendance trend" eyebrow="Attendance">
-        {attendanceTrend.length ? (
-          <div className="attendance-trend" aria-label="Attendance trend by date">
-            {attendanceTrend.map((day) => (
-              <div className="attendance-trend-row" key={day.date}>
+      <div className="admin-dashboard-lower-grid">
+        <Panel
+          title="Attendance trend"
+          eyebrow="Recent activity"
+          className="admin-dashboard-panel admin-trend-panel"
+        >
+          {attendanceTrend.length ? (
+            <>
+              <div className="admin-trend-meta">
                 <span>
-                  {new Date(`${day.date}T00:00:00`).toLocaleDateString('en', {
-                    month: 'short',
-                    day: 'numeric',
-                  })}
+                  {attendanceTrend.length > 1
+                    ? `${attendanceTrend[0].date} – ${attendanceTrend[attendanceTrend.length - 1].date}`
+                    : attendanceTrend[0].date}
                 </span>
-                <div
-                  className="bar-track"
-                  role="img"
-                  aria-label={`${day.percentage}% attendance, ${day.present} of ${day.total} present`}
-                >
-                  <i style={{ width: `${day.percentage}%` }} />
-                </div>
-                <strong>
-                  {day.present}/{day.total}
-                </strong>
+                <span className="admin-trend-legend">
+                  <i aria-hidden="true" /> Attendance
+                </span>
               </div>
-            ))}
-          </div>
-        ) : (
-          <p className="muted-copy">No attendance records match these filters.</p>
-        )}
-      </Panel>
+              <AttendanceTrendChart trend={attendanceTrend} />
+            </>
+          ) : (
+            <p className="muted-copy">No attendance records match these filters.</p>
+          )}
+        </Panel>
 
-      <Panel
-        title="Action items"
-        eyebrow="Follow-up"
-        action={
-          <Link className="text-link" to={ROUTES.actionItems}>
-            View all
-          </Link>
-        }
-      >
-        {hasActiveFilters && (
-          <p className="panel-description">
-            Filtered counts include only action items linked to matching employees.
-          </p>
-        )}
-        <div className="compact-list">
-          {openActions.slice(0, 3).map((item) => (
-            <div className="compact-row action-preview" key={item.id}>
-              <span className={`priority-mark priority-${item.priority.toLowerCase()}`} />
-              <span className="compact-row-main">
-                <strong>{item.title}</strong>
-                <small>
-                  {item.owner} · {item.due}
-                </small>
-              </span>
-              <StatusBadge status={item.status} />
+        <Panel
+          title="Action items"
+          eyebrow="Follow-up"
+          className="admin-dashboard-panel admin-action-panel"
+          action={
+            <Link className="text-link admin-view-all" to={ROUTES.actionItems}>
+              View all <span aria-hidden="true">↗</span>
+            </Link>
+          }
+        >
+          {hasActiveFilters && (
+            <p className="panel-description">
+              Filtered counts include only action items linked to matching employees.
+            </p>
+          )}
+          {openActions.length ? (
+            <div className="admin-action-table-wrap">
+              <table className="admin-action-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">Due date</th>
+                    <th scope="col">Priority</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {openActions.slice(0, 5).map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.title}</td>
+                      <td>{item.owner}</td>
+                      <td>{item.due}</td>
+                      <td>
+                        <span
+                          className={`admin-priority admin-priority-${item.priority.toLowerCase()}`}
+                        >
+                          {item.priority}
+                        </span>
+                      </td>
+                      <td>
+                        <StatusBadge status={item.status} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          ))}
-          {openActions.length === 0 && (
+          ) : (
             <p className="muted-copy">
               {hasActiveFilters
                 ? 'No open action items are linked to matching employees.'
                 : 'No open action items.'}
             </p>
           )}
-        </div>
-      </Panel>
+        </Panel>
+      </div>
       {attendanceRecords.length > 0 && (
         <span className="visually-hidden">
           Latest attendance recorded for{' '}

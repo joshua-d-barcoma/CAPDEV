@@ -1,7 +1,8 @@
 import { useLayoutEffect, useRef, useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { matchPath, Outlet, useLocation } from 'react-router-dom';
 import { useBenchData } from '../hooks/useBenchData.js';
 import { useRole } from '../hooks/useRole.js';
+import { ROUTES } from '../constants/routes.js';
 import { Header } from './Header.jsx';
 import { Sidebar } from './Sidebar.jsx';
 
@@ -11,15 +12,30 @@ export function AppLayout() {
   const location = useLocation();
   const { role, switchRole } = useRole();
   const { storageError, clearStorageError } = useBenchData();
+  const isAdminDashboard =
+    role === 'admin' && matchPath(ROUTES.adminDashboard, location.pathname) !== null;
+  const isAdminEmployees =
+    role === 'admin' &&
+    (matchPath(ROUTES.employees, location.pathname) !== null ||
+      location.pathname.startsWith(`${ROUTES.employees}/`) ||
+      matchPath(ROUTES.employee, location.pathname) !== null);
+  const layoutClassName = [
+    'app-layout',
+    sidebarCollapsed && 'sidebar-is-collapsed',
+    role === 'user' && 'user-role',
+    location.pathname === ROUTES.attendance && 'attendance-layout',
+    isAdminDashboard && 'admin-dashboard-layout',
+    isAdminEmployees && 'admin-employees-layout',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   useLayoutEffect(() => {
     mainContentRef.current?.scrollTo({ top: 0, left: 0 });
   }, [location.key]);
 
   return (
-    <div
-      className={`app-layout${sidebarCollapsed ? ' sidebar-is-collapsed' : ''}${role === 'user' ? ' user-role' : ''}`}
-    >
+    <div className={layoutClassName}>
       <Sidebar role={role} collapsed={sidebarCollapsed} />
       <div className="main-area">
         <Header
