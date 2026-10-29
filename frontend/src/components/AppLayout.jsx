@@ -21,7 +21,7 @@ export function AppLayout() {
       matchPath(ROUTES.employee, location.pathname) !== null);
   const layoutClassName = [
     'app-layout',
-    sidebarCollapsed && 'sidebar-is-collapsed',
+    sidebarCollapsed && role === 'admin' && 'sidebar-is-collapsed',
     role === 'user' && 'user-role',
     location.pathname === ROUTES.attendance && 'attendance-layout',
     isAdminDashboard && 'admin-dashboard-layout',
@@ -35,12 +35,8 @@ export function AppLayout() {
   }, [location.key]);
 
   return (
-    <div
-      className={`app-layout${sidebarCollapsed && role === 'admin' ? ' sidebar-is-collapsed' : ''}${role === 'user' ? ' user-role' : ''}`}
-    >
-      <Sidebar role={role} collapsed={role === 'admin' && sidebarCollapsed} />
     <div className={layoutClassName}>
-      <Sidebar role={role} collapsed={sidebarCollapsed} />
+      <Sidebar role={role} collapsed={role === 'admin' && sidebarCollapsed} />
       <div className="main-area">
         <Header
           role={role}

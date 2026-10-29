@@ -205,16 +205,11 @@ p {
   background: rgb(255 255 255 / 45%);
 }
 .navigation-item.active {
-  background: var(--purple);
-   background: #f1e5fa;
-  color: #8a20c9;
-  border: 1px solid #dba8f3;
+  border: 1px solid #dfc5f2;
   border-left: 3px solid #a900ff;
-  box-shadow: 0 3px 6px rgb(85 3 136 / 20%);
-  border-left-color: #bf12f5;
-  background: #f0e2ff;
-  color: #741bd0;
-  box-shadow: 0 2px 5px rgb(75 29 99 / 20%);
+  background: #f1e3ff;
+  box-shadow: 0 2px 6px rgb(65 24 93 / 12%);
+  color: #6814aa;
 }
 .navigation-icon {
   display: grid;
@@ -4694,78 +4689,6 @@ p {
   }
 }
 
-.user-role .sidebar {
-  position: sticky;
-  top: 0;
-  width: 210px;
-  min-width: 210px;
-  height: 100dvh;
-  padding: 22px 13px 15px;
-  border-right-color: #e7dbea;
-  background: linear-gradient(180deg, #f3eff5 0%, #efddf3 54%, #dda8f0 100%);
-}
-.user-role .sidebar.collapsed {
-  width: 210px;
-  min-width: 210px;
-  padding-right: 13px;
-  padding-left: 13px;
-}
-.user-role .brand {
-  min-height: 53px;
-  margin-bottom: 20px;
-}
-.user-role .brand-content strong {
-  font-size: 19px;
-}
-.user-role .brand-content small {
-  font-size: 9px;
-}
-.user-role .navigation {
-  gap: 7px;
-}
-.user-role .navigation-title {
-  margin-bottom: 17px;
-  font-size: 10px;
-  font-weight: 700;
-}
-.user-role .navigation-item {
-  min-height: 44px;
-  padding: 0 12px;
-  border: 1px solid transparent;
-  border-radius: 8px;
-}
-.user-role .navigation-item.active {
-  border-color: #dfc5f2;
-  border-left: 4px solid #b200f5;
-  background: #f1e3ff;
-  box-shadow: 0 2px 6px rgb(65 24 93 / 12%);
-  color: #6814aa;
-}
-.user-role .navigation-label {
-  margin-left: 10px;
-  font-size: 13px;
-}
-.user-role .navigation-icon,
-.user-role .navigation-icon svg {
-  width: 18px;
-  height: 18px;
-}
-.user-role .sidebar-footer {
-  padding: 0 4px;
-  color: #776283;
-  font-size: 12px;
-}
-.user-role .sidebar-footer small {
-  color: #887596;
-  font-size: 11px;
-}
-.user-role .footer-divider {
-  margin-bottom: 12px;
-  background: #d7b4e5;
-}
-.user-role .menu-button {
-  cursor: default;
-}
 .user-role .menu-button:hover {
   background: transparent;
   color: var(--muted);
@@ -4898,6 +4821,10 @@ p {
   background: #5e118f;
 }
 .user-dashboard-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
 .attendance-page {
   gap: 13px;
 }
@@ -5241,15 +5168,6 @@ p {
     radial-gradient(ellipse at 18% 20%, rgb(222 190 255 / 27%), transparent 48%),
     radial-gradient(ellipse at 83% 70%, rgb(255 206 183 / 20%), transparent 45%),
     #f6f5fa;
-}
-.attendance-layout .brand-logo {
-  color: #b814ef;
-}
-.attendance-layout .navigation-item {
-  border-radius: 8px;
-}
-.attendance-layout .sidebar-footer .footer-divider {
-  background: rgb(113 44 131 / 18%);
 }
 .attendance-layout .header {
   height: 58px;
@@ -5983,6 +5901,9 @@ p {
   }
   .user-recommendation-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .attendance-metric-card {
   display: flex;
   min-width: 0;
@@ -6629,45 +6550,6 @@ p {
   --border: #eee8f3;
   background: #f3eff8;
 }
-.admin-dashboard-layout .sidebar {
-  width: 180px;
-  min-width: 180px;
-  padding: 16px 9px 10px;
-  border-right-color: #e7dbea;
-  background: linear-gradient(180deg, #f3eff5 0%, #efddf3 54%, #dda8f0 100%);
-}
-.admin-dashboard-layout .sidebar.collapsed {
-  width: 68px;
-  min-width: 68px;
-  padding-right: 8px;
-  padding-left: 8px;
-}
-.admin-dashboard-layout .brand {
-  min-height: 46px;
-  margin-bottom: 15px;
-}
-.admin-dashboard-layout .navigation {
-  gap: 8px;
-}
-.admin-dashboard-layout .navigation-title {
-  margin-bottom: 10px;
-}
-.admin-dashboard-layout .navigation-item {
-  min-height: 36px;
-  border: 1px solid transparent;
-  border-radius: 6px;
-}
-.admin-dashboard-layout .navigation-item.active {
-  border-color: #dfc5f2;
-  border-left: 3px solid #b200f5;
-  background: #f1e3ff;
-  box-shadow: 0 2px 6px rgb(65 24 93 / 12%);
-  color: #6814aa;
-}
-.admin-dashboard-layout .sidebar-footer {
-  padding-right: 0;
-  padding-left: 0;
-}
 .admin-dashboard-layout .header {
   height: 56px;
   min-height: 56px;
@@ -7020,26 +6902,6 @@ p {
 }
 
 @media (max-width: 760px) {
-  .admin-dashboard-layout .sidebar {
-    width: 68px;
-    min-width: 68px;
-    padding: 22px 8px 15px;
-  }
-  .admin-dashboard-layout .sidebar .brand {
-    justify-content: center;
-    padding: 0;
-    margin-bottom: 24px;
-  }
-  .admin-dashboard-layout .sidebar .brand-content,
-  .admin-dashboard-layout .sidebar .navigation-title,
-  .admin-dashboard-layout .sidebar .navigation-label,
-  .admin-dashboard-layout .sidebar .sidebar-footer {
-    display: none;
-  }
-  .admin-dashboard-layout .sidebar .navigation-item {
-    justify-content: center;
-    padding: 0;
-  }
   .admin-dashboard-layout .page-content {
     padding: 13px;
   }
@@ -7105,46 +6967,6 @@ p {
   --border: #eee8f3;
   background: #f3eff8;
 }
-.admin-employees-layout .sidebar {
-  width: 180px;
-  min-width: 180px;
-  padding: 16px 9px 10px;
-  border-right-color: #e7dbea;
-  background: linear-gradient(180deg, #f3eff5 0%, #efddf3 54%, #dda8f0 100%);
-}
-.admin-employees-layout .sidebar.collapsed {
-  width: 68px;
-  min-width: 68px;
-  padding-right: 8px;
-  padding-left: 8px;
-}
-.admin-employees-layout .brand {
-  min-height: 46px;
-  margin-bottom: 15px;
-}
-.admin-employees-layout .navigation {
-  gap: 8px;
-}
-.admin-employees-layout .navigation-title {
-  margin-bottom: 10px;
-}
-.admin-employees-layout .navigation-item {
-  min-height: 36px;
-  border: 1px solid transparent;
-  border-radius: 6px;
-}
-.admin-employees-layout .navigation-item.active {
-  border-color: #dfc5f2;
-  border-left: 3px solid #b200f5;
-  background: #f1e3ff;
-  box-shadow: 0 2px 6px rgb(65 24 93 / 12%);
-  color: #6814aa;
-}
-.admin-employees-layout .sidebar-footer {
-  padding-right: 0;
-  padding-left: 0;
-}
-
 .admin-employees-layout .header {
   height: 56px;
   min-height: 56px;
@@ -7505,29 +7327,6 @@ p {
 }
 
 @media (max-width: 760px) {
-  .user-role .sidebar,
-  .user-role .sidebar.collapsed {
-    position: relative;
-    width: 68px;
-    min-width: 68px;
-    height: 100dvh;
-    padding: 22px 8px 15px;
-  }
-  .user-role .sidebar .brand {
-    justify-content: center;
-    padding: 0;
-    margin-bottom: 24px;
-  }
-  .user-role .sidebar .brand-content,
-  .user-role .sidebar .navigation-title,
-  .user-role .sidebar .navigation-label,
-  .user-role .sidebar .sidebar-footer {
-    display: none;
-  }
-  .user-role .sidebar .navigation-item {
-    justify-content: center;
-    padding: 0;
-  }
   .user-role .page-content {
     padding: 16px 13px 22px;
   }
