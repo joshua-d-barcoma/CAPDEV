@@ -6,6 +6,7 @@ import { StatCard } from '../components/StatCard.jsx';
 import { StatusBadge } from '../components/StatusBadge.jsx';
 import { useBenchData } from '../hooks/useBenchData.js';
 import { filterEmployees } from '../utils/employeeInsights.js';
+import './LearningPage.css';
 
 const EMPTY_FORM = { title: '', description: '', due: '', status: 'Active' };
 const EMPLOYEES_PER_PAGE = 10;
@@ -206,6 +207,15 @@ export default function LearningPage() {
     ...assignment,
     completionDate: assignment.completionDate ?? '',
   }));
+  const reportDate = new Intl.DateTimeFormat(undefined, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }).format(new Date(`${today}T12:00:00`));
+  const reportScope = [
+    scopeFilters.location || 'all locations',
+    scopeFilters.capability || 'all capabilities',
+  ].join(', ');
 
   function updateScopeFilter(name, value) {
     setScopeFilters((current) => ({ ...current, [name]: value }));
@@ -341,7 +351,7 @@ export default function LearningPage() {
       </div>
 
       <Panel
-        title="Recent Accomplishment"
+        title="Recent Accomplishments"
         eyebrow="Recent activity"
         className="learning-activity-panel"
       >
@@ -477,89 +487,6 @@ export default function LearningPage() {
       </div>
 
       <Panel
-        title="Mandatory Trainings"
-        eyebrow="Training management"
-        className="learning-training-panel"
-        action={
-          <button type="button" className="button learning-add-button" onClick={openAddTraining}>
-            Add Training <span aria-hidden="true">＋</span>
-          </button>
-        }
-      >
-        <p className="learning-panel-description">
-          Manage required training programs assigned to bench employees.
-        </p>
-        {mandatoryTraining.length ? (
-          <div className="learning-training-list">
-            {mandatoryTraining.map((training) => {
-              const trainingAssignments = assignments.filter(
-                (assignment) => assignment.trainingId === training.id,
-              );
-              const completed = trainingAssignments.filter(
-                (assignment) => assignment.status === 'Completed',
-              ).length;
-              const progress = trainingAssignments.length
-                ? Math.round((completed / trainingAssignments.length) * 100)
-                : 0;
-              return (
-                <article className="learning-training-row" key={training.id}>
-                  <span
-                    className={`learning-training-icon learning-training-icon-${training.id}`}
-                    aria-hidden="true"
-                  >
-                    {training.id === 'training-security'
-                      ? '⬡'
-                      : training.id === 'training-privacy'
-                        ? '▤'
-                        : training.id === 'training-workplace-safety'
-                          ? '♡'
-                          : training.id === 'training-responsible-ai'
-                            ? '▦'
-                            : '◇'}
-                  </span>
-                  <div className="learning-training-copy">
-                    <strong>{training.title}</strong>
-                    <span>{training.description}</span>
-                  </div>
-                  <div className="learning-training-metric">
-                    <span>Due</span>
-                    <strong>{training.due || '—'}</strong>
-                  </div>
-                  <div className="learning-training-metric">
-                    <span>Assigned</span>
-                    <strong>{trainingAssignments.length}</strong>
-                  </div>
-                  <div className="learning-training-metric">
-                    <span>Completed</span>
-                    <strong>{completed}</strong>
-                  </div>
-                  <div className="learning-training-progress">
-                    <span>
-                      Progress <b>{progress}%</b>
-                    </span>
-                    <div className="learning-progress-track">
-                      <i style={{ width: `${progress}%` }} />
-                    </div>
-                  </div>
-                  <StatusBadge status={training.status} />
-                  <button
-                    type="button"
-                    className="icon-button learning-edit-button"
-                    onClick={() => openEditTraining(training)}
-                    aria-label={`Edit ${training.title}`}
-                  >
-                    ✎
-                  </button>
-                </article>
-              );
-            })}
-          </div>
-        ) : (
-          <p className="muted-copy">No mandatory training has been configured.</p>
-        )}
-      </Panel>
-
-      <Panel
         title="Certifications, Cohorts, & Announcement"
         eyebrow="Skill Hub"
         className="learning-skill-hub-panel"
@@ -652,6 +579,121 @@ export default function LearningPage() {
           </section>
         </div>
       </Panel>
+
+      <Panel
+        title="Mandatory Trainings"
+        eyebrow="Training management"
+        className="learning-training-panel"
+        action={
+          <button type="button" className="button learning-add-button" onClick={openAddTraining}>
+            Add Training <span aria-hidden="true">＋</span>
+          </button>
+        }
+      >
+        <p className="learning-panel-description">
+          Manage required training programs assigned to bench employees.
+        </p>
+        {mandatoryTraining.length ? (
+          <div className="learning-training-table-scroll">
+            <table className="learning-training-table">
+              <thead>
+                <tr>
+                  <th scope="col">Training</th>
+                  <th scope="col">Due</th>
+                  <th scope="col">Assigned</th>
+                  <th scope="col">Completed</th>
+                  <th scope="col">Progress</th>
+                  <th scope="col">Status</th>
+                  <th scope="col"><span className="visually-hidden">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                {mandatoryTraining.map((training) => {
+                  const trainingAssignments = assignments.filter(
+                    (assignment) => assignment.trainingId === training.id,
+                  );
+                  const completed = trainingAssignments.filter(
+                    (assignment) => assignment.status === 'Completed',
+                  ).length;
+                  const progress = trainingAssignments.length
+                    ? Math.round((completed / trainingAssignments.length) * 100)
+                    : 0;
+                  return (
+                    <tr key={training.id}>
+                      <td>
+                        <div className="learning-training-copy">
+                          <span
+                            className={`learning-training-icon learning-training-icon-${training.id}`}
+                            aria-hidden="true"
+                          >
+                            {training.id === 'training-security'
+                              ? '⬡'
+                              : training.id === 'training-privacy'
+                                ? '▤'
+                                : training.id === 'training-workplace-safety'
+                                  ? '♡'
+                                  : training.id === 'training-responsible-ai'
+                                    ? '▦'
+                                    : '◇'}
+                          </span>
+                          <span>
+                            <strong>{training.title}</strong>
+                            <span>{training.description}</span>
+                          </span>
+                        </div>
+                      </td>
+                      <td>{training.due || '—'}</td>
+                      <td>{trainingAssignments.length}</td>
+                      <td>{completed}</td>
+                      <td>
+                        <div className="learning-training-progress">
+                          <span>{progress}%</span>
+                          <div
+                            className="learning-progress-track"
+                            aria-label={`${progress}% complete`}
+                          >
+                            <i style={{ width: `${progress}%` }} />
+                          </div>
+                        </div>
+                      </td>
+                      <td><StatusBadge status={training.status} /></td>
+                      <td>
+                        <button
+                          type="button"
+                          className="icon-button learning-edit-button"
+                          onClick={() => openEditTraining(training)}
+                          aria-label={`Edit ${training.title}`}
+                        >
+                          ✎
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="muted-copy">No mandatory training has been configured.</p>
+        )}
+      </Panel>
+
+      <footer className="learning-report-footer">
+        <div>
+          <strong>Learning Report · {reportDate}</strong>
+          <span>
+            Filtered scope: {reportScope}. Report reflects the current filter selection.
+          </span>
+        </div>
+        <button
+          type="button"
+          className="learning-report-button"
+          onClick={() => downloadReport(reportRows)}
+        >
+          <span aria-hidden="true">▤</span>
+          Generate Report
+        </button>
+      </footer>
 
       {isTrainingDialogOpen && (
         <Dialog

@@ -1,0 +1,472 @@
+.learning-dashboard {
+  gap: 15px;
+}
+
+.learning-dashboard .learning-banner {
+  min-height: 92px;
+  padding: 18px 22px;
+  border: 0;
+  border-radius: 9px;
+  background: linear-gradient(105deg, #d95cf1 0%, #8557f3 68%, #bd6238 100%);
+  box-shadow: 0 4px 12px rgb(107 36 142 / 18%);
+}
+
+.learning-dashboard .learning-banner h1 {
+  margin-bottom: 4px;
+  font-size: 21px;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+}
+
+.learning-dashboard .learning-banner p {
+  color: rgb(255 255 255 / 84%);
+  font-size: 12px;
+}
+
+.learning-dashboard .employee-scope-banner-controls {
+  margin-left: auto;
+}
+
+.learning-dashboard .employee-scope-header-filters {
+  gap: 9px;
+}
+
+.learning-dashboard .employee-scope-header-filters .dashboard-filter {
+  min-width: 132px;
+}
+
+.learning-dashboard .employee-scope-header-filters .dashboard-filter select {
+  min-height: 40px;
+  border-color: rgb(255 255 255 / 70%);
+  border-radius: 7px;
+  font-size: 11px;
+}
+
+.learning-dashboard .stat-grid {
+  gap: 12px;
+}
+
+.learning-dashboard .stat-card {
+  min-height: 82px;
+  padding: 13px 15px;
+  border-color: #ead9f2;
+  border-radius: 9px;
+  background: linear-gradient(145deg, #fff 15%, #faf4ff 100%);
+  box-shadow: 0 3px 8px rgb(85 3 136 / 10%);
+}
+
+.learning-dashboard .stat-icon {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 9px;
+}
+
+.learning-dashboard .stat-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.35px;
+}
+
+.learning-dashboard .stat-content strong {
+  font-size: 22px;
+}
+
+.learning-dashboard .stat-detail {
+  font-size: 9px;
+}
+
+.learning-dashboard > .panel,
+.learning-dashboard .learning-insights-grid > .panel {
+  padding: 16px;
+  border-color: #e7c9f1;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgb(85 3 136 / 13%);
+}
+
+.learning-dashboard .panel-header {
+  margin-bottom: 5px;
+}
+
+.learning-dashboard .panel-header .card-eyebrow {
+  color: #a900e8;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.45px;
+  text-transform: uppercase;
+}
+
+.learning-dashboard .panel-header h2 {
+  font-size: 16px;
+}
+
+.learning-dashboard .learning-panel-description {
+  margin: 4px 0 12px;
+  font-size: 10px;
+}
+
+.learning-dashboard .learning-activity-panel {
+  min-height: 0;
+}
+
+.learning-dashboard .learning-accomplishment {
+  min-height: 58px;
+  border-color: #eee8f2;
+}
+
+.learning-dashboard .learning-accomplishment-copy strong {
+  font-size: 11px;
+}
+
+.learning-dashboard .learning-accomplishment-copy b {
+  color: #a900e8;
+  font-size: 10px;
+}
+
+.learning-dashboard .learning-insights-grid {
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.9fr);
+  gap: 13px;
+}
+
+.learning-dashboard .learning-insights-grid .panel {
+  min-height: 0;
+}
+
+.learning-dashboard .learning-employee-stats {
+  gap: 10px;
+}
+
+.learning-dashboard .learning-employee-stat-heading strong {
+  font-size: 10px;
+}
+
+.learning-dashboard .learning-progress-track {
+  height: 5px;
+  background: #e9e4ed;
+}
+
+.learning-dashboard .learning-progress-track i {
+  background: linear-gradient(90deg, #cf39f0, #9f08ed);
+}
+
+.learning-dashboard .learning-attention-row {
+  padding: 8px 9px;
+  border-color: #eee5f2;
+  border-left: 2px solid #c328ef;
+  border-radius: 7px;
+  background: #fdfaff;
+}
+
+.learning-dashboard .learning-attention-row strong {
+  font-size: 10px;
+}
+
+.learning-dashboard .learning-attention-row > .status-badge {
+  font-size: 9px;
+}
+
+.learning-dashboard .learning-skill-hub-panel {
+  min-height: 0;
+  padding: 16px;
+  border-color: #e7c9f1;
+}
+
+.learning-dashboard .learning-skill-hub-panel > .learning-panel-description {
+  margin: 4px 0 12px;
+}
+
+.learning-dashboard .learning-skill-hub-columns {
+  gap: 12px;
+  padding: 0;
+}
+
+.learning-dashboard .learning-skill-hub-column {
+  min-height: 0;
+  padding: 11px;
+  border-color: #e6dfe9;
+  border-radius: 8px;
+  background: #fcfbfd;
+}
+
+.learning-dashboard .learning-skill-hub-column > header {
+  margin-bottom: 7px;
+}
+
+.learning-dashboard .learning-skill-hub-column h3 {
+  font-size: 12px;
+}
+
+.learning-dashboard .learning-skill-hub-column > header span {
+  font-size: 9px;
+}
+
+.learning-dashboard .learning-skill-hub-column > header button {
+  min-height: 24px;
+  padding: 2px 8px;
+  border-color: #ded8e1;
+  font-size: 9px;
+}
+
+.learning-dashboard .learning-skill-hub-items article {
+  min-height: 48px;
+  padding: 7px 2px;
+  border-color: #e9e4ec;
+}
+
+.learning-dashboard .learning-skill-hub-items strong {
+  font-size: 10px;
+}
+
+.learning-dashboard .learning-skill-hub-items span {
+  font-size: 9px;
+}
+
+.learning-dashboard .learning-training-panel {
+  min-height: 0;
+  padding: 16px;
+}
+
+.learning-dashboard .learning-add-button {
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 7px;
+  background: #a900f0;
+  font-size: 10px;
+}
+
+.learning-dashboard .learning-add-button:hover {
+  background: #9000d0;
+}
+
+.learning-dashboard .learning-training-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.learning-dashboard .learning-training-table {
+  width: 100%;
+  min-width: 730px;
+  border-collapse: separate;
+  border-spacing: 0 7px;
+  text-align: left;
+}
+
+.learning-dashboard .learning-training-table th {
+  padding: 0 10px 3px;
+  color: #655b6b;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.learning-dashboard .learning-training-table th:first-child {
+  width: 34%;
+}
+
+.learning-dashboard .learning-training-table th:nth-child(5) {
+  width: 15%;
+}
+
+.learning-dashboard .learning-training-table td {
+  padding: 8px 10px;
+  border-top: 1px solid #efdef6;
+  border-bottom: 1px solid #efdef6;
+  background: #faf5fc;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.learning-dashboard .learning-training-table td:first-child {
+  border-left: 1px solid #efdef6;
+  border-radius: 7px 0 0 7px;
+  white-space: normal;
+}
+
+.learning-dashboard .learning-training-table td:last-child {
+  border-right: 1px solid #efdef6;
+  border-radius: 0 7px 7px 0;
+}
+
+.learning-dashboard .learning-training-copy {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 9px;
+}
+
+.learning-dashboard .learning-training-copy > span:last-child {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.learning-dashboard .learning-training-copy strong {
+  font-size: 10px;
+}
+
+.learning-dashboard .learning-training-copy > span > span {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 9px;
+  text-overflow: ellipsis;
+}
+
+.learning-dashboard .learning-training-icon {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border-radius: 8px;
+  font-size: 18px;
+}
+
+.learning-dashboard .learning-training-progress {
+  display: flex;
+  min-width: 72px;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.learning-dashboard .learning-training-progress .learning-progress-track {
+  width: 100%;
+}
+
+.learning-dashboard .learning-edit-button {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: transparent;
+  color: #5c4c67;
+  font-size: 15px;
+}
+
+.learning-dashboard .learning-edit-button:hover {
+  background: #f0e2f7;
+  color: #8f00d4;
+}
+
+.learning-report-footer {
+  display: flex;
+  min-height: 76px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 19px;
+  border: 1px solid #e8dfea;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 3px 8px rgb(85 3 136 / 10%);
+}
+
+.learning-report-footer > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.learning-report-footer strong {
+  font-size: 11px;
+}
+
+.learning-report-footer span {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.learning-report-button {
+  display: inline-flex;
+  min-height: 40px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 7px;
+  background: linear-gradient(105deg, #d95cf1 0%, #8557f3 68%, #bd6238 100%);
+  box-shadow: 0 3px 6px rgb(85 3 136 / 20%);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.learning-report-button:hover {
+  filter: brightness(0.96);
+}
+
+.learning-report-button span {
+  color: inherit;
+  font-size: 17px;
+}
+
+@media (max-width: 1050px) {
+  .learning-dashboard .learning-insights-grid {
+    grid-template-columns: minmax(0, 1.35fr) minmax(250px, 0.9fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .learning-dashboard .learning-insights-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .learning-dashboard .learning-skill-hub-columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .learning-dashboard .learning-skill-hub-column:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .learning-dashboard .employee-scope-header-filters .dashboard-filter {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .learning-dashboard .learning-banner {
+    padding: 15px;
+  }
+
+  .learning-dashboard .employee-scope-banner-controls {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .learning-dashboard .employee-scope-header-filters {
+    width: 100%;
+  }
+
+  .learning-dashboard .stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .learning-dashboard .stat-card {
+    gap: 9px;
+    padding: 11px;
+  }
+
+  .learning-dashboard > .panel,
+  .learning-dashboard .learning-insights-grid > .panel {
+    padding: 13px;
+  }
+
+  .learning-dashboard .learning-skill-hub-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .learning-dashboard .learning-skill-hub-column:last-child {
+    grid-column: auto;
+  }
+
+  .learning-dashboard .learning-training-panel > .panel-header {
+    align-items: flex-start;
+  }
+
+  .learning-report-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
