@@ -5246,13 +5246,13 @@ body {
 }
 
 .logo-top {
-  top: 8px;
-  transform: rotate(20deg);
+  top: 17px;
+  transform: rotate(30deg);
 }
 
 .logo-bottom {
-  bottom: 8px;
-  transform: rotate(-20deg);
+  bottom: 17px;
+  transform: rotate(-30deg);
 }
 
 .brand-copy h1 {
