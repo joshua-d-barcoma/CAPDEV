@@ -5,8 +5,8 @@ export const NAVIGATION = Object.freeze({
     { label: 'Dashboard', path: ROUTES.adminDashboard, icon: 'dashboard' },
     { label: 'Employees', path: ROUTES.employees, icon: 'employees' },
     { label: 'Attendance', path: ROUTES.attendance, icon: 'attendance' },
-    { label: 'Learning', path: ROUTES.learning, icon: 'learning' },
     { label: 'Productivity', path: ROUTES.productivity, icon: 'productivity' },
+    { label: 'Learning', path: ROUTES.learning, icon: 'learning' },
     { label: 'Action Items', path: ROUTES.actionItems, icon: 'action-items' },
   ],
   user: [

@@ -7,7 +7,7 @@ const titlesByPath = {
   [ROUTES.adminDashboard]: ['Admin Dashboard', 'Bench Management Overview'],
   [ROUTES.employees]: ['Employees', 'Bench resource directory'],
   [ROUTES.employeeImportHistory]: ['Import History', 'Employee CSV import records'],
-  [ROUTES.attendance]: ['Attendance', 'Attendance and RTO management'],
+  [ROUTES.attendance]: ['Admin Dashboard', 'Bench Management Overview'],
   [ROUTES.learning]: ['Learning', 'Capability development'],
   [ROUTES.productivity]: ['Productivity', 'Tasks and productivity'],
   [ROUTES.actionItems]: ['Action Items', 'Follow up on bench operations'],
