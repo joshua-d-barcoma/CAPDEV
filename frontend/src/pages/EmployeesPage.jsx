@@ -28,7 +28,6 @@ import {
   DEMO_DEPLOYMENT_STAGES,
   DEMO_READINESS_METRICS,
 } from '../utils/employeePageDemoData.js';
-import { buildEmployeeReportRows, serializeCsvRows } from '../utils/employeeReport.js';
 import { formatDate } from '../utils/formatters.js';
 
 const EMPTY_FILTERS = {
@@ -46,9 +45,6 @@ const EMPLOYEE_PAGE_SIZE = 10;
 export default function EmployeesPage() {
   const {
     employees,
-    attendanceRecords,
-    employeeSchedules,
-    cohorts,
     importEmployees: importEmployeeBatch,
     updateEmployee,
     deleteEmployee,
@@ -176,29 +172,6 @@ export default function EmployeesPage() {
 
   function confirmEmployeeImport() {
     if (importEmployees(importReview)) setImportReview(null);
-  }
-
-  function exportReport() {
-    const reportRows = buildEmployeeReportRows({
-      employees: filteredEmployees,
-      attendanceRecords,
-      employeeSchedules,
-      cohorts,
-      scope: filters,
-      search,
-    });
-    const dateStamp = new Date().toISOString().slice(0, 10);
-    const downloadUrl = URL.createObjectURL(
-      new Blob([serializeCsvRows(reportRows)], { type: 'text/csv;charset=utf-8;' }),
-    );
-    const downloadLink = document.createElement('a');
-
-    downloadLink.href = downloadUrl;
-    downloadLink.download = `benchflow-resource-report-${dateStamp}.csv`;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    downloadLink.remove();
-    window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 0);
   }
 
   const columns = [
@@ -460,38 +433,19 @@ export default function EmployeesPage() {
       </div>
 
       <Panel
-        title="Bench by capability"
+        title="All Employees"
         eyebrow="Workforce"
         action={
           <div className="employee-panel-actions">
             <Link className="button button-secondary" to={ROUTES.employeeImportHistory}>
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M3 12a9 9 0 1 0 2.64-6.36L3 8" />
-                <path d="M3 3v5h5m4-1v5l3 2" />
-              </svg>
               History
             </Link>
             <button
               type="button"
-              className="button button-primary employee-import-button"
+              className="button button-primary"
               onClick={() => setImportOpen(true)}
             >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 3v12m-4-4 4 4 4-4" />
-                <path d="M4 16v4h16v-4" />
-              </svg>
-              Import CSV
-            </button>
-            <button
-              type="button"
-              className="button button-primary employee-import-button"
-              onClick={exportReport}
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 16V4m-4 4 4-4 4 4" />
-                <path d="M4 14v6h16v-6" />
-              </svg>
-              Export Report
+              Import
             </button>
           </div>
         }
@@ -505,21 +459,6 @@ export default function EmployeesPage() {
           />
           <div className="employee-filter-controls">
             <label className="employee-filter-control">
-              <span className="visually-hidden">Filter by capability</span>
-              <select
-                aria-label="Filter by capability"
-                value={filters.capability}
-                onChange={(event) => updateFilter('capability', event.target.value)}
-              >
-                <option value="">All Capabilities</option>
-                {filterOptions.capabilities.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="employee-filter-control">
               <span className="visually-hidden">Filter by career level</span>
               <select
                 aria-label="Filter by career level"
@@ -528,21 +467,6 @@ export default function EmployeesPage() {
               >
                 <option value="">All Career Levels</option>
                 {filterOptions.careerLevels.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="employee-filter-control">
-              <span className="visually-hidden">Filter by location</span>
-              <select
-                aria-label="Filter by location"
-                value={filters.location}
-                onChange={(event) => updateFilter('location', event.target.value)}
-              >
-                <option value="">All Locations</option>
-                {filterOptions.locations.map((value) => (
                   <option key={value} value={value}>
                     {value}
                   </option>
