@@ -288,20 +288,40 @@ export default function ProductivityPage() {
       
       <div className="productivity-chart-grid">
         
+        <div className="eod-card">
+  <h3>EOD Submission Rate</h3>
+  <p>Last 10 working days</p>
 
-        <Panel title="EOD submission rate" eyebrow="Last 10 working days · illustrative demo data">
-          <div className="productivity-eod-chart" role="img" aria-label="EOD submission rate trend">
-            {EOD_TREND.map(({ day, rate }) => (
-              <div className="productivity-eod-column" key={day}>
-                <strong>{rate}%</strong>
-                <div className="productivity-eod-track">
-                  <i style={{ height: `${rate}%` }} />
-                </div>
-                <span>{day}</span>
-              </div>
-            ))}
-          </div>
-        </Panel>
+  <div className="eod-chart">
+    {[
+      { day: "D-9", value: 86 },
+      { day: "D-8", value: 91 },
+      { day: "D-7", value: 83 },
+      { day: "D-6", value: 94 },
+      { day: "D-5", value: 89 },
+      { day: "D-4", value: 92 },
+      { day: "D-3", value: 87 },
+      { day: "D-2", value: 95 },
+      { day: "D-1", value: 90 },
+      { day: "Today", value: 78 },
+    ].map((item) => (
+      <div className="eod-column" key={item.day}>
+        <span className="eod-percent">{item.value}%</span>
+
+        <div className="eod-bar-track">
+          <div
+            className="eod-bar-fill"
+            style={{ height: `${item.value}%` }}
+          ></div>
+        </div>
+
+        <span className="eod-day">{item.day}</span>
+      </div>
+    ))}
+  </div>
+</div>
+
+
       </div>
 
       <Panel title="Productivity by task category" eyebrow="Completed tasks / assigned tasks">
