@@ -36,6 +36,36 @@ function NavigationIcon({ name }) {
       </>
     ),
     'action-items': <path d="M5 21V4m0 1h13l-2.5 4L18 13H5" />,
+    tasks: (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="m8 12 2.5 2.5L16 9" />
+      </>
+    ),
+    'time-in': (
+      <>
+        <circle cx="10.5" cy="12" r="8" />
+        <path d="M10.5 8v4l2.5 1.5M18 5l3 3m0-3v3h-3" />
+      </>
+    ),
+    'time-out': (
+      <>
+        <circle cx="10.5" cy="12" r="8" />
+        <path d="M10.5 8v4l2.5 1.5M18 8l3-3m0 3h-3V5" />
+      </>
+    ),
+    history: (
+      <>
+        <path d="M3 11a9 9 0 1 1 2.5 6.2L3 15" />
+        <path d="M3 4v5h5m4-1v4l3 2" />
+      </>
+    ),
+    calendar: (
+      <>
+        <rect x="3" y="5" width="18" height="16" rx="2" />
+        <path d="M7 3v4m10-4v4M3 10h18" />
+      </>
+    ),
   };
 
   return (

@@ -11,7 +11,7 @@ const titlesByPath = {
   [ROUTES.learning]: ['Learning', 'Capability development'],
   [ROUTES.productivity]: ['Productivity', 'Tasks and productivity'],
   [ROUTES.actionItems]: ['Action Items', 'Follow up on bench operations'],
-  [ROUTES.userDashboard]: ['My Dashboard', 'Your bench workspace'],
+  [ROUTES.userDashboard]: ['Personal Dashboard', 'My bench responsibilities and progress'],
   [ROUTES.tasks]: ['My Tasks', 'Training and development tasks'],
   [ROUTES.timeIn]: ['Time In', 'Record your workday attendance'],
   [ROUTES.timeOut]: ['Time Out', 'Complete your workday'],
@@ -54,7 +54,7 @@ export function Header({ role, onToggleSidebar, onSwitchRole }) {
           type="button"
           className="menu-button"
           onClick={onToggleSidebar}
-          aria-label="Toggle sidebar"
+          aria-label={role === 'admin' ? 'Toggle sidebar' : 'Static sidebar navigation'}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M4 6h16M4 12h16M4 18h16" />

@@ -35,12 +35,18 @@ export function AppLayout() {
   }, [location.key]);
 
   return (
+    <div
+      className={`app-layout${sidebarCollapsed && role === 'admin' ? ' sidebar-is-collapsed' : ''}${role === 'user' ? ' user-role' : ''}`}
+    >
+      <Sidebar role={role} collapsed={role === 'admin' && sidebarCollapsed} />
     <div className={layoutClassName}>
       <Sidebar role={role} collapsed={sidebarCollapsed} />
       <div className="main-area">
         <Header
           role={role}
-          onToggleSidebar={() => setSidebarCollapsed((collapsed) => !collapsed)}
+          onToggleSidebar={() => {
+            if (role === 'admin') setSidebarCollapsed((collapsed) => !collapsed);
+          }}
           onSwitchRole={switchRole}
         />
         {storageError && (

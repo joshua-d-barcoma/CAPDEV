@@ -52,6 +52,9 @@ export function BenchDataProvider({ children }) {
       updateTask(taskId, status) {
         return updateData((current) => benchDataService.updateTaskStatus(current, taskId, status));
       },
+      addTask(task) {
+        return updateData((current) => benchDataService.addTask(current, task));
+      },
       updateLearningAssignment(assignmentId, status) {
         return updateData((current) =>
           benchDataService.updateLearningAssignment(current, assignmentId, status),
@@ -101,6 +104,17 @@ export function BenchDataProvider({ children }) {
         return updateData((current) =>
           benchDataService.updateEmployeeSchedule(current, employeeId, schedule),
         );
+      },
+      refreshData() {
+        try {
+          setData(benchDataService.loadBenchData());
+          setStorageError('');
+          return true;
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Unable to refresh demo data.';
+          setStorageError(message);
+          return false;
+        }
       },
     }),
     [updateData],
