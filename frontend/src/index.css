@@ -12,6 +12,7 @@
   --purple: #a900ff;
   --purple-dark: #32094d;
   --purple-soft: #f4e6fb;
+  --banner-gradient: linear-gradient(105deg, #e654f2 0%, #9254f2 53%, #df6844 100%);
   --box-shadow: 4px 4px 4px 0 rgb(85 3 136 / 25%);
   --ink: #211a27;
   --muted: #786e80;
@@ -478,7 +479,7 @@ p {
   gap: 24px;
   padding: 18px;
   border-radius: 0;
-  background: linear-gradient(105deg, #38105c 0%, #a900d8 73%, #50116e 100%);
+  background: var(--banner-gradient);
   color: #fff;
 }
 .dashboard-banner-copy h1 {
@@ -494,7 +495,7 @@ p {
 .user-role .user-dashboard-banner {
   min-height: 88px;
   border-radius: 0;
-  background: linear-gradient(105deg, #38105c 0%, #a900d8 73%, #50116e 100%);
+  background: var(--banner-gradient);
 }
 .user-role .user-dashboard-banner .page-eyebrow {
   color: #ead8f4;
@@ -509,7 +510,7 @@ p {
   align-items: center;
   padding: 18px;
   border-radius: 0;
-  background: linear-gradient(105deg, #38105c 0%, #a900d8 73%, #50116e 100%);
+  background: var(--banner-gradient);
   box-shadow: var(--box-shadow);
   color: #fff;
 }
@@ -2660,7 +2661,7 @@ p {
   gap: 18px;
   padding: 14px 18px;
   border-radius: 8px;
-  background: linear-gradient(105deg, #38105c 0%, #a900d8 73%, #50116e 100%);
+  background: var(--banner-gradient);
   color: #fff;
 }
 .learning-banner h1 {
@@ -3070,6 +3071,7 @@ p {
   font-size: 9px;
   line-height: 1.35;
   -webkit-box-orient: vertical;
+  line-clamp: 2;
   -webkit-line-clamp: 2;
 }
 .learning-error {
@@ -6313,7 +6315,7 @@ p {
   justify-content: space-between;
   gap: 16px;
   padding: 11px 15px;
-  background: linear-gradient(105deg, #d77af7 0%, #8a63f5 60%, #c85c35 100%);
+  background: var(--banner-gradient);
   color: #fff;
 }
 .attendance-hero-banner .attendance-heading-copy h1 {
@@ -6594,7 +6596,7 @@ p {
 .admin-dashboard .dashboard-banner {
   min-height: 60px;
   padding: 11px 14px;
-  background: linear-gradient(105deg, #e654f2 0%, #9254f2 53%, #df6844 100%);
+  background: var(--banner-gradient);
 }
 .admin-dashboard .dashboard-banner-copy h1 {
   margin-bottom: 3px;
@@ -7011,7 +7013,7 @@ p {
 .employee-page > .employee-banner {
   min-height: 60px;
   padding: 11px 14px;
-  background: linear-gradient(105deg, #e654f2 0%, #9254f2 53%, #df6844 100%);
+  background: var(--banner-gradient);
 }
 .employee-page .dashboard-banner-copy h1 {
   margin-bottom: 3px;
@@ -7430,4 +7432,96 @@ p {
   .user-week-day {
     min-height: 65px;
   }
+}
+
+.admin-productivity-layout {
+  --canvas: #f3eff8;
+  --border: #eee8f3;
+  background: #f3eff8;
+}
+.admin-productivity-layout .page-content {
+  background: #f3eff8;
+}
+.admin-productivity-layout .sidebar {
+  border-right-color: #e7dbea;
+  background: linear-gradient(180deg, #f3eff5 0%, #efddf3 54%, #dda8f0 100%);
+}
+.admin-productivity-layout .navigation-item.active {
+  border-color: #dfc5f2;
+  border-left: 3px solid #b200f5;
+  background: #f1e3ff;
+  box-shadow: 0 2px 6px rgb(65 24 93 / 12%);
+  color: #6814aa;
+}
+.admin-productivity-layout .productivity-banner {
+  background: var(--banner-gradient);
+}
+.admin-productivity-layout .productivity-page .stat-card {
+  border: 1px solid #f1ebf6;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #f8f3ff 0%, #fbf8ff 62%, #fff6ef 100%);
+  box-shadow: 0 6px 18px rgb(53 30 80 / 7%);
+}
+.admin-productivity-layout .productivity-page .dashboard-card,
+.admin-productivity-layout .productivity-page .productivity-chart-grid .panel,
+.admin-productivity-layout .productivity-page .eod-card,
+.admin-productivity-layout .productivity-page .pending-card,
+.admin-productivity-layout .productivity-page .report-card {
+  border: 1px solid #eee8f4;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 5px 15px rgb(53 30 80 / 7%);
+}
+.admin-productivity-layout .productivity-page .dashboard-card h3,
+.admin-productivity-layout .productivity-page .eod-card h3,
+.admin-productivity-layout .productivity-page .pending-header h3 {
+  color: #211a27;
+}
+.admin-productivity-layout .productivity-page .subtitle,
+.admin-productivity-layout .productivity-page .eod-card p,
+.admin-productivity-layout .productivity-page .pending-header p,
+.admin-productivity-layout .productivity-page .pending-note {
+  color: #786e80;
+}
+.admin-productivity-layout .productivity-page .status-bar,
+.admin-productivity-layout .productivity-page .productivity-track,
+.admin-productivity-layout .productivity-page .eod-bar-track {
+  background: #f0e9f5;
+}
+.admin-productivity-layout .productivity-page .productivity-fill,
+.admin-productivity-layout .productivity-page .eod-bar-fill {
+  background: linear-gradient(90deg, #6212a7, #a000ff);
+}
+.admin-productivity-layout .productivity-page .productivity-row > strong {
+  color: #38234a;
+}
+.admin-productivity-layout .productivity-page .pending-table-head {
+  background: #f1e3ff;
+  color: #4a2d5c;
+}
+.admin-productivity-layout .productivity-page .pending-row {
+  border-bottom-color: #e7dbea;
+  color: #382f40;
+}
+.admin-productivity-layout .productivity-page .unassigned-badge {
+  border-color: #d7b4ee;
+  background: #f4e6fb;
+  color: #741bd0;
+}
+.admin-productivity-layout .productivity-page .details-btn,
+.admin-productivity-layout .productivity-page .assign-btn {
+  border-color: #b94be5;
+  color: #741bd0;
+}
+.admin-productivity-layout .productivity-page .assign-btn:hover {
+  background: #741bd0;
+  color: #fff;
+}
+.admin-productivity-layout .productivity-page .report-btn {
+  background: var(--banner-gradient);
+}
+.admin-productivity-layout .productivity-page .productivity-distribution-table .data-table th {
+  border-bottom-color: #e7dbea;
+  background: #f1e3ff;
+  color: #5b4868;
 }

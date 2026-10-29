@@ -19,6 +19,8 @@ export function AppLayout() {
     (matchPath(ROUTES.employees, location.pathname) !== null ||
       location.pathname.startsWith(`${ROUTES.employees}/`) ||
       matchPath(ROUTES.employee, location.pathname) !== null);
+  const isAdminProductivity =
+    role === 'admin' && matchPath(ROUTES.productivity, location.pathname) !== null;
   const layoutClassName = [
     'app-layout',
     sidebarCollapsed && role === 'admin' && 'sidebar-is-collapsed',
@@ -26,6 +28,7 @@ export function AppLayout() {
     location.pathname === ROUTES.attendance && 'attendance-layout',
     isAdminDashboard && 'admin-dashboard-layout',
     isAdminEmployees && 'admin-employees-layout',
+    isAdminProductivity && 'admin-productivity-layout',
   ]
     .filter(Boolean)
     .join(' ');
