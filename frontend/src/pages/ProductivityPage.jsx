@@ -166,7 +166,7 @@ export default function ProductivityPage() {
         <StatCard
           label="Tasks In Scope"
           value={scopedTasks.length}
-          detail="Across active resources"
+          detail="Total tracked tasks"
           icon="✓"
         />
         <StatCard
