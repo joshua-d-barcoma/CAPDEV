@@ -204,7 +204,7 @@ export default function ProductivityPage() {
       </div>
     <div className="dashboard-row">
 
-  {/* Task Status by Capability */}
+ 
   <div className="dashboard-card">
     <h3>Task Status by Capability</h3>
     <p className="subtitle">Completion state of tracked work</p>
@@ -250,7 +250,7 @@ export default function ProductivityPage() {
   </div>
 
 
-  {/* Productivity by Task Category */}
+
   <div className="dashboard-card">
     <div className="card-header">
       <div>
@@ -324,7 +324,7 @@ export default function ProductivityPage() {
 
       </div>
 
-      {/* Pending Tasks for Distribution */}
+     
 <div className="pending-card">
   <div className="pending-header">
     <div>
