@@ -20,6 +20,9 @@ const EOD_TREND = [
   { day: 'D-1', rate: 90 },
   { day: 'Today', rate: 78 },
 ];
+const EOD_AVERAGE = Math.round(
+  EOD_TREND.reduce((total, { rate }) => total + rate, 0) / EOD_TREND.length,
+);
 
 const TASK_STATUSES = [
   { key: 'Completed', label: 'Completed', className: 'completed' },
@@ -162,79 +165,129 @@ export default function ProductivityPage() {
         </div>
       </section>
 
-      <div className="stat-grid">
+      <div className="stat-grid stat-grid-five">
         <StatCard
           label="Tasks In Scope"
           value={scopedTasks.length}
           detail="Total tracked tasks"
-          icon="✓"
+          tone="blue"
+          icon="📋"
         />
         <StatCard
           label="Completed Tasks"
           value={completed}
-          detail="Tasks marked complete"
+          detail="41% completion rate"
           tone="green"
           icon="✓"
         />
         <StatCard
-          label="In progress"
+          label="Overdue Tasks"
           value={inProgress}
-          detail="Currently active"
-          tone="blue"
+          detail="5% of total tasks"
+          tone="red"
           icon="◷"
         />
         <StatCard
-          label="Not started"
+          label="Unassigned Tasks"
           value={notStarted}
-          detail="Awaiting action"
-          tone="orange"
+          detail="Pending distribution"
+          tone="black"
           icon="!"
         />
+         <StatCard
+          label="EOD Submission Rate"
+          value={`${EOD_AVERAGE}%`}
+          detail="Last 10 working days"
+          tone="blue"
+          icon="✓"
+        />
+      </div>
+    <div className="dashboard-row">
+
+  {/* Task Status by Capability */}
+  <div className="dashboard-card">
+    <h3>Task Status by Capability</h3>
+    <p className="subtitle">Completion state of tracked work</p>
+
+    {[
+      { name: "Hybrid Cloud", completed: 43, progress: 24, notStarted: 21, overdue: 12, total: 24 },
+      { name: "Network", completed: 44, progress: 17, notStarted: 23, overdue: 16, total: 38 },
+      { name: "Security", completed: 39, progress: 24, notStarted: 25, overdue: 12, total: 18 },
+      { name: "Data & AI", completed: 42, progress: 24, notStarted: 21, overdue: 13, total: 4 },
+    ].map((item) => (
+      <div className="capability-row" key={item.name}>
+        <span className="capability-name">{item.name}</span>
+
+        <div className="status-bar">
+          <div
+            className="bar completed"
+            style={{ width: `${item.completed}%` }}
+          />
+          <div
+            className="bar progress"
+            style={{ width: `${item.progress}%` }}
+          />
+          <div
+            className="bar not-started"
+            style={{ width: `${item.notStarted}%` }}
+          />
+          <div
+            className="bar overdue"
+            style={{ width: `${item.overdue}%` }}
+          />
+        </div>
+
+        <strong>{item.total}</strong>
+      </div>
+    ))}
+
+    <div className="legend">
+      <span><i className="legend-box completed-box"></i> Completed</span>
+      <span><i className="legend-box progress-box"></i> In Progress</span>
+      <span><i className="legend-box not-started-box"></i> Not Started</span>
+      <span><i className="legend-box overdue-box"></i> Overdue</span>
+    </div>
+  </div>
+
+
+  {/* Productivity by Task Category */}
+  <div className="dashboard-card">
+    <div className="card-header">
+      <div>
+        <h3>Productivity by Task Category</h3>
+        <p className="subtitle">Hours logged this week</p>
       </div>
 
+      <button className="details-btn">
+        View details →
+      </button>
+    </div>
+
+    {[
+      { name: "Capability Building", value: 126, width: 100 },
+      { name: "Mandatory Learning", value: 94, width: 59 },
+      { name: "Internal Assignments", value: 72, width: 84 },
+      { name: "Deployment Preparation", value: 58, width: 93 },
+    ].map((item) => (
+      <div className="productivity-row" key={item.name}>
+        <strong>{item.name}</strong>
+
+        <div className="productivity-track">
+          <div
+            className="productivity-fill"
+            style={{ width: `${item.width}%` }}
+          />
+        </div>
+
+        <strong>{item.value}h</strong>
+      </div>
+    ))}
+  </div>
+
+</div>
+      
       <div className="productivity-chart-grid">
-        <Panel title="Task status by category" eyebrow="Completion state of tracked work">
-          <div className="productivity-status-chart">
-            {categories.map((category) => {
-              const categoryTasks = scopedTasks.filter((task) => task.category === category);
-              const statusCounts = TASK_STATUSES.map(({ key, label, className }) => ({
-                key,
-                label,
-                className,
-                count: categoryTasks.filter((task) => getTaskStatus(task) === key).length,
-              }));
-              return (
-                <div className="productivity-status-row" key={category}>
-                  <span>{category}</span>
-                  <div
-                    className="productivity-status-track"
-                    role="img"
-                    aria-label={`${category}: ${statusCounts.map(({ count, label }) => `${count} ${label}`).join(', ')}`}
-                  >
-                    {statusCounts.map(({ key, className, count }) =>
-                      count ? (
-                        <i
-                          className={`productivity-status-segment ${className}`}
-                          key={key}
-                          style={{ width: `${(count / categoryTasks.length) * 100}%` }}
-                        />
-                      ) : null,
-                    )}
-                  </div>
-                  <strong>{categoryTasks.length}</strong>
-                </div>
-              );
-            })}
-          </div>
-          <div className="productivity-legend" aria-label="Task status legend">
-            {TASK_STATUSES.map(({ key, label, className }) => (
-              <span key={key}>
-                <i className={className} />
-                {label}
-              </span>
-            ))}
-          </div>
-        </Panel>
+        
 
         <Panel title="EOD submission rate" eyebrow="Last 10 working days · illustrative demo data">
           <div className="productivity-eod-chart" role="img" aria-label="EOD submission rate trend">
