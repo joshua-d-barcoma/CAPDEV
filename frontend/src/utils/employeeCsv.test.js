@@ -116,6 +116,22 @@ test('parses the standard HC export headers and maps Home Loc', () => {
   assert.equal(result.sourceHeaders.length, 29);
 });
 
+test('imports files with repeated employee columns by preferring specific headers and using fallbacks', () => {
+  const result = parseEmployeeCsv(
+    'EID,Activity Type,Level,Career Level,Primary Skill,Skills,Join Date,Capability,Capability\n' +
+      'Alex Santos,Bench,CL8,CL7,,AWS,2020-02-10,,Cloud Engineering\n' +
+      'Jordan Lee,Bench,CL8,CL7,AWS,"AWS, Kubernetes",2020-02-10,Cloud,',
+  );
+
+  assert.deepEqual(result.errors, []);
+  assert.equal(result.employees.length, 2);
+  assert.equal(result.employees[0].careerLevel, 'CL7');
+  assert.deepEqual(result.employees[0].skills, ['AWS']);
+  assert.equal(result.employees[0].capability, 'Cloud Engineering');
+  assert.deepEqual(result.employees[1].skills, ['AWS', 'Kubernetes']);
+  assert.equal(result.employees[1].capability, 'Cloud');
+});
+
 test('preserves every uploaded column and raw cell for history', () => {
   const result = parseEmployeeCsv(
     'EID,Activity Type,Level,Primary Skill,Join Date,Project Name,Manager,Allocation %\n' +

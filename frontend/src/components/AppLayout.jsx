@@ -5,6 +5,7 @@ import { useRole } from '../hooks/useRole.js';
 import { ROUTES } from '../constants/routes.js';
 import { Header } from './Header.jsx';
 import { Sidebar } from './Sidebar.jsx';
+import { ROUTES } from '../constants/routes.js';
 
 export function AppLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -12,6 +13,14 @@ export function AppLayout() {
   const location = useLocation();
   const { role, switchRole } = useRole();
   const { storageError, clearStorageError } = useBenchData();
+  const layoutClassName = [
+    'app-layout',
+    sidebarCollapsed && 'sidebar-is-collapsed',
+    role === 'user' && 'user-role',
+    location.pathname === ROUTES.attendance && 'attendance-layout',
+  ]
+    .filter(Boolean)
+    .join(' ');
   const isAdminDashboard = role === 'admin' && location.pathname === ROUTES.adminDashboard;
   const isAdminEmployees = role === 'admin' && location.pathname === ROUTES.employees;
 
@@ -20,6 +29,7 @@ export function AppLayout() {
   }, [location.key]);
 
   return (
+    <div className={layoutClassName}>
     <div
       className={`app-layout${sidebarCollapsed ? ' sidebar-is-collapsed' : ''}${role === 'user' ? ' user-role' : ''}${isAdminDashboard ? ' admin-dashboard-layout' : ''}${isAdminEmployees ? ' admin-employees-layout' : ''}`}
     >
