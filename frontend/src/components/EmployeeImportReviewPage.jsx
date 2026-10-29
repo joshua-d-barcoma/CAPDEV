@@ -44,29 +44,66 @@ function EmployeeStatus({ status }) {
   );
 }
 
-function ReviewTable({ title, description, rows, columns, emptyMessage }) {
+function ReviewTable({
+  title,
+  description,
+  rows,
+  columns,
+  emptyMessage,
+  filters = ['location', 'capability'],
+}) {
   const [search, setSearch] = useState('');
-  const [location, setLocation] = useState('');
+  const [filterValues, setFilterValues] = useState({
+    location: '',
+    capability: '',
+    status: '',
+  });
   const [page, setPage] = useState(1);
-  const locations = useMemo(
-    () => [...new Set(rows.map(({ employee }) => employee.workLocation).filter(Boolean))].sort(),
+  const filterOptions = useMemo(
+    () => ({
+      location: [
+        ...new Set(rows.map(({ employee }) => employee.workLocation).filter(Boolean)),
+      ].sort(),
+      capability: [
+        ...new Set(rows.map(({ employee }) => employee.capability).filter(Boolean)),
+      ].sort(),
+      status: [
+        ...new Set(
+          rows.flatMap(({ employee, previousEmployee }) => [
+            normalizeEmployeeStatus(employee.employeeStatus),
+            ...(previousEmployee ? [normalizeEmployeeStatus(previousEmployee.employeeStatus)] : []),
+          ]),
+        ),
+      ].sort(),
+    }),
     [rows],
   );
   const filteredRows = useMemo(() => {
     const query = search.trim().toLowerCase();
-    return rows.filter(({ employee, changedFields = [], field, previousValue, newValue }) => {
-      const matchesLocation = !location || employee.workLocation === location;
-      const changeText = changedFields
-        .map(({ label, previousValue, newValue }) => `${label} ${previousValue} ${newValue}`)
-        .join(' ');
-      const matchesSearch =
-        !query ||
-        `${employee.name} ${employee.capability} ${employee.workLocation} ${employee.careerLevel} ${(employee.skills ?? []).join(' ')} ${field ?? ''} ${previousValue ?? ''} ${newValue ?? ''} ${changeText}`
-          .toLowerCase()
-          .includes(query);
-      return matchesLocation && matchesSearch;
-    });
-  }, [location, rows, search]);
+    return rows.filter(
+      ({ employee, previousEmployee, changedFields = [], field, previousValue, newValue }) => {
+        const { location, capability, status } = filterValues;
+        const matchesLocation = !location || employee.workLocation === location;
+        const matchesCapability = !capability || employee.capability === capability;
+        const matchesStatus =
+          !status ||
+          [
+            normalizeEmployeeStatus(employee.employeeStatus),
+            ...(previousEmployee ? [normalizeEmployeeStatus(previousEmployee.employeeStatus)] : []),
+          ]
+            .some((value) => normalizeEmployeeStatus(value) === status);
+        const changeText = changedFields
+          .map(({ label, previousValue, newValue }) => `${label} ${previousValue} ${newValue}`)
+          .join(' ');
+        const matchesSearch =
+          !query ||
+          `${employee.name} ${employee.capability} ${employee.workLocation} ${employee.careerLevel} ${(employee.skills ?? []).join(' ')} ${normalizeEmployeeStatus(employee.employeeStatus)} ${previousEmployee ? normalizeEmployeeStatus(previousEmployee.employeeStatus) : ''} ${field ?? ''} ${previousValue ?? ''} ${newValue ?? ''} ${changeText}`
+            .toLowerCase()
+            .includes(query);
+        return matchesLocation && matchesCapability && matchesStatus && matchesSearch;
+      },
+    );
+  }, [filterValues, rows, search]);
   const pageCount = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
   const pageRows = filteredRows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   const pageNumbers =
@@ -88,8 +125,14 @@ function ReviewTable({ title, description, rows, columns, emptyMessage }) {
     setPage(1);
   }
 
-  function updateLocation(value) {
-    setLocation(value);
+  function updateFilter(name, value) {
+    setFilterValues((current) => ({ ...current, [name]: value }));
+    setPage(1);
+  }
+
+  function resetFilters() {
+    setSearch('');
+    setFilterValues({ location: '', capability: '', status: '' });
     setPage(1);
   }
 
@@ -109,20 +152,68 @@ function ReviewTable({ title, description, rows, columns, emptyMessage }) {
           <input
             value={search}
             onChange={(event) => updateSearch(event.target.value)}
-            placeholder="Search name, capability, or skill"
+            placeholder="Search name, capability, location, level, or skills"
           />
         </label>
-        <label className="employee-import-location-filter">
-          <span className="visually-hidden">Filter {title.toLowerCase()} by location</span>
-          <select value={location} onChange={(event) => updateLocation(event.target.value)}>
-            <option value="">All Locations</option>
-            {locations.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-        </label>
+        <div className="employee-import-review-filter-controls">
+          {filters.includes('location') && (
+            <label className="employee-import-location-filter">
+              <span className="visually-hidden">Filter {title.toLowerCase()} by location</span>
+              <select
+                value={filterValues.location}
+                onChange={(event) => updateFilter('location', event.target.value)}
+              >
+                <option value="">All Locations</option>
+                {filterOptions.location.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          {filters.includes('capability') && (
+            <label className="employee-import-location-filter">
+              <span className="visually-hidden">Filter {title.toLowerCase()} by capability</span>
+              <select
+                value={filterValues.capability}
+                onChange={(event) => updateFilter('capability', event.target.value)}
+              >
+                <option value="">All Capabilities</option>
+                {filterOptions.capability.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          {filters.includes('status') && (
+            <label className="employee-import-location-filter">
+              <span className="visually-hidden">Filter {title.toLowerCase()} by status</span>
+              <select
+                value={filterValues.status}
+                onChange={(event) => updateFilter('status', event.target.value)}
+              >
+                <option value="">All Statuses</option>
+                {filterOptions.status.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          {filters.length > 0 && (
+            <button
+              type="button"
+              className="button button-secondary employee-import-review-reset"
+              onClick={resetFilters}
+            >
+              Reset
+            </button>
+          )}
+        </div>
       </div>
       <div className="table-scroll employee-import-review-table">
         <table className="data-table">
@@ -154,7 +245,7 @@ function ReviewTable({ title, description, rows, columns, emptyMessage }) {
         </table>
       </div>
       {filteredRows.length > PAGE_SIZE && (
-        <div className="employee-import-pagination" aria-label={`${title} pages`}>
+        <nav className="employee-import-pagination" aria-label={`${title} pages`}>
           <button
             type="button"
             className="button button-secondary"
@@ -189,7 +280,7 @@ function ReviewTable({ title, description, rows, columns, emptyMessage }) {
           >
             Next
           </button>
-        </div>
+        </nav>
       )}
     </section>
   );
@@ -314,7 +405,7 @@ export function EmployeeImportReviewPage({ review, onConfirm, onCancel, storageE
             {review.fileName.split('.').pop()?.toUpperCase()}
           </span>
           <div className="employee-import-review-file-details">
-            <strong>Import employee details</strong>
+            <strong>Import file</strong>
             <small>{review.fileName}</small>
             <small>
               Uploaded on{' '}
@@ -324,42 +415,50 @@ export function EmployeeImportReviewPage({ review, onConfirm, onCancel, storageE
               }).format(review.uploadedAt)}
             </small>
           </div>
-          <span aria-label={`${review.employees.length} imported records`}>
-            {review.employees.length} records
+          <span
+            aria-label={`${(review.sourceRows?.length ?? review.employees.length).toLocaleString()} imported records`}
+          >
+            {(review.sourceRows?.length ?? review.employees.length).toLocaleString()} records
           </span>
         </div>
       </section>
 
       <ReviewTable
+        key="newly-added"
         title="Newly Added"
         description="New employees start as Bench unless another activity type is included in the file."
         rows={newEmployees}
         columns={personColumns}
-        emptyMessage="No new employees match this search or location."
+        emptyMessage="No new employees match the selected filters."
+        filters={['location', 'capability']}
       />
       {updatedEmployees.length > 0 && (
         <ReviewTable
+          key="updated-employees"
           title="Updated Employees"
           description="Changed values and statuses will update the matching existing employee only."
           rows={updatedEmployees}
           columns={updateColumns}
-          emptyMessage="No updated employees match this search or location."
+          emptyMessage="No updated employees match the selected filters."
         />
       )}
       <ReviewTable
+        key="rolled-off-bench"
         title="Rolled-Off Bench"
         description="Project employees will leave the Bench list."
         rows={rolledOffEmployees}
         columns={rollOffColumns}
-        emptyMessage="No employees will be rolled off the bench."
+        emptyMessage="No rolled-off employees match the selected filters."
+        filters={['location', 'capability', 'status']}
       />
       {unchangedEmployees.length > 0 && (
         <ReviewTable
+          key="not-changed"
           title="Not Changed"
           description="Matching or repeated records are listed here and will not overwrite existing employee data."
           rows={unchangedEmployees}
           columns={unchangedColumns}
-          emptyMessage="No matching or repeated records."
+          emptyMessage="No unchanged or duplicate records match the selected filters."
         />
       )}
 
