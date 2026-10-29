@@ -12,7 +12,7 @@ export function AppLayout() {
   const location = useLocation();
   const { role, switchRole } = useRole();
   const { storageError, clearStorageError } = useBenchData();
-  const isAdminEmployees = role === 'admin' && location.pathname === ROUTES.employees;
+  const isAdminDashboard = role === 'admin' && location.pathname === ROUTES.adminDashboard;
 
   useLayoutEffect(() => {
     mainContentRef.current?.scrollTo({ top: 0, left: 0 });
@@ -20,7 +20,7 @@ export function AppLayout() {
 
   return (
     <div
-      className={`app-layout${sidebarCollapsed ? ' sidebar-is-collapsed' : ''}${role === 'user' ? ' user-role' : ''}${isAdminEmployees ? ' admin-employees-layout' : ''}`}
+      className={`app-layout${sidebarCollapsed ? ' sidebar-is-collapsed' : ''}${role === 'user' ? ' user-role' : ''}${isAdminDashboard ? ' admin-dashboard-layout' : ''}`}
     >
       <Sidebar role={role} collapsed={sidebarCollapsed} />
       <div className="main-area">
