@@ -21,10 +21,13 @@ export function AppLayout() {
       matchPath(ROUTES.employee, location.pathname) !== null);
   const isAdminProductivity =
     role === 'admin' && matchPath(ROUTES.productivity, location.pathname) !== null;
+  const isUserDashboard =
+    role === 'user' && matchPath(ROUTES.userDashboard, location.pathname) !== null;
   const layoutClassName = [
     'app-layout',
     sidebarCollapsed && role === 'admin' && 'sidebar-is-collapsed',
     role === 'user' && 'user-role',
+    isUserDashboard && 'user-dashboard-layout',
     location.pathname === ROUTES.attendance && 'attendance-layout',
     isAdminDashboard && 'admin-dashboard-layout',
     isAdminEmployees && 'admin-employees-layout',

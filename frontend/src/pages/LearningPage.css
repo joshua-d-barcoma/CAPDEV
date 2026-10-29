@@ -7,7 +7,7 @@
   padding: 18px 22px;
   border: 0;
   border-radius: 9px;
-  background: linear-gradient(105deg, #d95cf1 0%, #8557f3 68%, #bd6238 100%);
+  background: var(--banner-gradient);
   box-shadow: 0 4px 12px rgb(107 36 142 / 18%);
 }
 
@@ -43,16 +43,16 @@
 }
 
 .learning-dashboard .stat-grid {
-  gap: 12px;
+  gap: 9px;
 }
 
 .learning-dashboard .stat-card {
   min-height: 82px;
   padding: 13px 15px;
-  border-color: #ead9f2;
-  border-radius: 9px;
-  background: linear-gradient(145deg, #fff 15%, #faf4ff 100%);
-  box-shadow: 0 3px 8px rgb(85 3 136 / 10%);
+  border: 1px solid #f1ebf6;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #f8f3ff 0%, #fbf8ff 62%, #fff6ef 100%);
+  box-shadow: 0 6px 18px rgb(53 30 80 / 7%);
 }
 
 .learning-dashboard .stat-icon {
