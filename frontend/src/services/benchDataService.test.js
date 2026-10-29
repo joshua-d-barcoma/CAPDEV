@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  addTask,
   addMandatoryTraining,
   addSkillHubItem,
   addEmployee,
@@ -21,6 +22,25 @@ function createData() {
     scheduleRequests: [],
   };
 }
+
+test('adding a development task returns immutable data with a generated id', () => {
+  const initial = { tasks: [] };
+  const updated = addTask(initial, {
+    title: '  Cloud Fundamentals  ',
+    description: 'Build foundational cloud skills.',
+    due: 'No due date',
+    priority: 'Medium',
+    status: 'Not Started',
+    category: 'Development',
+    assigneeId: 'employee-1',
+  });
+
+  assert.equal(initial.tasks.length, 0);
+  assert.equal(updated.tasks.length, 1);
+  assert.equal(updated.tasks[0].title, 'Cloud Fundamentals');
+  assert.ok(updated.tasks[0].id.startsWith('task-'));
+  assert.throws(() => addTask(initial, { title: ' ' }), /A task title is required/);
+});
 
 test('employee create and delete operations return updated immutable data', () => {
   const initial = createData();

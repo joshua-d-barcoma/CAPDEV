@@ -694,6 +694,16 @@ export function updateTaskStatus(data, taskId, status) {
   };
 }
 
+export function addTask(data, task) {
+  if (!task.title?.trim()) {
+    throw new Error('A task title is required.');
+  }
+  return {
+    ...data,
+    tasks: [...data.tasks, { ...task, title: task.title.trim(), id: createId('task') }],
+  };
+}
+
 export function updateLearningAssignment(data, assignmentId, status) {
   if (!data.learningAssignments.some((assignment) => assignment.id === assignmentId)) {
     throw new Error('Learning assignment was not found.');

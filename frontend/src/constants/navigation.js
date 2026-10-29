@@ -11,11 +11,11 @@ export const NAVIGATION = Object.freeze({
   ],
   user: [
     { label: 'Dashboard', path: ROUTES.userDashboard, icon: 'dashboard' },
-    { label: 'Tasks', path: ROUTES.tasks, icon: 'productivity' },
+    { label: 'Tasks', path: ROUTES.tasks, icon: 'tasks' },
     { label: 'Skill Hub', path: ROUTES.skillHub, icon: 'learning' },
-    { label: 'Time In', path: ROUTES.timeIn, icon: 'attendance' },
-    { label: 'Time Out', path: ROUTES.timeOut, icon: 'attendance' },
-    { label: 'History', path: ROUTES.history, icon: 'attendance' },
-    { label: 'Calendar', path: ROUTES.calendar, icon: 'attendance' },
+    { label: 'Time In', path: ROUTES.timeIn, icon: 'time-in' },
+    { label: 'Time Out', path: ROUTES.timeOut, icon: 'time-out' },
+    { label: 'History', path: ROUTES.history, icon: 'history' },
+    { label: 'Calendar', path: ROUTES.calendar, icon: 'calendar' },
   ],
 });
