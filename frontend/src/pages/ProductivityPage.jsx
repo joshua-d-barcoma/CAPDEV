@@ -148,8 +148,8 @@ export default function ProductivityPage() {
       <section className="dashboard-banner productivity-banner employee-scope-banner">
         <div className="employee-scope-banner-heading">
           <div className="dashboard-banner-copy">
-            <h1>Tasks &amp; Productivity</h1>
-            <p>Monitor training and work progress across the bench.</p>
+            <h1>Productivity</h1>
+            <p>Monitor tasks delivery, EOD Reporting, and outstanding work.</p>
           </div>
         </div>
         <div className="employee-scope-banner-controls">
@@ -164,13 +164,13 @@ export default function ProductivityPage() {
 
       <div className="stat-grid">
         <StatCard
-          label="Assigned tasks"
+          label="Tasks In Scope"
           value={scopedTasks.length}
           detail="Across active resources"
           icon="✓"
         />
         <StatCard
-          label="Completed"
+          label="Completed Tasks"
           value={completed}
           detail="Tasks marked complete"
           tone="green"

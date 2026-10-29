@@ -128,7 +128,7 @@ p {
   padding: 25px 11px 17px;
   overflow: hidden;
   border-right: 1px solid #d9a8ed;
-  background: #fbfafb;
+  background: #f0dcf7;
   color: var(--ink);
   transition:
     width 180ms ease,
@@ -205,7 +205,11 @@ p {
 }
 .navigation-item.active {
   background: var(--purple);
-  color: #fff;
+   background: #f1e5fa;
+  color: #8a20c9;
+  border: 1px solid #dba8f3;
+  border-left: 3px solid #a900ff;
+  box-shadow: 0 3px 6px rgb(85 3 136 / 20%);
 }
 .navigation-icon {
   display: grid;
@@ -603,10 +607,10 @@ p {
 }
 .employee-scope-header-filters .dashboard-filter select {
   min-height: 36px;
-  padding: 0 8px;
+  padding: 0 10px;
   border: 0;
   border-radius: 7px;
-  font-size: 11px;
+  font-size: 10.4px;
 }
 .dashboard-filter {
   display: flex;
@@ -1264,6 +1268,12 @@ p {
   min-height: 86px;
   padding: 16px 20px;
   border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    #d466e8 0%,
+    #9364f6 55%,
+    #c65b32 100%
+  );
 }
 .productivity-banner-copy h1 {
   margin: 0 0 4px;
@@ -1272,7 +1282,6 @@ p {
 }
 .productivity-banner-copy p {
   margin: 0;
-  color: #f0ddfb;
   font-size: 11px;
 }
 .productivity-chart-grid {
@@ -3257,7 +3266,7 @@ p {
   .employee-scope-header-filters .dashboard-filter select {
     min-height: 36px;
     padding: 0 8px;
-    font-size: 11px;
+    font-size: 10px;
   }
   .dashboard-filter {
     width: auto;

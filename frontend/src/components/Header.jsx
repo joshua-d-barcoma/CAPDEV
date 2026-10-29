@@ -9,7 +9,7 @@ const titlesByPath = {
   [ROUTES.employeeImportHistory]: ['Import History', 'Employee CSV import records'],
   [ROUTES.attendance]: ['Attendance', 'Attendance and RTO management'],
   [ROUTES.learning]: ['Learning', 'Capability development'],
-  [ROUTES.productivity]: ['Productivity', 'Tasks and productivity'],
+  [ROUTES.productivity]: ['Productivity'],
   [ROUTES.actionItems]: ['Action Items', 'Follow up on bench operations'],
   [ROUTES.userDashboard]: ['My Dashboard', 'Your bench workspace'],
   [ROUTES.tasks]: ['My Tasks', 'Training and development tasks'],
