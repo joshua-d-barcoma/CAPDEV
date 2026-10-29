@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { AppLayout } from '../components/AppLayout.jsx';
 import { DEFAULT_ROUTE, ROUTES } from '../constants/routes.js';
 
+const LoginPage = lazy(() => import('../pages/LoginPage.jsx'));
 const AdminDashboard = lazy(() => import('../pages/AdminDashboard.jsx'));
 const EmployeesPage = lazy(() => import('../pages/EmployeesPage.jsx'));
 const EmployeeImportHistoryPage = lazy(() => import('../pages/EmployeeImportHistoryPage.jsx'));
@@ -31,6 +32,7 @@ export function AppRoutes() {
   return (
     <Suspense fallback={<PageLoading />}>
       <Routes>
+        <Route path={ROUTES.login} element={<LoginPage />} />
         <Route element={<AppLayout />}>
           <Route index element={<Navigate to={DEFAULT_ROUTE} replace />} />
           <Route path={ROUTES.adminDashboard} element={<AdminDashboard />} />
