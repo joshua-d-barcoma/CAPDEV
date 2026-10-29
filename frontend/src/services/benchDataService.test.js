@@ -7,6 +7,7 @@ import {
   deleteEmployee,
   reviewEmployeeScheduleRequest,
   submitEmployeeScheduleRequest,
+  updateTaskAssignee,
   updateLearningAssignment,
   updateMandatoryTraining,
 } from './benchDataService.js';

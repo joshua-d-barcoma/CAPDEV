@@ -1,16 +1,13 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { EmployeeScopeFilters } from '../components/EmployeeScopeFilters.jsx';
 import { Panel } from '../components/Panel.jsx';
 import { StatCard } from '../components/StatCard.jsx';
 import { StatusBadge } from '../components/StatusBadge.jsx';
 import { ROUTES } from '../constants/routes.js';
 import { useBenchData } from '../hooks/useBenchData.js';
-import {
-  buildAttendanceTrend,
-  DASHBOARD_CAPABILITIES,
-  DASHBOARD_LOCATIONS,
-  filterDashboardData,
-} from '../utils/dashboardFilters.js';
+import { buildAttendanceTrend, filterDashboardData } from '../utils/dashboardFilters.js';
+import { getEmployeeFilterOptions } from '../utils/employeeInsights.js';
 import { getEmployeeName } from '../utils/formatters.js';
 
 export default function AdminDashboard() {
@@ -20,6 +17,10 @@ export default function AdminDashboard() {
   const { employees, attendanceRecords, actionItems } = useMemo(
     () => filterDashboardData(data, { location, capability }),
     [data, location, capability],
+  );
+  const capabilities = useMemo(
+    () => getEmployeeFilterOptions(data.employees).capabilities,
+    [data.employees],
   );
   const attendanceTrend = useMemo(
     () => buildAttendanceTrend(attendanceRecords),
@@ -39,43 +40,22 @@ export default function AdminDashboard() {
 
   return (
     <div className="page-stack">
-      <section className="dashboard-banner" aria-labelledby="dashboard-title">
-        <div className="dashboard-banner-copy">
-          <h1 id="dashboard-title">Dashboard</h1>
-          <p>Overview of bench resources and workforce readiness.</p>
+      <section className="dashboard-banner employee-scope-banner" aria-labelledby="dashboard-title">
+        <div className="employee-scope-banner-heading">
+          <div className="dashboard-banner-copy">
+            <h1 id="dashboard-title">DASHBOARD</h1>
+            <p>Overview of bench resources and workforce readiness.</p>
+          </div>
         </div>
-        <div className="dashboard-filters">
-          <label className="dashboard-filter">
-            <span className="visually-hidden">Location</span>
-            <select
-              value={location}
-              onChange={(event) => setLocation(event.target.value)}
-              aria-label="Filter by location"
-            >
-              <option value="">All Locations</option>
-              {DASHBOARD_LOCATIONS.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="dashboard-filter">
-            <span className="visually-hidden">Capability</span>
-            <select
-              value={capability}
-              onChange={(event) => setCapability(event.target.value)}
-              aria-label="Filter by capability"
-            >
-              <option value="">All Capabilities</option>
-              {DASHBOARD_CAPABILITIES.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+        <EmployeeScopeFilters
+          employees={data.employees}
+          location={location}
+          capability={capability}
+          onChange={(name, value) => {
+            if (name === 'location') setLocation(value);
+            if (name === 'capability') setCapability(value);
+          }}
+        />
       </section>
       <div className="stat-grid">
         <StatCard
@@ -110,7 +90,7 @@ export default function AdminDashboard() {
       <div className="two-column-grid">
         <Panel title="Bench by capability" eyebrow="Workforce">
           <div className="bar-list">
-            {DASHBOARD_CAPABILITIES.map((item) => {
+            {capabilities.map((item) => {
               const count = employees.filter((employee) =>
                 employee.capability.toLowerCase().includes(item.toLowerCase()),
               ).length;

@@ -1,0 +1,21 @@
+EID,Activity Type,Level,Primary Skill,Join Date,Capability,Location,Email,Attendance,Absence Days
+Alex Santos,Bench,CL8,"AWS, Azure, Kubernetes, Terraform, Python",2020-02-10,SRE / Hybrid Cloud,Manila,,Present,0
+Maria Cruz,Project,CL7,"Azure, Networking, Terraform",2022-06-20,Cloud Customer Edge,Cebu,,Present,0
+John Reyes,Bench,CL6,"Routing, Switching, Cisco",2021-11-01,Network,Manila,,Unapproved Absence,1
+Jordan Lee,Bench,CL8,"AWS, Kubernetes, Terraform",2021-03-15,Cloud Engineering,Manila,jordan.lee@example.com,Present,0
+Avery Chen,Bench,CL7,"Python, SQL, dbt",2022-05-16,Data Engineering,Manila,avery.chen@example.com,Present,0
+Morgan Diaz,Project,CL8,"Azure, Kubernetes, Terraform",2020-09-07,Cloud Engineering,Cebu,morgan.diaz@example.com,Present,0
+Casey Patel,Training,CL6,"Java, Spring Boot",2023-01-23,Application Development,Manila,casey.patel@example.com,Present,0
+Robin Garcia,Internal,CL7,"React, TypeScript, Node.js",2021-06-14,Digital Experience,Cebu,robin.garcia@example.com,Present,0
+Drew Thompson,Bench,CL5,"Manual Testing, Jira",2024-02-12,Quality Engineering,Manila,drew.thompson@example.com,Sick Leave,1
+Skyler Nguyen,Bench,CL8,"AWS, Docker, Kubernetes",2019-11-04,Cloud Engineering,Cebu,skyler.nguyen@example.com,Present,0
+Quinn Brooks,Project,CL7,"Networking, Cisco, Firewall",2020-03-30,Network,Manila,quinn.brooks@example.com,Present,0
+Cameron Lim,Training,CL6,"Power BI, SQL, Excel",2022-08-22,Data Analytics,Cebu,cameron.lim@example.com,Vacation Leave,0
+Parker Wright,Bench,CL7,"Selenium, Cypress, JavaScript",2021-12-06,Quality Engineering,Manila,parker.wright@example.com,Present,0
+Reese Kim,Internal,CL8,"Python, Machine Learning",2020-07-13,Data Science,Cebu,reese.kim@example.com,Present,0
+Jamie Bennett,Bench,CL6,"Linux, Bash, Ansible",2023-04-17,Infrastructure,Manila,jamie.bennett@example.com,Unapproved Absence,1
+Finley Cruz,Project,CL9,"AWS, Terraform, Security",2018-10-01,Cloud Security,Cebu,finley.cruz@example.com,Present,0
+Harper Lee,Bench,CL5,"HTML, CSS, Figma",2024-01-08,Digital Experience,Manila,harper.lee@example.com,Present,0
+Dakota Flores,Training,CL7,"Salesforce, Apex, SOQL",2022-11-14,Enterprise Platforms,Cebu,dakota.flores@example.com,Present,0
+Micah Turner,Bench,CL8,"Go, Kubernetes, Prometheus",2019-05-20,Platform Engineering,Manila,micah.turner@example.com,Emergency Leave,1
+Emerson Santos,Internal,CL6,"Workday, SQL, Reporting",2023-07-03,Enterprise Platforms,Cebu,emerson.santos@example.com,Present,0

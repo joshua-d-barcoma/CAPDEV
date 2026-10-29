@@ -1,6 +1,8 @@
 export const ROUTES = Object.freeze({
   adminDashboard: '/admin/dashboard',
   employees: '/resources',
+  employeeImportHistory: '/resources/import-history',
+  employeeImportHistoryEntry: '/resources/import-history/:importId',
   employee: '/admin/employees/:employeeName',
   attendance: '/attendance',
   learning: '/learning',
@@ -19,4 +21,8 @@ export const DEFAULT_ROUTE = ROUTES.adminDashboard;
 
 export function getEmployeeRoute(employeeName) {
   return ROUTES.employee.replace(':employeeName', encodeURIComponent(employeeName));
+}
+
+export function getEmployeeImportHistoryEntryRoute(importId) {
+  return ROUTES.employeeImportHistoryEntry.replace(':importId', encodeURIComponent(importId));
 }

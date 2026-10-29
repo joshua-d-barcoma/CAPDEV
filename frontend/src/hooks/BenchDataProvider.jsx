@@ -28,6 +28,19 @@ export function BenchDataProvider({ children }) {
       addEmployee(employee) {
         return updateData((current) => benchDataService.addEmployee(current, employee));
       },
+      importEmployees(employees, fileName, importDetails) {
+        return updateData((current) =>
+          benchDataService.importEmployees(current, employees, fileName, importDetails),
+        );
+      },
+      deleteEmployeeImportHistoryEntry(importId) {
+        return updateData((current) =>
+          benchDataService.deleteEmployeeImportHistoryEntry(current, importId),
+        );
+      },
+      clearEmployeeImportHistory() {
+        return updateData((current) => benchDataService.clearEmployeeImportHistory(current));
+      },
       updateEmployee(employeeId, changes) {
         return updateData((current) =>
           benchDataService.updateEmployee(current, employeeId, changes),

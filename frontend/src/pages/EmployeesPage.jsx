@@ -1,13 +1,17 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ConfirmDialog } from '../components/ConfirmDialog.jsx';
 import { DataTable } from '../components/DataTable.jsx';
 import { DateFilter } from '../components/DateFilter.jsx';
+import { EmployeeScopeFilters } from '../components/EmployeeScopeFilters.jsx';
+import { EmployeeImportDialog } from '../components/EmployeeImportDialog.jsx';
+import { EmployeeImportReviewPage } from '../components/EmployeeImportReviewPage.jsx';
 import { EmployeeForm } from '../components/EmployeeForm.jsx';
 import { Panel } from '../components/Panel.jsx';
 import { SearchInput } from '../components/SearchInput.jsx';
 import { StatCard } from '../components/StatCard.jsx';
 import { StatusBadge } from '../components/StatusBadge.jsx';
+import { DEFAULT_EMPLOYEE_STATUS, normalizeEmployeeStatus } from '../constants/employeeStatuses.js';
 import { getEmployeeRoute, ROUTES } from '../constants/routes.js';
 import { useBenchData } from '../hooks/useBenchData.js';
 import {
@@ -36,19 +40,64 @@ const EMPTY_FILTERS = {
   rollInDate: '',
 };
 
+const EMPLOYEE_PAGE_SIZE = 10;
+
 export default function EmployeesPage() {
-  const { employees, addEmployee, updateEmployee, deleteEmployee } = useBenchData();
+  const {
+    employees,
+    importEmployees: importEmployeeBatch,
+    updateEmployee,
+    deleteEmployee,
+    storageError,
+  } = useBenchData();
   const [search, setSearch] = useState('');
+  const [employeePage, setEmployeePage] = useState(1);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [dialogEmployee, setDialogEmployee] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+  const [importReview, setImportReview] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const benchEmployees = useMemo(
+    () =>
+      employees.filter(
+        (employee) => normalizeEmployeeStatus(employee.employeeStatus) === DEFAULT_EMPLOYEE_STATUS,
+      ),
+    [employees],
+  );
 
   const filteredEmployees = useMemo(
-    () => filterEmployees(employees, filters, search),
-    [employees, filters, search],
+    () => filterEmployees(benchEmployees, filters, search),
+    [benchEmployees, filters, search],
   );
-  const filterOptions = useMemo(() => getEmployeeFilterOptions(employees), [employees]);
+  const employeePageCount = Math.max(1, Math.ceil(filteredEmployees.length / EMPLOYEE_PAGE_SIZE));
+  const currentEmployeePage = Math.min(employeePage, employeePageCount);
+  const employeePageNumbers =
+    employeePageCount <= 5
+      ? Array.from({ length: employeePageCount }, (_, index) => index + 1)
+      : [
+          1,
+          ...(currentEmployeePage > 3 ? ['left-ellipsis'] : []),
+          ...Array.from(
+            {
+              length:
+                Math.min(employeePageCount - 1, currentEmployeePage + 1) -
+                Math.max(2, currentEmployeePage - 1) +
+                1,
+            },
+            (_, index) => Math.max(2, currentEmployeePage - 1) + index,
+          ),
+          ...(currentEmployeePage < employeePageCount - 2 ? ['right-ellipsis'] : []),
+          employeePageCount,
+        ];
+  const displayedEmployees = filteredEmployees.slice(
+    (currentEmployeePage - 1) * EMPLOYEE_PAGE_SIZE,
+    currentEmployeePage * EMPLOYEE_PAGE_SIZE,
+  );
+  useEffect(() => {
+    if (employeePage > employeePageCount) setEmployeePage(employeePageCount);
+  }, [employeePage, employeePageCount]);
+  const filterOptions = useMemo(() => getEmployeeFilterOptions(benchEmployees), [benchEmployees]);
   const tenureBuckets = useMemo(() => getBenchTenureCounts(filteredEmployees), [filteredEmployees]);
   const careerLevels = useMemo(() => getCareerLevelCounts(filteredEmployees), [filteredEmployees]);
   const capabilityReadiness = useMemo(
@@ -87,25 +136,48 @@ export default function EmployeesPage() {
 
   function updateFilter(name, value) {
     setFilters((current) => ({ ...current, [name]: value }));
+    setEmployeePage(1);
+  }
+
+  function updateSearch(value) {
+    setSearch(value);
+    setEmployeePage(1);
   }
 
   function resetFilters() {
     setSearch('');
     setFilters({ ...EMPTY_FILTERS });
+    setEmployeePage(1);
   }
 
   function saveEmployee(values) {
-    const saved = dialogEmployee ? updateEmployee(dialogEmployee.id, values) : addEmployee(values);
-    if (saved) {
+    if (updateEmployee(dialogEmployee.id, values)) {
       setFormOpen(false);
       setDialogEmployee(null);
     }
   }
 
+  function importEmployees(review) {
+    return importEmployeeBatch(review.changesToApply, review.fileName, {
+      employees: review.employees,
+      sourceHeaders: review.sourceHeaders,
+      sourceRows: review.sourceRows,
+    });
+  }
+
+  function stageEmployeeImport(review) {
+    setImportReview(review);
+    setImportOpen(false);
+  }
+
+  function confirmEmployeeImport() {
+    if (importEmployees(importReview)) setImportReview(null);
+  }
+
   const columns = [
     {
       key: 'employee',
-      label: 'Employee',
+      label: 'EID',
       render: (employee) => (
         <Link className="employee-link" to={getEmployeeRoute(employee.name)}>
           <span className="avatar-small">
@@ -116,16 +188,16 @@ export default function EmployeesPage() {
           </span>
           <span>
             <strong>{employee.name}</strong>
-            <small>{employee.careerLevel}</small>
           </span>
         </Link>
       ),
     },
+    { key: 'careerLevel', label: 'Level' },
     { key: 'capability', label: 'Capability' },
     { key: 'workLocation', label: 'Location' },
     {
       key: 'skills',
-      label: 'Key skills',
+      label: 'Primary Skill',
       render: (employee) => (
         <span className="skill-inline">{employee.skills.slice(0, 3).join(' · ')}</span>
       ),
@@ -136,8 +208,13 @@ export default function EmployeesPage() {
       render: (employee) => <StatusBadge status={employee.attendanceStatus} />,
     },
     {
+      key: 'joiningDate',
+      label: 'Join Date',
+      render: (employee) => formatDate(employee.joiningDate),
+    },
+    {
       key: 'rollInDate',
-      label: 'Roll-in date',
+      label: 'Roll-in Date',
       render: (employee) => formatDate(employee.rollInDate),
     },
     {
@@ -167,6 +244,17 @@ export default function EmployeesPage() {
     },
   ];
 
+  if (importReview) {
+    return (
+      <EmployeeImportReviewPage
+        review={importReview}
+        onConfirm={confirmEmployeeImport}
+        onCancel={() => setImportReview(null)}
+        storageError={storageError}
+      />
+    );
+  }
+
   return (
     <div className="page-stack employee-page">
       <section className="dashboard-banner employee-banner" aria-labelledby="employees-title">
@@ -174,38 +262,12 @@ export default function EmployeesPage() {
           <h1 id="employees-title">Employees</h1>
           <p>Monitor bench employees, attendance, skills, and deployment readiness.</p>
         </div>
-        <div className="dashboard-filters">
-          <label className="dashboard-filter">
-            <span className="visually-hidden">Filter by location</span>
-            <select
-              aria-label="Filter by location"
-              value={filters.location}
-              onChange={(event) => updateFilter('location', event.target.value)}
-            >
-              <option value="">All Locations</option>
-              {filterOptions.locations.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="dashboard-filter">
-            <span className="visually-hidden">Filter by capability</span>
-            <select
-              aria-label="Filter by capability"
-              value={filters.capability}
-              onChange={(event) => updateFilter('capability', event.target.value)}
-            >
-              <option value="">All Capabilities</option>
-              {filterOptions.capabilities.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+        <EmployeeScopeFilters
+          employees={benchEmployees}
+          location={filters.location}
+          capability={filters.capability}
+          onChange={updateFilter}
+        />
       </section>
       <div className="stat-grid">
         <StatCard
@@ -371,26 +433,27 @@ export default function EmployeesPage() {
       </div>
 
       <Panel
-        title="Bench by capability"
+        title="All Employees"
         eyebrow="Workforce"
         action={
-          <button
-            type="button"
-            className="button button-primary employee-add-button"
-            onClick={() => {
-              setDialogEmployee(null);
-              setFormOpen(true);
-            }}
-          >
-            <span aria-hidden="true">+</span>
-            Add employee
-          </button>
+          <div className="employee-panel-actions">
+            <Link className="button button-secondary" to={ROUTES.employeeImportHistory}>
+              History
+            </Link>
+            <button
+              type="button"
+              className="button button-primary"
+              onClick={() => setImportOpen(true)}
+            >
+              Import
+            </button>
+          </div>
         }
       >
         <div className="employee-filter-toolbar">
           <SearchInput
             value={search}
-            onChange={setSearch}
+            onChange={updateSearch}
             placeholder="Search name, capability, or skill"
             label="Search employees"
           />
@@ -449,7 +512,6 @@ export default function EmployeesPage() {
               label="Roll-in date"
               value={filters.rollInDate}
               onChange={(value) => updateFilter('rollInDate', value)}
-              alignRight
             />
             <button
               type="button"
@@ -463,11 +525,58 @@ export default function EmployeesPage() {
         </div>
         <DataTable
           columns={columns}
-          rows={filteredEmployees}
+          rows={displayedEmployees}
           rowKey={(employee) => employee.id}
           emptyTitle="No employees found"
           emptyDescription="Adjust the search or location filter."
         />
+        {filteredEmployees.length > EMPLOYEE_PAGE_SIZE && (
+          <div className="employee-list-pagination">
+            <span aria-live="polite">
+              Showing {(currentEmployeePage - 1) * EMPLOYEE_PAGE_SIZE + 1}–
+              {Math.min(currentEmployeePage * EMPLOYEE_PAGE_SIZE, filteredEmployees.length)} of{' '}
+              {filteredEmployees.length} employees
+            </span>
+            <div className="employee-import-pagination" aria-label="Employee table pages">
+              <button
+                type="button"
+                className="button button-secondary"
+                onClick={() => setEmployeePage((current) => Math.max(1, current - 1))}
+                disabled={currentEmployeePage === 1}
+              >
+                Previous
+              </button>
+              {employeePageNumbers.map((pageNumber) =>
+                typeof pageNumber === 'string' ? (
+                  <span className="employee-import-pagination-ellipsis" key={pageNumber}>
+                    …
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    className={`button button-secondary${pageNumber === currentEmployeePage ? ' is-current' : ''}`}
+                    aria-label={`Employee page ${pageNumber}`}
+                    aria-current={pageNumber === currentEmployeePage ? 'page' : undefined}
+                    key={pageNumber}
+                    onClick={() => setEmployeePage(pageNumber)}
+                  >
+                    {pageNumber}
+                  </button>
+                ),
+              )}
+              <button
+                type="button"
+                className="button button-secondary"
+                onClick={() =>
+                  setEmployeePage((current) => Math.min(employeePageCount, current + 1))
+                }
+                disabled={currentEmployeePage === employeePageCount}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
       </Panel>
 
       <Panel
@@ -599,6 +708,14 @@ export default function EmployeesPage() {
           employee={dialogEmployee}
           onSubmit={saveEmployee}
           onClose={() => setFormOpen(false)}
+        />
+      )}
+      {importOpen && (
+        <EmployeeImportDialog
+          onReview={stageEmployeeImport}
+          onClose={() => setImportOpen(false)}
+          storageError={storageError}
+          existingEmployees={employees}
         />
       )}
       {deleteTarget && (
