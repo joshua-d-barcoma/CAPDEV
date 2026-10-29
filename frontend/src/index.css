@@ -437,6 +437,13 @@ p {
 .profile-menu-item:hover {
   background: #f7f1f9;
 }
+.profile-menu-logout {
+  color: #b42332;
+}
+.profile-menu-logout:hover {
+  background: #fff1f2;
+  color: #921b28;
+}
 .page-content {
   min-width: 0;
   min-height: 0;
@@ -8481,5 +8488,1044 @@ p {
 
   .demo-separator p {
     font-size: 8px;
+  }
+}
+
+.app-layout .page-stack .dashboard-banner,
+.app-layout .page-stack .learning-banner,
+.app-layout .page-stack .attendance-hero-banner,
+.app-layout .page-stack .welcome-banner,
+.app-layout .page-stack .user-dashboard-welcome,
+.app-layout .page-stack .employee-import-review-banner,
+.app-layout.user-role .page-stack .page-header:not(.user-dashboard-page-header) {
+  box-shadow: var(--box-shadow);
+}
+
+.app-layout .page-stack .employee-scope-header-filters {
+  gap: 8px;
+}
+
+.app-layout .page-stack .employee-scope-header-filters .dashboard-filter,
+.app-layout .page-stack .attendance-banner-filters .attendance-filter {
+  width: 160px;
+  min-width: 0;
+  max-width: 190px;
+  flex: 0 1 160px;
+}
+
+.app-layout .page-stack .dashboard-filter select,
+.app-layout .page-stack .employee-scope-header-filters .dashboard-filter select,
+.app-layout .page-stack .attendance-banner-filters .attendance-filter select,
+.app-layout .page-stack .employee-filter-control select,
+.app-layout .page-stack .date-filter-button,
+.app-layout .page-stack .employee-filter-toolbar .search-control,
+.app-layout .page-stack .attendance-record-filters > .search-control,
+.app-layout .page-stack .attendance-toolbar .search-control {
+  height: 38px;
+  min-height: 38px;
+}
+
+.app-layout .page-stack .employee-scope-header-filters .dashboard-filter select,
+.app-layout .page-stack .attendance-banner-filters .attendance-filter select {
+  font-size: 10px;
+}
+
+.app-layout .page-stack .employee-filter-control,
+.app-layout .page-stack .date-filter-control,
+.app-layout .page-stack .attendance-record-filter-row > .attendance-filter,
+.app-layout .page-stack .attendance-record-filter-row > .date-filter-control {
+  min-width: 140px;
+  flex: 1 1 150px;
+}
+
+@media (max-width: 760px) {
+  .app-layout .page-stack .employee-scope-header-filters {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .app-layout .page-stack .employee-scope-header-filters .dashboard-filter,
+  .app-layout .page-stack .attendance-banner-filters .attendance-filter {
+    width: auto;
+    max-width: none;
+    flex: 1 1 145px;
+  }
+}
+
+.app-layout .attendance-page .attendance-hero-banner h1 {
+  font-size: 15px;
+}
+
+.app-layout .attendance-page .attendance-hero-banner p {
+  font-size: 10px;
+}
+
+.app-layout .attendance-page .attendance-banner-filters .attendance-filter select {
+  padding: 0 24px 0 8px;
+  border: 1px solid rgb(255 255 255 / 54%);
+  border-radius: 7px;
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.app-layout .attendance-page .attendance-metric-heading {
+  color: #515c74;
+  font-size: 10px;
+}
+
+.app-layout .attendance-page .attendance-metrics-grid .attendance-metric-value {
+  font-size: 24px;
+}
+
+.app-layout .attendance-page .attendance-metric-detail,
+.app-layout .attendance-page .panel-description {
+  font-size: 9px;
+}
+
+.app-layout .attendance-page .attendance-metric-note,
+.app-layout .attendance-page .attendance-records-table .status-badge,
+.app-layout .attendance-page .attendance-exceptions-table .status-badge,
+.app-layout .attendance-page .attendance-legend-pill,
+.app-layout .attendance-page .attendance-guidance-pill,
+.app-layout .attendance-page .attendance-alert-message {
+  font-size: 8px;
+}
+
+.app-layout .attendance-page .panel-header .card-eyebrow,
+.app-layout .attendance-page .attendance-record-summary,
+.app-layout .attendance-page .attendance-filter-note,
+.app-layout .attendance-page .attendance-compliance-row,
+.app-layout .attendance-page .attendance-records-table .data-table th,
+.app-layout .attendance-page .attendance-exceptions-table .data-table th {
+  font-size: 8px;
+}
+
+.app-layout .attendance-page .panel-header h2 {
+  font-size: 12px;
+}
+
+.app-layout .attendance-page .attendance-compliance-row strong,
+.app-layout .attendance-page .attendance-alert-person strong,
+.app-layout .attendance-page .attendance-absence-days,
+.app-layout .attendance-page .attendance-records-table .data-table td,
+.app-layout .attendance-page .attendance-exceptions-table .data-table td,
+.app-layout .attendance-page .attendance-employee-name {
+  font-size: 9px;
+}
+
+.app-layout .attendance-page .attendance-alert-person span {
+  font-size: 7px;
+}
+
+.app-layout .attendance-page .attendance-guidance-pill,
+.app-layout .attendance-page .attendance-alert-message,
+.app-layout .attendance-page .attendance-records-table .status-badge,
+.app-layout .attendance-page .attendance-exceptions-table .status-badge {
+  font-weight: 700;
+}
+
+.tasks-page {
+  gap: 12px;
+}
+
+.tasks-page .tasks-page-header {
+  min-height: 70px;
+}
+
+.tasks-page .task-add-button,
+.task-dialog .form-actions .button-primary {
+  border: 0;
+  background: linear-gradient(105deg, #d94cf0 0%, #9349ee 56%, #df6844 100%);
+  box-shadow: 0 3px 9px rgb(101 42 150 / 22%);
+  color: #fff;
+}
+
+.tasks-page .task-add-button:hover,
+.task-dialog .form-actions .button-primary:hover {
+  background: linear-gradient(105deg, #c93cde 0%, #8038d8 56%, #cc5734 100%);
+}
+
+.tasks-page .task-group-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.tasks-page .task-group-header-actions .task-add-button {
+  min-height: 29px;
+  gap: 5px;
+  padding: 0 9px;
+  border-radius: 6px;
+  font-size: 9px;
+}
+
+.tasks-page .task-summary-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 11px;
+}
+
+.tasks-page .task-summary-grid > .stat-card {
+  min-height: 96px;
+  padding: 14px;
+  border: 1px solid #eee7f5;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fff 0%, #f6f0ff 65%, #fff5ed 100%);
+  box-shadow: 0 5px 15px rgb(53 30 80 / 7%);
+}
+
+.tasks-page .task-summary-grid .stat-label {
+  color: #786e80;
+  font-size: 10px;
+}
+
+.tasks-page .task-summary-grid .stat-content strong {
+  margin-top: 5px;
+  color: #211a27;
+  font-size: 24px;
+}
+
+.tasks-page .task-summary-grid .stat-detail {
+  color: #8b8295;
+  font-size: 9px;
+}
+
+.task-groups {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 12px;
+}
+
+.tasks-page .task-group-panel,
+.tasks-page .tasks-support-panel {
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid #eee7f4;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 5px 15px rgb(53 30 80 / 7%);
+}
+
+.tasks-page .task-group-panel .panel-header,
+.tasks-page .tasks-support-panel .panel-header {
+  margin-bottom: 10px;
+}
+
+.tasks-page .task-group-panel .card-eyebrow,
+.tasks-page .tasks-support-panel .card-eyebrow {
+  color: #a23be2;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.55px;
+  text-transform: uppercase;
+}
+
+.tasks-page .task-group-panel .panel-header h2,
+.tasks-page .tasks-support-panel .panel-header h2 {
+  color: #211a27;
+  font-size: 13px;
+}
+
+.task-group-count {
+  display: inline-grid;
+  min-width: 20px;
+  height: 20px;
+  place-items: center;
+  border: 1px solid #e8b8ff;
+  border-radius: 99px;
+  background: #fbf0ff;
+  color: #a42ce2;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.task-group-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 5px;
+}
+
+.task-group-filters label {
+  min-width: 0;
+  flex: 1 1 110px;
+}
+
+.task-group-filters select,
+.task-status-control select {
+  width: 100%;
+  min-height: 30px;
+  padding: 0 25px 0 9px;
+  border: 1px solid #e7d8f1;
+  border-radius: 6px;
+  background: #fff;
+  color: #51485e;
+  font-size: 9px;
+}
+
+.tasks-page .task-filter-reset {
+  min-height: 30px;
+  padding: 0 11px;
+  border-color: #e8b8ff;
+  background: #f3d9ff;
+  color: #8f26bd;
+  font-size: 9px;
+}
+
+.tasks-page .task-filter-reset:hover {
+  border-color: #d78cf5;
+  background: #edc7ff;
+}
+
+.task-group-list {
+  min-height: 165px;
+}
+
+.tasks-page .task-group-card {
+  align-items: center;
+  gap: 12px;
+  padding: 12px 3px;
+  border-bottom-color: #eee9f2;
+}
+
+.tasks-page .task-group-card .task-title-row {
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.tasks-page .task-group-card .task-title-row h3 {
+  color: #30283b;
+  font-size: 10px;
+}
+
+.tasks-page .task-group-card .priority-label {
+  flex: 0 0 auto;
+  padding: 2px 6px;
+  border: 1px solid currentColor;
+  border-radius: 99px;
+  font-size: 8px;
+  font-weight: 600;
+}
+
+.tasks-page .task-group-card p {
+  margin: 3px 0 2px;
+  color: #655b70;
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.tasks-page .task-group-card .action-meta {
+  display: block;
+  color: #8e8498;
+  font-size: 8px;
+}
+
+.task-status-control {
+  width: 88px;
+  min-width: 88px;
+  flex: 0 0 88px;
+}
+
+.task-status-control select {
+  min-height: 28px;
+  padding: 0 20px 0 7px;
+  border-color: #e8e1ed;
+  font-size: 8px;
+}
+
+.task-empty-state {
+  margin: 12px 0;
+  color: #786e80;
+  font-size: 10px;
+}
+
+.tasks-page .tasks-support-panel .learning-row {
+  padding: 10px 0;
+}
+
+.tasks-page .task-recommendation-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.tasks-page .task-recommendation-card {
+  min-width: 0;
+  padding: 10px;
+  border-color: #e8e0ef;
+  border-radius: 7px;
+  background: linear-gradient(120deg, #fff 0%, #fbf8ff 75%, #fff7f0 100%);
+}
+
+.tasks-page .task-recommendation-card .opportunity-top {
+  align-items: flex-start;
+}
+
+.tasks-page .task-recommendation-card h3 {
+  margin: 0;
+  color: #30283b;
+  font-size: 10px;
+}
+
+.tasks-page .task-recommendation-card .tag {
+  flex: 0 0 auto;
+  border: 1px solid #d5b3fa;
+  background: #f4eaff;
+  color: #773bc0;
+  font-size: 8px;
+}
+
+.tasks-page .task-recommendation-card p {
+  min-height: 30px;
+  margin: 5px 0;
+  color: #655b70;
+  font-size: 9px;
+}
+
+.tasks-page .task-recommendation-card > .muted-copy {
+  color: #8e8498;
+  font-size: 8px;
+}
+
+.task-dialog {
+  width: min(100%, 560px);
+  padding: 22px;
+  border-color: #e7d8f1;
+  border-radius: 10px;
+  box-shadow: 0 20px 55px rgb(42 20 57 / 25%);
+}
+
+.task-dialog .dialog-heading {
+  padding-bottom: 13px;
+  border-bottom: 1px solid #eee7f3;
+}
+
+.task-dialog .dialog-heading h2 {
+  color: #30213d;
+  font-size: 18px;
+}
+
+.task-dialog .dialog-heading p {
+  color: #786e80;
+  font-size: 11px;
+}
+
+.task-dialog .stacked-form {
+  gap: 12px;
+}
+
+.task-dialog .field {
+  gap: 5px;
+  color: #51485e;
+  font-size: 10px;
+}
+
+.task-dialog .field input,
+.task-dialog .field select,
+.task-dialog .field textarea {
+  min-height: 36px;
+  padding: 8px 10px;
+  border-color: #e5dbea;
+  border-radius: 6px;
+  color: #30283b;
+  font-size: 10px;
+}
+
+.task-dialog .field textarea {
+  min-height: 75px;
+}
+
+.task-dialog .field input:focus,
+.task-dialog .field select:focus,
+.task-dialog .field textarea:focus {
+  border-color: #a746e3;
+  outline: 2px solid rgb(167 70 227 / 15%);
+}
+
+.task-dialog .task-form-grid {
+  gap: 11px 13px;
+}
+
+.task-dialog .task-status-help {
+  color: #8e8498;
+  font-size: 8px;
+  font-weight: 400;
+}
+
+.task-dialog .task-form-error {
+  margin: 0;
+  color: #b42332;
+  font-size: 10px;
+}
+
+.task-dialog .form-actions {
+  padding-top: 10px;
+  border-top: 1px solid #eee7f3;
+}
+
+.task-dialog .form-actions .button {
+  min-width: 80px;
+  min-height: 32px;
+  border-radius: 6px;
+  font-size: 10px;
+}
+
+@media (max-width: 760px) {
+  .task-groups {
+    grid-template-columns: 1fr;
+  }
+
+  .tasks-page .task-recommendation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tasks-page .task-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .tasks-page .task-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tasks-page .task-summary-grid > .stat-card {
+    min-height: 78px;
+  }
+
+  .tasks-page .task-group-card {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .tasks-page .task-status-control {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .task-dialog {
+    padding: 17px;
+  }
+
+  .task-dialog .task-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.skill-hub-page {
+  gap: 12px;
+}
+
+.skill-hub-page .two-column-grid {
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
+.skill-hub-page > .panel,
+.skill-hub-page .skill-hub-overview > .panel {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid #ece5f2;
+  border-radius: 11px;
+  background: #fff;
+  box-shadow: 0 5px 15px rgb(53 30 80 / 6%);
+}
+
+.skill-hub-page .panel-header {
+  margin-bottom: 12px;
+}
+
+.skill-hub-page .panel-header .card-eyebrow {
+  margin-bottom: 3px;
+  color: #a23be2;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.65px;
+  text-transform: uppercase;
+}
+
+.skill-hub-page .panel-header h2 {
+  color: #211a27;
+  font-size: 13px;
+}
+
+.skill-hub-page .readiness-meter {
+  margin-bottom: 12px;
+}
+
+.skill-hub-page .readiness-meter > strong {
+  color: #8018bc;
+  font-size: 26px;
+}
+
+.skill-hub-page .readiness-meter > span {
+  color: #726e82;
+  font-size: 9px;
+}
+
+.skill-hub-page .progress-track {
+  height: 7px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #f0e5f7;
+}
+
+.skill-hub-page .progress-track i {
+  border-radius: inherit;
+  background: linear-gradient(90deg, #d94cf0 0%, #9349ee 70%, #df6844 100%);
+}
+
+.skill-hub-page .checklist {
+  gap: 0;
+}
+
+.skill-hub-page .checklist-item {
+  min-height: 34px;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0eaf4;
+  color: #51485e;
+  font-size: 9px;
+}
+
+.skill-hub-page .checklist-item:last-child {
+  border-bottom: 0;
+}
+
+.skill-hub-page .checklist-item input {
+  accent-color: #9c32d6;
+}
+
+.skill-hub-page .compact-row {
+  gap: 9px;
+  padding: 9px 0;
+  border-color: #f0eaf4;
+}
+
+.skill-hub-page .compact-row-main strong {
+  color: #30283b;
+  font-size: 10px;
+}
+
+.skill-hub-page .compact-row-main small {
+  color: #8b8295;
+  font-size: 8px;
+}
+
+.skill-hub-page .learning-icon {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 7px;
+  background: #f3e5ff;
+  color: #8e2bc8;
+  font-size: 13px;
+}
+
+.skill-hub-page .status-badge {
+  font-size: 8px;
+}
+
+.skill-hub-page .panel-header {
+  align-items: flex-start;
+}
+
+.skill-hub-page .panel-header > :last-child {
+  flex: 0 0 auto;
+}
+
+.skill-hub-panel-note {
+  padding-top: 3px;
+  color: #9a91a5;
+  font-size: 8px;
+  text-align: right;
+}
+
+.skill-hub-page .readiness-meter {
+  grid-template-columns: auto 1fr;
+}
+
+.skill-hub-page .readiness-meter .progress-track {
+  grid-column: 1 / -1;
+}
+
+.skill-hub-page .checklist-item {
+  gap: 8px;
+}
+
+.skill-hub-check-status {
+  min-width: 60px;
+  margin-left: auto;
+  padding: 3px 8px;
+  border-radius: 99px;
+  background: #fff4e3;
+  color: #a45b0a;
+  font-size: 8px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.skill-hub-check-status.is-done {
+  background: #e6f7ed;
+  color: #21865b;
+}
+
+.skill-hub-page .voucher-button {
+  width: auto;
+  min-width: 174px;
+  min-height: 31px;
+  margin-top: 11px;
+  border-color: #d7b3f2;
+  border-radius: 6px;
+  background: #f6eaff;
+  color: #7b22b5;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.skill-hub-page .voucher-button:hover:not(:disabled) {
+  border-color: #c78be8;
+  background: #efdcff;
+}
+
+.skill-hub-page .skill-hub-cohort-grid,
+.skill-hub-page .skill-hub-announcement-grid {
+  gap: 10px;
+}
+
+.skill-hub-page .opportunity-card,
+.skill-hub-page .announcement-card {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #e8def1;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #fff 0%, #fbf8ff 72%, #fff7f0 100%);
+  box-shadow: 0 4px 12px rgb(53 30 80 / 5%);
+}
+
+.skill-hub-page .opportunity-card h3,
+.skill-hub-page .announcement-card h3 {
+  margin: 8px 0 5px;
+  color: #30283b;
+  font-size: 10px;
+}
+
+.skill-hub-page .opportunity-card p,
+.skill-hub-page .announcement-card p {
+  min-height: 30px;
+  margin: 0 0 10px;
+  color: #72687b;
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.skill-hub-page .opportunity-card .tag,
+.skill-hub-page .announcement-card .tag {
+  border: 1px solid #dfc5f3;
+  background: #f5eaff;
+  color: #773bc0;
+  font-size: 8px;
+}
+
+.skill-hub-page .opportunity-card .button-primary {
+  border: 0;
+  border-radius: 6px;
+  background: linear-gradient(105deg, #c943eb 0%, #853be1 100%);
+  box-shadow: 0 3px 8px rgb(101 42 150 / 17%);
+  color: #fff;
+  font-size: 9px;
+}
+
+.skill-hub-page .opportunity-card .button-primary:hover {
+  background: linear-gradient(105deg, #b633d9 0%, #7130cc 100%);
+}
+
+.skill-hub-page .opportunity-card .button-secondary,
+.skill-hub-page .skill-hub-poc-card .button-secondary {
+  border-color: #d355f0;
+  background: #fff;
+  color: #a51be0;
+  font-size: 9px;
+}
+
+.skill-hub-page .opportunity-card .button-secondary:hover,
+.skill-hub-page .skill-hub-poc-card .button-secondary:hover {
+  background: #fbf0ff;
+}
+
+.skill-hub-proficiency-list {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.skill-hub-proficiency-row {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.skill-hub-proficiency-heading {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #30283b;
+  font-size: 9px;
+}
+
+.skill-hub-proficiency-heading > strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.skill-hub-proficiency-heading > span {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 7px;
+  color: #9a91a5;
+  font-size: 8px;
+}
+
+.skill-hub-proficiency-heading b {
+  color: #51445d;
+  font-size: 8px;
+}
+
+.skill-hub-proficiency-track,
+.skill-hub-cert-progress {
+  display: block;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #eee5f7;
+}
+
+.skill-hub-proficiency-track i,
+.skill-hub-cert-progress i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #8b22d0 0%, #c533ed 100%);
+}
+
+.skill-hub-page .skill-hub-cert-progress {
+  width: min(100%, 240px);
+  height: 4px;
+  margin-top: 5px;
+}
+
+.skill-hub-bootcamp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skill-hub-bootcamp-row {
+  display: flex;
+  min-width: 0;
+  min-height: 51px;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 11px;
+  border: 1px solid #ece5f2;
+  border-radius: 9px;
+  background: #fcfbff;
+}
+
+.skill-hub-bootcamp-row.is-enrolled {
+  border-color: #f0def8;
+  background: #fbf0ff;
+}
+
+.skill-hub-bootcamp-icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 8px;
+  background: #f1e4ff;
+  color: #8533c6;
+  font-size: 15px;
+}
+
+.skill-hub-bootcamp-row.is-enrolled .skill-hub-bootcamp-icon {
+  background: #f8dfff;
+  color: #b31be9;
+}
+
+.skill-hub-bootcamp-copy {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.skill-hub-bootcamp-copy strong {
+  overflow: hidden;
+  color: #30283b;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.skill-hub-bootcamp-copy small {
+  color: #93899f;
+  font-size: 8px;
+}
+
+.skill-hub-page .skill-hub-bootcamp-row .button-primary {
+  min-width: 60px;
+  min-height: 27px;
+  border: 0;
+  border-radius: 6px;
+  background: #a900ef;
+  color: #fff;
+  font-size: 8px;
+}
+
+.skill-hub-enrolled-label {
+  padding: 4px 8px;
+  color: #a900ef;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.skill-hub-page .skill-hub-announcement-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.skill-hub-page .skill-hub-announcement-grid > .announcement-card {
+  grid-column: span 2;
+}
+
+.skill-hub-page .skill-hub-announcement-grid > .announcement-card:nth-last-child(-n + 2) {
+  grid-column: span 3;
+}
+
+.skill-hub-announcement-category {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #8432c6;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.skill-hub-announcement-category > span {
+  color: #8d36cf;
+  font-size: 10px;
+}
+
+.skill-hub-page .skill-hub-generated-announcement {
+  background: linear-gradient(135deg, #fbf4ff 0%, #fff 100%);
+}
+
+.skill-hub-poc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.skill-hub-poc-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 11px;
+  border: 1px solid #e8def1;
+  border-radius: 9px;
+  background: #fcfbff;
+}
+
+.skill-hub-poc-heading {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+}
+
+.skill-hub-poc-avatar {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: #f3e5ff;
+  color: #61238e;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.skill-hub-poc-heading > span:last-child {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.skill-hub-poc-heading strong {
+  color: #30283b;
+  font-size: 8px;
+}
+
+.skill-hub-poc-heading small {
+  color: #958ba0;
+  font-size: 7px;
+}
+
+.skill-hub-poc-card p {
+  min-height: 40px;
+  margin: 9px 0;
+  padding: 8px;
+  border-radius: 7px;
+  background: #f8ecff;
+  color: #634477;
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+@media (max-width: 760px) {
+  .skill-hub-page .two-column-grid,
+  .skill-hub-page .skill-hub-cohort-grid,
+  .skill-hub-page .skill-hub-announcement-grid,
+  .skill-hub-page .skill-hub-poc-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .skill-hub-page .skill-hub-announcement-grid > .announcement-card,
+  .skill-hub-page .skill-hub-announcement-grid > .announcement-card:nth-last-child(-n + 2) {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .skill-hub-page .panel-header {
+    flex-wrap: wrap;
+  }
+
+  .skill-hub-page .panel-header > :last-child {
+    margin-left: auto;
+  }
+
+  .skill-hub-bootcamp-row {
+    flex-wrap: wrap;
+  }
+
+  .skill-hub-bootcamp-row .button,
+  .skill-hub-enrolled-label {
+    margin-left: auto;
   }
 }

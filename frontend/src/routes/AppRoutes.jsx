@@ -28,12 +28,26 @@ function PageLoading() {
   );
 }
 
+function RequireDemoSession({ children }) {
+  if (!sessionStorage.getItem('benchflow_user')) {
+    return <Navigate to={ROUTES.login} replace />;
+  }
+
+  return children;
+}
+
 export function AppRoutes() {
   return (
     <Suspense fallback={<PageLoading />}>
       <Routes>
         <Route path={ROUTES.login} element={<LoginPage />} />
-        <Route element={<AppLayout />}>
+        <Route
+          element={
+            <RequireDemoSession>
+              <AppLayout />
+            </RequireDemoSession>
+          }
+        >
           <Route index element={<Navigate to={DEFAULT_ROUTE} replace />} />
           <Route path={ROUTES.adminDashboard} element={<AdminDashboard />} />
           <Route path={ROUTES.employees} element={<EmployeesPage />} />

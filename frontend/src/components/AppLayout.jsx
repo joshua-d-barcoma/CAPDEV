@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from 'react';
-import { matchPath, Outlet, useLocation } from 'react-router-dom';
+import { matchPath, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useBenchData } from '../hooks/useBenchData.js';
 import { useRole } from '../hooks/useRole.js';
 import { ROUTES } from '../constants/routes.js';
@@ -10,7 +10,8 @@ export function AppLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const mainContentRef = useRef(null);
   const location = useLocation();
-  const { role, switchRole } = useRole();
+  const navigate = useNavigate();
+  const { role } = useRole();
   const { storageError, clearStorageError } = useBenchData();
   const isAdminDashboard =
     role === 'admin' && matchPath(ROUTES.adminDashboard, location.pathname) !== null;
@@ -40,6 +41,11 @@ export function AppLayout() {
     mainContentRef.current?.scrollTo({ top: 0, left: 0 });
   }, [location.key]);
 
+  function handleLogout() {
+    sessionStorage.removeItem('benchflow_user');
+    navigate(ROUTES.login, { replace: true });
+  }
+
   return (
     <div className={layoutClassName}>
       <Sidebar role={role} collapsed={role === 'admin' && sidebarCollapsed} />
@@ -49,7 +55,7 @@ export function AppLayout() {
           onToggleSidebar={() => {
             if (role === 'admin') setSidebarCollapsed((collapsed) => !collapsed);
           }}
-          onSwitchRole={switchRole}
+          onLogout={handleLogout}
         />
         {storageError && (
           <div className="global-error" role="alert">

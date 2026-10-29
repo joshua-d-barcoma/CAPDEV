@@ -20,7 +20,7 @@ const titlesByPath = {
   [ROUTES.skillHub]: ['Skill Hub', 'Learning and development'],
 };
 
-export function Header({ role, onToggleSidebar, onSwitchRole }) {
+export function Header({ role, onToggleSidebar, onLogout }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const profileRef = useRef(null);
   const location = useLocation();
@@ -98,15 +98,14 @@ export function Header({ role, onToggleSidebar, onSwitchRole }) {
                 <span>{roleDescription}</span>
               </div>
               <button
-                className="profile-menu-item"
+                className="profile-menu-item profile-menu-logout"
                 role="menuitem"
                 onClick={() => {
                   setMenuOpen(false);
-                  onSwitchRole();
+                  onLogout();
                 }}
               >
-                {role === 'admin' ? 'Switch to User' : 'Switch to Admin'}{' '}
-                <span aria-hidden="true">›</span>
+                Log out
               </button>
             </div>
           )}
