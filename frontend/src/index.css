@@ -4484,6 +4484,9 @@ p {
   justify-content: space-between;
   gap: 12px;
 }
+.employee-import-review-card-heading > div {
+  min-width: 0;
+}
 .employee-import-review-card-heading h2 {
   font-size: 14px;
 }
@@ -4508,8 +4511,16 @@ p {
   margin: 10px 0;
 }
 .employee-import-review-filters .employee-import-search {
-  width: min(100%, 330px);
+  width: min(100%, 380px);
+  min-width: min(230px, 100%);
   margin: 0;
+}
+.employee-import-review-filter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
 }
 .employee-import-location-filter select {
   min-height: 33px;
@@ -4518,6 +4529,11 @@ p {
   border-radius: 7px;
   background: #fff;
   color: var(--ink);
+  font-size: 10px;
+}
+.employee-import-review-reset {
+  min-height: 33px;
+  padding: 6px 10px;
   font-size: 10px;
 }
 .employee-import-review-table {
@@ -4655,9 +4671,19 @@ p {
     align-items: stretch;
     flex-direction: column;
   }
-  .employee-import-review-filters .employee-import-search,
+  .employee-import-review-filters .employee-import-search {
+    width: 100%;
+  }
+  .employee-import-review-filter-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 145px), 1fr));
+    justify-content: stretch;
+  }
   .employee-import-location-filter select {
     width: 100%;
+  }
+  .employee-import-review-reset {
+    width: fit-content;
   }
   .employee-import-review-actions {
     flex-direction: column-reverse;
