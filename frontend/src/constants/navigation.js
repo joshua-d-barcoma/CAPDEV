@@ -3,7 +3,7 @@ import { ROUTES } from './routes.js';
 export const NAVIGATION = Object.freeze({
   admin: [
     { label: 'Dashboard', path: ROUTES.adminDashboard, icon: 'dashboard' },
-    { label: 'Resources', path: ROUTES.employees, icon: 'employees' },
+    { label: 'Employees', path: ROUTES.employees, icon: 'employees' },
     { label: 'Attendance', path: ROUTES.attendance, icon: 'attendance' },
     { label: 'Productivity', path: ROUTES.productivity, icon: 'productivity' },
     { label: 'Learning', path: ROUTES.learning, icon: 'learning' },

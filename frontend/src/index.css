@@ -5289,12 +5289,57 @@ p {
   }
   .attendance-banner-filters .attendance-filter {
     width: 100%;
+  }
+}
 .admin-dashboard-layout {
   --canvas: #f3eff8;
   --border: #eee8f3;
   background: #f3eff8;
 }
-
+.admin-dashboard-layout .sidebar {
+  width: 180px;
+  min-width: 180px;
+  padding: 16px 9px 10px;
+  border-right-color: #e7dbea;
+  background: linear-gradient(180deg, #f3eff5 0%, #efddf3 54%, #dda8f0 100%);
+}
+.admin-dashboard-layout .sidebar.collapsed {
+  width: 68px;
+  min-width: 68px;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+.admin-dashboard-layout .brand {
+  min-height: 46px;
+  margin-bottom: 15px;
+}
+.admin-dashboard-layout .navigation {
+  gap: 8px;
+}
+.admin-dashboard-layout .navigation-title {
+  margin-bottom: 10px;
+}
+.admin-dashboard-layout .navigation-item {
+  min-height: 36px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+}
+.admin-dashboard-layout .navigation-item.active {
+  border-color: #dfc5f2;
+  border-left: 3px solid #b200f5;
+  background: #f1e3ff;
+  box-shadow: 0 2px 6px rgb(65 24 93 / 12%);
+  color: #6814aa;
+}
+.admin-dashboard-layout .sidebar-footer {
+  padding-right: 0;
+  padding-left: 0;
+}
+.admin-dashboard-layout .header {
+  height: 56px;
+  min-height: 56px;
+  padding: 0 16px;
+}
 .admin-dashboard-layout .header-left {
   gap: 9px;
 }
@@ -5726,6 +5771,45 @@ p {
   --canvas: #f3eff8;
   --border: #eee8f3;
   background: #f3eff8;
+}
+.admin-employees-layout .sidebar {
+  width: 180px;
+  min-width: 180px;
+  padding: 16px 9px 10px;
+  border-right-color: #e7dbea;
+  background: linear-gradient(180deg, #f3eff5 0%, #efddf3 54%, #dda8f0 100%);
+}
+.admin-employees-layout .sidebar.collapsed {
+  width: 68px;
+  min-width: 68px;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+.admin-employees-layout .brand {
+  min-height: 46px;
+  margin-bottom: 15px;
+}
+.admin-employees-layout .navigation {
+  gap: 8px;
+}
+.admin-employees-layout .navigation-title {
+  margin-bottom: 10px;
+}
+.admin-employees-layout .navigation-item {
+  min-height: 36px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+}
+.admin-employees-layout .navigation-item.active {
+  border-color: #dfc5f2;
+  border-left: 3px solid #b200f5;
+  background: #f1e3ff;
+  box-shadow: 0 2px 6px rgb(65 24 93 / 12%);
+  color: #6814aa;
+}
+.admin-employees-layout .sidebar-footer {
+  padding-right: 0;
+  padding-left: 0;
 }
 
 .admin-employees-layout .header {
@@ -6175,6 +6259,4 @@ p {
   .employee-page .stat-detail {
     font-size: 8px;
   }
-}
-}
 }
