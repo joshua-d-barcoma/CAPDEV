@@ -1,4 +1,5 @@
 export const ROUTES = Object.freeze({
+  login: '/login',
   adminDashboard: '/admin/dashboard',
   employees: '/resources',
   employeeImportHistory: '/resources/import-history',
@@ -17,7 +18,7 @@ export const ROUTES = Object.freeze({
   skillHub: '/user/skill-hub',
 });
 
-export const DEFAULT_ROUTE = ROUTES.adminDashboard;
+export const DEFAULT_ROUTE = ROUTES.login;
 
 export function getEmployeeRoute(employeeName) {
   return ROUTES.employee.replace(':employeeName', encodeURIComponent(employeeName));
