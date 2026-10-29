@@ -324,50 +324,95 @@ export default function ProductivityPage() {
 
       </div>
 
-      <Panel title="Productivity by task category" eyebrow="Completed tasks / assigned tasks">
-        <div className="productivity-category-chart">
-          {categories.map((category) => {
-            const categoryTasks = scopedTasks.filter((task) => task.category === category);
-            const completedTasks = categoryTasks.filter(
-              (task) => task.status === 'Completed',
-            ).length;
-            const completion = categoryTasks.length
-              ? Math.round((completedTasks / categoryTasks.length) * 100)
-              : 0;
-            return (
-              <div className="productivity-category-row" key={category}>
-                <span>{category}</span>
-                <div className="productivity-category-track">
-                  <i style={{ width: `${completion}%` }} />
-                </div>
-                <strong>
-                  {completedTasks}/{categoryTasks.length}
-                </strong>
-              </div>
-            );
-          })}
-        </div>
-      </Panel>
+      {/* Pending Tasks for Distribution */}
+<div className="pending-card">
+  <div className="pending-header">
+    <div>
+      <h3>Pending Tasks for Distribution</h3>
+      <p>Suggested matches are based on the skill requested.</p>
+    </div>
 
-      <Panel
-        title="Pending tasks for distribution"
-        eyebrow="Task distribution"
-        action={
-          <span className="productivity-unassigned-count">{pendingTasks.length} unassigned</span>
-        }
-      >
-        <DataTable
-          columns={distributionColumns}
-          rows={pendingTasks}
-          rowKey={(task) => task.id}
-          className="productivity-distribution-table"
-          emptyTitle="All caught up"
-          emptyDescription="There are no unassigned tasks waiting for distribution."
-        />
-        <p className="productivity-table-note">
-          Suggested matches are based on skills listed in employee profiles.
-        </p>
-      </Panel>
+    <span className="unassigned-badge">3 Unassigned</span>
+  </div>
+
+  <div className="pending-table">
+    <div className="pending-table-head">
+      <span>Capability</span>
+      <span>Requested By</span>
+      <span>Skill Needed</span>
+      <span>Due</span>
+      <span>Priority</span>
+      <span>Suggested Match</span>
+      <span></span>
+    </div>
+
+    <div className="pending-row">
+      <div>
+        <strong>BT-104</strong>
+        <p>Cloud operations<br />runbook review</p>
+      </div>
+      <span>Capability Lead</span>
+      <span>AWS / Linux</span>
+      <span>Oct 16</span>
+      <span><span className="priority high">High</span></span>
+      <span>Sarah Garcia</span>
+      <button className="assign-btn">♟ &nbsp; Assign</button>
+    </div>
+
+    <div className="pending-row">
+      <div>
+        <strong>BT-108</strong>
+        <p>Network inventory<br />validation</p>
+      </div>
+      <span>Delivery Lead</span>
+      <span>Networking</span>
+      <span>Oct 17</span>
+      <span><span className="priority medium">Medium</span></span>
+      <span>John Reyes</span>
+      <button className="assign-btn">♟ &nbsp; Assign</button>
+    </div>
+
+    <div className="pending-row">
+      <div>
+        <strong>BT-111</strong>
+        <p>Service management<br />knowledge article</p>
+      </div>
+      <span>Service Management<br />POC</span>
+      <span>ITIL / ServiceNow</span>
+      <span>Oct 20</span>
+      <span><span className="priority low">Low</span></span>
+      <span>Nicole Lim</span>
+      <button className="assign-btn">♟ &nbsp; Assign</button>
+    </div>
+  </div>
+
+  <p className="pending-note">
+    Suggested matches are based on the skill requested.
+  </p>
+</div>
+
+
+{/* Productivity Report */}
+<div className="report-card">
+  <div>
+    <strong>Productivity Report · 28 Oct 2026</strong>
+    <p>
+      Filtered scope: all capabilities, all employees, today.
+      Report reflects current filter selection.
+    </p>
+  </div>
+
+  <button className="report-btn">
+    <span>▣</span>
+    Generate Report
+  </button>
+</div>
+
+
+
+
+
+
 
       {taskToAssign && (
         <Dialog

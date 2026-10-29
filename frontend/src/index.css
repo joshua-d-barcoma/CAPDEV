@@ -1490,6 +1490,274 @@ p {
 }
 
 
+/* =========================
+   PENDING TASKS
+========================= */
+
+.pending-card {
+  width: 100%;
+  background: #fff;
+  border-radius: 6px;
+  padding: 24px 14px 26px;
+  box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.pending-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0 8px 10px;
+}
+
+.pending-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+}
+
+.pending-header p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #333;
+}
+
+.unassigned-badge {
+  border: 1px solid #b100ff;
+  color: #a000ff;
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+
+/* =========================
+   TABLE
+========================= */
+
+.pending-table {
+  width: 100%;
+}
+
+.pending-table-head,
+.pending-row {
+  display: grid;
+  grid-template-columns:
+    1.35fr
+    1.15fr
+    1fr
+    0.6fr
+    0.65fr
+    0.95fr
+    0.55fr;
+
+  gap: 15px;
+  align-items: center;
+}
+
+.pending-table-head {
+  min-height: 48px;
+  padding: 0 24px;
+  background: #e8e8e8;
+  box-sizing: border-box;
+
+  font-size: 12px;
+  font-weight: 700;
+  color: #151515;
+}
+
+.pending-row {
+  min-height: 85px;
+  margin: 0;
+  padding: 12px 24px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #d7d7d7;
+
+  font-size: 12px;
+  color: #222;
+}
+
+.pending-row strong {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.pending-row p {
+  margin: 4px 0 0;
+  line-height: 1.35;
+  font-size: 12px;
+}
+
+
+/* =========================
+   PRIORITY
+========================= */
+
+.priority {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 48px;
+  height: 22px;
+
+  padding: 0 8px;
+  border-radius: 6px;
+  box-sizing: border-box;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.priority.high {
+  color: #e31818;
+  background: #fff2f2;
+  border: 1px solid #ff7c7c;
+}
+
+.priority.medium {
+  color: #df6e00;
+  background: #fff5e9;
+  border: 1px solid #f3ae72;
+}
+
+.priority.low {
+  color: #777080;
+  background: #f8f6fa;
+  border: 1px solid #c9c3ce;
+}
+
+
+/* =========================
+   ASSIGN BUTTON
+========================= */
+
+.assign-btn {
+  height: 32px;
+  padding: 0 12px;
+
+  background: #fff;
+  border: 1.5px solid #ad00ff;
+  border-radius: 6px;
+
+  color: #a000ff;
+  font-size: 11px;
+  font-weight: 600;
+
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.assign-btn:hover {
+  color: #fff;
+  background: #a000ff;
+}
+
+
+/* =========================
+   NOTE
+========================= */
+
+.pending-note {
+  margin: 21px 0 5px;
+  font-size: 11px;
+  color: #666;
+}
+
+
+/* =========================
+   PRODUCTIVITY REPORT
+========================= */
+
+.report-card {
+  width: 100%;
+  min-height: 67px;
+  margin-top: 18px;
+
+  padding: 10px 14px 10px 18px;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: #fff;
+  border: 1px solid #eee8f2;
+  border-radius: 9px;
+}
+
+.report-card strong {
+  font-size: 11px;
+  color: #25202e;
+}
+
+.report-card p {
+  margin: 3px 0 0;
+  font-size: 8px;
+  color: #777080;
+}
+
+
+/* =========================
+   GENERATE REPORT BUTTON
+========================= */
+
+.report-btn {
+  height: 44px;
+  padding: 0 20px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  border: none;
+  border-radius: 7px;
+
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+
+  background: linear-gradient(
+    90deg,
+    #e563ff 0%,
+    #a34cff 45%,
+    #7852ea 70%,
+    #bb5d38 100%
+  );
+
+  cursor: pointer;
+}
+
+.report-btn span {
+  font-size: 20px;
+}
+
+.report-btn:hover {
+  opacity: 0.9;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+  .pending-card {
+    overflow-x: auto;
+  }
+
+  .pending-table {
+    min-width: 900px;
+  }
+
+  .report-card {
+    gap: 20px;
+  }
+}
+
+
+
 .productivity-page {
   gap: 16px;
 }
