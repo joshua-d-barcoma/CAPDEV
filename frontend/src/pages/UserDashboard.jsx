@@ -389,9 +389,9 @@ export default function UserDashboard() {
           eyebrow="Assigned and personally selected activities"
           className="user-today-panel"
           action={
-            <Link className="user-count-badge" to={ROUTES.tasks}>
+            <span className="user-count-badge">
               {employeeTasks.length - completedTasks} remaining
-            </Link>
+            </span>
           }
         >
           <div className="user-dashboard-task-list">

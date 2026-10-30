@@ -9993,6 +9993,16 @@ p {
   box-shadow: 0 5px 14px rgb(0 0 0 / 40%);
 }
 
+html body .app-layout .header .profile-button:hover,
+html body .app-layout.theme-dark .header .profile-button:hover {
+  background: transparent;
+  color: inherit;
+  filter: none;
+  transform: none;
+  box-shadow: none;
+  transition: none;
+}
+
 html body .app-layout :is(
     select:not(:disabled),
     .search-control:not(:disabled),
@@ -11050,4 +11060,415 @@ html body .app-layout.theme-dark :is(.status-vacation-leave, .status-work-from-h
   border-color: #594969;
   background: #30283a;
   color: #e2b9ff;
+}
+
+.app-layout .notification-button,
+.app-layout .notification-button:hover {
+  color: #bb13ef;
+}
+
+.app-layout .notification-button svg {
+  fill: #bb13ef;
+  stroke: #bb13ef;
+}
+
+.app-layout .notification-dot {
+  background: #bb13ef;
+}
+
+html body .app-layout :is(.productivity-page, .learning-dashboard, .action-items-page) :is(
+    .panel-header h2,
+    .learning-skill-hub-panel > .panel-header h2
+  ),
+html body .app-layout.user-role .page-stack:not(.user-dashboard-page) .panel-header h2 {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+html body .app-layout :is(.productivity-page, .learning-dashboard, .action-items-page) .panel-header .card-eyebrow,
+html body .app-layout.user-role .page-stack:not(.user-dashboard-page) .panel-header .card-eyebrow {
+  margin-bottom: 2px;
+  color: #c61af0;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+}
+
+html body .app-layout :is(.productivity-page, .learning-dashboard, .action-items-page) :is(
+    .panel-description,
+    .learning-panel-description,
+    .productivity-table-note
+  ),
+html body .app-layout.user-role .page-stack:not(.user-dashboard-page) .panel-description {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+html body .app-layout :is(.productivity-page, .learning-dashboard, .action-items-page) .stat-grid > .stat-card :is(
+    .stat-label,
+    .stat-detail
+  ),
+html body .app-layout.user-role .page-stack:not(.user-dashboard-page) .stat-grid > .stat-card :is(
+    .stat-label,
+    .stat-detail
+  ) {
+  color: var(--muted);
+}
+
+html body .app-layout :is(.productivity-page, .learning-dashboard, .action-items-page) .stat-grid > .stat-card .stat-label,
+html body .app-layout.user-role .page-stack:not(.user-dashboard-page) .stat-grid > .stat-card .stat-label {
+  font-size: 10px;
+}
+
+html body .app-layout :is(.productivity-page, .learning-dashboard, .action-items-page) .stat-grid > .stat-card .stat-content strong,
+html body .app-layout.user-role .page-stack:not(.user-dashboard-page) .stat-grid > .stat-card .stat-content strong {
+  font-size: 22px;
+}
+
+html body .app-layout :is(.productivity-page, .learning-dashboard, .action-items-page) .stat-grid > .stat-card .stat-detail,
+html body .app-layout.user-role .page-stack:not(.user-dashboard-page) .stat-grid > .stat-card .stat-detail {
+  font-size: 9px;
+}
+
+html body .app-layout :is(.productivity-page, .learning-dashboard, .action-items-page) :is(
+    .data-table th,
+    .learning-training-table th
+  ),
+html body .app-layout.user-role .page-stack:not(.user-dashboard-page) :is(
+    .data-table th,
+    .learning-training-table th
+  ) {
+  color: var(--muted);
+  font-size: 8px;
+}
+
+html body .app-layout :is(.productivity-page, .learning-dashboard, .action-items-page) :is(
+    .data-table td,
+    .learning-training-table td
+  ),
+html body .app-layout.user-role .page-stack:not(.user-dashboard-page) :is(
+    .data-table td,
+    .learning-training-table td
+  ) {
+  color: var(--ink);
+  font-size: 9px;
+}
+
+html body .app-layout :is(.productivity-page, .learning-dashboard, .action-items-page) :is(
+    .productivity-status-row,
+    .productivity-category-row
+  ) {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+html body .app-layout :is(.productivity-page, .learning-dashboard, .action-items-page) :is(
+    .productivity-status-row > strong,
+    .productivity-category-row > strong
+  ) {
+  color: var(--ink);
+  font-size: 9px;
+}
+
+html body .app-layout :is(.productivity-page, .learning-dashboard, .action-items-page) .productivity-legend {
+  color: var(--muted);
+  font-size: 8px;
+}
+
+html body .app-layout .productivity-page :is(
+    .dashboard-card h3,
+    .eod-card h3,
+    .pending-header h3
+  ) {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+html body .app-layout .productivity-page :is(
+    .subtitle,
+    .eod-card p,
+    .pending-header p
+  ) {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+html body .app-layout .productivity-page .pending-table-head {
+  color: var(--muted);
+  font-size: 8px;
+}
+
+html body .app-layout .productivity-page .pending-row,
+html body .app-layout .productivity-page .pending-row strong,
+html body .app-layout .productivity-page .pending-row p {
+  color: var(--ink);
+  font-size: 9px;
+}
+
+html body .app-layout .action-items-page .action-title-row h3 {
+  color: var(--ink);
+  font-size: 9px;
+}
+
+html body .app-layout .action-items-page .action-card p {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+html body .app-layout .action-items-page .action-meta {
+  color: var(--muted);
+  font-size: 8px;
+}
+
+html body .app-layout.theme-dark :is(.productivity-page, .learning-dashboard, .action-items-page) .panel-header .card-eyebrow,
+html body .app-layout.theme-dark.user-role .page-stack:not(.user-dashboard-page) .panel-header .card-eyebrow {
+  color: #d493ff;
+}
+
+html body .app-layout :is(.productivity-page, .learning-dashboard, .action-items-page, .user-role .page-stack:not(.user-dashboard-page)) .panel,
+html body .app-layout.user-role .page-stack:not(.user-dashboard-page) .panel {
+  border: 1px solid #e8e1ef;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 5px 15px rgb(47 31 69 / 7%);
+}
+
+html body .app-layout :is(.productivity-page, .learning-dashboard, .action-items-page) .stat-grid > .stat-card,
+html body .app-layout.user-role .page-stack:not(.user-dashboard-page) .stat-grid > .stat-card {
+  border: 1px solid #e8e1ef;
+  border-radius: 10px;
+  background: linear-gradient(110deg, #fff 0%, #f3edff 58%, #fef4ec 100%);
+  box-shadow: 0 5px 15px rgb(47 31 69 / 7%);
+}
+
+html body .app-layout :is(.productivity-page, .learning-dashboard, .action-items-page) .panel-header h2,
+html body .app-layout.user-role .page-stack:not(.user-dashboard-page) .panel-header h2 {
+  color: #172033;
+}
+
+html body .app-layout :is(.productivity-page, .learning-dashboard, .action-items-page) .panel-description,
+html body .app-layout.user-role .page-stack:not(.user-dashboard-page) .panel-description {
+  color: #657187;
+}
+
+html body .app-layout :is(.productivity-page, .learning-dashboard, .action-items-page) .panel-header .card-eyebrow,
+html body .app-layout.user-role .page-stack:not(.user-dashboard-page) .panel-header .card-eyebrow {
+  color: #c61af0;
+}
+
+html body .app-layout .productivity-page :is(.dashboard-card, .eod-card, .pending-card, .report-card, .productivity-chart-grid .panel) {
+  border: 1px solid #e8e1ef;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 5px 15px rgb(47 31 69 / 7%);
+}
+
+html body .app-layout .productivity-page :is(.dashboard-card h3, .eod-card h3, .pending-header h3) {
+  color: #172033;
+}
+
+html body .app-layout .productivity-page :is(.subtitle, .eod-card p, .pending-header p, .pending-note) {
+  color: #657187;
+}
+
+html body .app-layout .productivity-page .productivity-status-track,
+html body .app-layout .productivity-page .status-bar,
+html body .app-layout .productivity-page .productivity-track,
+html body .app-layout .productivity-page .eod-bar-track {
+  background: #efedf3;
+}
+
+html body .app-layout .productivity-page .productivity-status-segment.completed,
+html body .app-layout .productivity-page .productivity-legend .completed,
+html body .app-layout .productivity-page .completed-box,
+html body .app-layout .productivity-page .bar.completed {
+  background: #6f9f83;
+}
+
+html body .app-layout .productivity-page .productivity-status-segment.in-progress,
+html body .app-layout .productivity-page .productivity-legend .in-progress,
+html body .app-layout .productivity-page .progress-box,
+html body .app-layout .productivity-page .bar.progress {
+  background: #6f91bd;
+}
+
+html body .app-layout .productivity-page .productivity-status-segment.not-started,
+html body .app-layout .productivity-page .productivity-legend .not-started,
+html body .app-layout .productivity-page .not-started-box,
+html body .app-layout .productivity-page .bar.not-started {
+  background: #c4934e;
+}
+
+html body .app-layout .productivity-page .productivity-status-segment.overdue,
+html body .app-layout .productivity-page .productivity-legend .overdue,
+html body .app-layout .productivity-page .overdue-box,
+html body .app-layout .productivity-page .bar.overdue {
+  background: #c96b75;
+}
+
+html body .app-layout .productivity-page :is(.productivity-category-track i, .productivity-fill) {
+  background: #7333a2;
+}
+
+html body .app-layout .productivity-page .stat-icon.blue {
+  color: #718eaf;
+}
+
+html body .app-layout .productivity-page .stat-icon.green {
+  color: #6b9b81;
+}
+
+html body .app-layout .productivity-page .stat-icon.red {
+  color: #c96b75;
+}
+
+html body .app-layout .productivity-page .stat-icon:is(.purple, .black) {
+  color: #9c67b4;
+}
+
+html body .app-layout .productivity-page .eod-bar-fill {
+  background: #7333a2;
+}
+
+html body .app-layout.admin-productivity-layout .sidebar {
+  border-right-color: #e3deea;
+  background: linear-gradient(180deg, #f8f6ff 0%, #f4efff 55%, #eee6f8 100%);
+}
+
+html body .app-layout.admin-productivity-layout .navigation-item.active {
+  border-left-color: #a900ff;
+}
+
+html body .app-layout.admin-productivity-layout .productivity-banner {
+  min-height: 60px;
+  padding: 11px 14px;
+  background: var(--banner-gradient);
+}
+
+html body .app-layout.admin-productivity-layout .productivity-banner-copy h1 {
+  margin-bottom: 3px;
+  font-size: 15px;
+}
+
+html body .app-layout.admin-productivity-layout .productivity-banner-copy p {
+  font-size: 10px;
+}
+
+html body .app-layout .productivity-page .pending-table-head,
+html body .app-layout .productivity-page .productivity-distribution-table .data-table th {
+  border-bottom-color: #e7e2ee;
+  background: #edf2ff;
+  color: #45516a;
+}
+
+html body .app-layout .productivity-page .pending-row {
+  border-bottom-color: #e7e2ee;
+  color: #333e55;
+}
+
+html body .app-layout .productivity-page .pending-row :is(strong, p) {
+  color: #333e55;
+}
+
+html body .app-layout .productivity-page .productivity-priority-high {
+  border-color: #efb4bc;
+  background: #fff0f1;
+  color: #b94d5a;
+}
+
+html body .app-layout .productivity-page .productivity-priority-medium {
+  border-color: #efd0a4;
+  background: #fff5e9;
+  color: #a76b25;
+}
+
+html body .app-layout .productivity-page .productivity-priority-low {
+  border-color: #b7d8c6;
+  background: #eff8f3;
+  color: #478263;
+}
+
+html body .app-layout .learning-dashboard > .panel,
+html body .app-layout .learning-dashboard .learning-insights-grid > .panel {
+  border-color: #e8e1ef;
+  box-shadow: 0 5px 15px rgb(47 31 69 / 7%);
+}
+
+html body .app-layout .learning-dashboard :is(
+    .learning-progress-track i,
+    .progress-track i,
+    .learning-training-progress .learning-progress-track i
+  ) {
+  background: #7333a2;
+}
+
+html body .app-layout .learning-dashboard :is(.learning-accomplishment, .learning-attention-row, .learning-skill-hub-column) {
+  border-color: #e8e1ef;
+}
+
+html body .app-layout .learning-dashboard .learning-training-table th {
+  background: #edf2ff;
+  color: #45516a;
+}
+
+html body .app-layout .skill-hub-page .progress-track i {
+  background: #7333a2;
+}
+
+html body .app-layout.theme-dark .skill-hub-page .progress-track i {
+  background: #a900ff;
+}
+
+html body .app-layout.theme-dark :is(.productivity-page, .learning-dashboard, .action-items-page, .user-role .page-stack:not(.user-dashboard-page)) .panel,
+html body .app-layout.theme-dark.user-role .page-stack:not(.user-dashboard-page) .panel {
+  border-color: #403749;
+  background: #211d2a;
+  box-shadow: 0 5px 15px rgb(0 0 0 / 20%);
+}
+
+html body .app-layout.theme-dark :is(.productivity-page, .learning-dashboard, .action-items-page) .stat-grid > .stat-card,
+html body .app-layout.theme-dark.user-role .page-stack:not(.user-dashboard-page) .stat-grid > .stat-card {
+  border-color: #403749;
+  background: linear-gradient(110deg, #211d2a 0%, #282331 58%, #302620 100%);
+  box-shadow: 0 5px 15px rgb(0 0 0 / 20%);
+}
+
+html body .app-layout.theme-dark :is(.productivity-page, .learning-dashboard, .action-items-page) :is(.panel-header h2, .dashboard-card h3, .eod-card h3, .pending-header h3),
+html body .app-layout.theme-dark.user-role .page-stack:not(.user-dashboard-page) .panel-header h2 {
+  color: #f2edf7;
+}
+
+html body .app-layout.theme-dark :is(.productivity-page, .learning-dashboard, .action-items-page) :is(.panel-description, .subtitle, .eod-card p, .pending-header p),
+html body .app-layout.theme-dark.user-role .page-stack:not(.user-dashboard-page) .panel-description {
+  color: #c1b8cb;
+}
+
+html body .app-layout.theme-dark .productivity-page :is(.dashboard-card, .eod-card, .pending-card, .report-card, .productivity-chart-grid .panel) {
+  border-color: #403749;
+  background: #211d2a;
+  box-shadow: 0 5px 15px rgb(0 0 0 / 20%);
+}
+
+html body .app-layout.theme-dark .productivity-page :is(.productivity-status-track, .status-bar, .productivity-track, .eod-bar-track) {
+  background: #34303d;
+}
+
+html body .app-layout.theme-dark .productivity-page .pending-table-head,
+html body .app-layout.theme-dark .productivity-page .productivity-distribution-table .data-table th {
+  border-bottom-color: #403749;
+  background: #292532;
+  color: #c1b8cb;
+}
+
+html body .app-layout.theme-dark .productivity-page .pending-row,
+html body .app-layout.theme-dark .productivity-page .pending-row :is(strong, p) {
+  border-bottom-color: #34303d;
+  color: #ddd6e5;
+}
+
+html body .app-layout.theme-dark .learning-dashboard .learning-training-table th {
+  background: #292532;
+  color: #c1b8cb;
 }

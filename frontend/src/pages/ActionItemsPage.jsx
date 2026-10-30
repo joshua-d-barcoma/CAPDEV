@@ -19,7 +19,7 @@ export default function ActionItemsPage() {
   const open = actionItems.filter((item) => item.status !== 'Done');
 
   return (
-    <div className="page-stack">
+    <div className="page-stack action-items-page">
       <PageHeader
         eyebrow="Bench Management"
         title="Action Items"

@@ -492,22 +492,6 @@ export default function TimeEntryPage() {
           </aside>
         ) : (
           <aside className="time-entry-info-stack" aria-label="Attendance resources and reminders">
-            <Panel title="Attendance Links" eyebrow="Resources for your attendance">
-              <div className="time-entry-links">
-                <InfoCard type="links" title="Attendance History">
-                  <p>Review your recent time-in submissions.</p>
-                  <Link className="button button-secondary" to={ROUTES.history}>
-                    Open History <span>↗</span>
-                  </Link>
-                </InfoCard>
-                <InfoCard type="links" title="My Dashboard">
-                  <p>View your attendance and daily activity.</p>
-                  <Link className="button button-secondary" to={ROUTES.userDashboard}>
-                    Open Dashboard <span>↗</span>
-                  </Link>
-                </InfoCard>
-              </div>
-            </Panel>
             <InfoCard type="reminder" title="Important Reminders">
               <ul>
                 <li>Please submit your time-in before starting your workday.</li>
@@ -515,6 +499,22 @@ export default function TimeEntryPage() {
                 <li>Contact your Bench Lead if you encounter issues.</li>
               </ul>
             </InfoCard>
+            <Panel title="Attendance Links" eyebrow="Resources for your attendance">
+              <div className="time-entry-links">
+                <InfoCard type="links" title="Office Pulse">
+                  <p>Use Office Pulse to check in and record your in-office attendance.</p>
+                  <button className="button button-secondary" type="button" disabled>
+                    Open Office Pulse <span aria-hidden="true">↗</span>
+                  </button>
+                </InfoCard>
+                <InfoCard type="links" title="Bench Leave Tracker">
+                  <p>Use the Bench Leave Tracker to submit leave and work-from-home requests.</p>
+                  <button className="button button-secondary" type="button" disabled>
+                    Open Bench Leave Tracker <span aria-hidden="true">↗</span>
+                  </button>
+                </InfoCard>
+              </div>
+            </Panel>
           </aside>
         )}
       </div>
