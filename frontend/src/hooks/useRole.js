@@ -1,18 +1,23 @@
-import { useState } from 'react';
+import { useState } from "react";
+import {
+  getSessionUser,
+  getUserRole,
+} from "../utils/auth.js";
 
 export function getRoleFromSession(user) {
-  return user?.accountType === 'admin' ? 'admin' : 'user';
-}
-
-function getInitialRole() {
-  const serializedUser = sessionStorage.getItem('benchflow_user');
-  if (!serializedUser) return 'user';
-
-  return getRoleFromSession(JSON.parse(serializedUser));
+  return getUserRole(user);
 }
 
 export function useRole() {
-  const [role] = useState(getInitialRole);
+  const [user] = useState(() => {
+    return getSessionUser();
+  });
 
-  return { role };
+  const role = getRoleFromSession(user);
+
+  return {
+    user,
+    role,
+    isAuthenticated: Boolean(user),
+  };
 }
