@@ -11356,6 +11356,40 @@ html body .app-layout.admin-productivity-layout .productivity-banner-copy p {
   font-size: 10px;
 }
 
+html body .app-layout.theme-dark.admin-productivity-layout .sidebar {
+  border-right-color: #3c3345;
+  background: linear-gradient(180deg, #211c2b 0%, #211a2d 55%, #30203e 100%);
+  color: #f2edf7;
+}
+
+html body .app-layout.theme-dark.admin-productivity-layout :is(
+    .brand-content strong,
+    .navigation-item,
+    .sidebar-footer
+  ) {
+  color: #f2edf7;
+}
+
+html body .app-layout.theme-dark.admin-productivity-layout :is(
+    .brand-content small,
+    .navigation-title,
+    .sidebar-footer small
+  ) {
+  color: #bdb1c8;
+}
+
+html body .app-layout.theme-dark.admin-productivity-layout .navigation-item:hover {
+  background: rgb(255 255 255 / 8%);
+  color: #e2b9ff;
+}
+
+html body .app-layout.theme-dark.admin-productivity-layout .navigation-item.active {
+  border-color: #63417c;
+  border-left-color: #d04df1;
+  background: #382545;
+  color: #e6c6ff;
+}
+
 html body .app-layout .productivity-page .pending-table-head,
 html body .app-layout .productivity-page .productivity-distribution-table .data-table th {
   border-bottom-color: #e7e2ee;
