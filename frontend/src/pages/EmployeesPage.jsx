@@ -28,6 +28,7 @@ import {
   DEMO_DEPLOYMENT_STAGES,
   DEMO_READINESS_METRICS,
 } from '../utils/employeePageDemoData.js';
+import { buildEmployeeReportRows, serializeCsvRows } from '../utils/employeeReport.js';
 import { formatDate } from '../utils/formatters.js';
 
 const EMPTY_FILTERS = {
@@ -45,6 +46,9 @@ const EMPLOYEE_PAGE_SIZE = 10;
 export default function EmployeesPage() {
   const {
     employees,
+    attendanceRecords,
+    employeeSchedules,
+    cohorts,
     importEmployees: importEmployeeBatch,
     updateEmployee,
     deleteEmployee,
@@ -172,6 +176,29 @@ export default function EmployeesPage() {
 
   function confirmEmployeeImport() {
     if (importEmployees(importReview)) setImportReview(null);
+  }
+
+  function exportReport() {
+    const reportRows = buildEmployeeReportRows({
+      employees: filteredEmployees,
+      attendanceRecords,
+      employeeSchedules,
+      cohorts,
+      scope: filters,
+      search,
+    });
+    const dateStamp = new Date().toISOString().slice(0, 10);
+    const downloadUrl = URL.createObjectURL(
+      new Blob([serializeCsvRows(reportRows)], { type: 'text/csv;charset=utf-8;' }),
+    );
+    const downloadLink = document.createElement('a');
+
+    downloadLink.href = downloadUrl;
+    downloadLink.download = `benchflow-resource-report-${dateStamp}.csv`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    downloadLink.remove();
+    window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 0);
   }
 
   const columns = [
@@ -303,7 +330,12 @@ export default function EmployeesPage() {
         <Panel title="Time in bench" eyebrow="Employee aging">
           <div className="tenure-grid">
             {tenureBuckets.map((bucket) => (
-              <div className="tenure-card" key={bucket.label}>
+              <div
+                className="tenure-card chart-data-tooltip"
+                data-chart-tooltip={`${bucket.label}: ${bucket.count} ${bucket.count === 1 ? 'employee' : 'employees'}`}
+                title={`${bucket.label}: ${bucket.count} ${bucket.count === 1 ? 'employee' : 'employees'}`}
+                key={bucket.label}
+              >
                 <strong>{bucket.count}</strong>
                 <span>{bucket.label}</span>
               </div>
@@ -316,6 +348,7 @@ export default function EmployeesPage() {
               className={`career-level-donut${careerLevelTotal ? '' : ' is-empty'}`}
               role="img"
               aria-label={`${careerLevelTotal} employees across career levels`}
+              title={`Career level mix: ${careerLevels.map((item) => `${item.level}: ${item.count}`).join(', ')}`}
               style={{
                 '--career-level-donut': careerLevelTotal
                   ? `conic-gradient(${careerDonut})`
@@ -329,7 +362,12 @@ export default function EmployeesPage() {
             </div>
             <ul className="career-level-legend" aria-label="Employee count by career level">
               {careerLevels.map((item, index) => (
-                <li key={item.level}>
+                <li
+                  className="chart-data-tooltip"
+                  data-chart-tooltip={`${item.level}: ${item.count} ${item.count === 1 ? 'employee' : 'employees'} (${careerLevelTotal ? Math.round((item.count / careerLevelTotal) * 100) : 0}%)`}
+                  title={`${item.level}: ${item.count} employees (${careerLevelTotal ? Math.round((item.count / careerLevelTotal) * 100) : 0}%)`}
+                  key={item.level}
+                >
                   <span className="career-level-key">
                     <i style={{ backgroundColor: careerLevelColors[index] }} />
                     {item.level}
@@ -359,7 +397,13 @@ export default function EmployeesPage() {
               const barHeight = Math.max(10, (count / maxCount) * 100);
 
               return (
-                <div className="skill-distribution-item" role="listitem" key={skill}>
+                <div
+                  className="skill-distribution-item chart-data-tooltip"
+                  data-chart-tooltip={`${skill}: ${count} ${count === 1 ? 'employee' : 'employees'}`}
+                  title={`${skill}: ${count} ${count === 1 ? 'employee' : 'employees'}`}
+                  role="listitem"
+                  key={skill}
+                >
                   <strong>{count}</strong>
                   <div className="skill-distribution-track">
                     <i
@@ -385,7 +429,12 @@ export default function EmployeesPage() {
         <Panel title="Bench Status" eyebrow="Workforce availability">
           <div className="employee-breakdown-list">
             {benchStatusCounts.map(({ label, count }) => (
-              <div className="employee-breakdown-row" key={label}>
+              <div
+                className="employee-breakdown-row chart-data-tooltip"
+                data-chart-tooltip={`${label}: ${count} of ${filteredEmployees.length} employees (${filteredEmployees.length ? Math.round((count / filteredEmployees.length) * 100) : 0}%)`}
+                title={`${label}: ${count} of ${filteredEmployees.length} employees`}
+                key={label}
+              >
                 <span>{label}</span>
                 <i aria-hidden="true">
                   <b
@@ -413,7 +462,12 @@ export default function EmployeesPage() {
         >
           <div className="employee-breakdown-list">
             {capabilityCounts.map(({ label, count }) => (
-              <div className="employee-breakdown-row" key={label}>
+              <div
+                className="employee-breakdown-row chart-data-tooltip"
+                data-chart-tooltip={`${label}: ${count} of ${filteredEmployees.length} employees (${filteredEmployees.length ? Math.round((count / filteredEmployees.length) * 100) : 0}%)`}
+                title={`${label}: ${count} of ${filteredEmployees.length} employees`}
+                key={label}
+              >
                 <span>{label}</span>
                 <i aria-hidden="true">
                   <b
@@ -433,19 +487,38 @@ export default function EmployeesPage() {
       </div>
 
       <Panel
-        title="All Employees"
+        title="Bench by capability"
         eyebrow="Workforce"
         action={
           <div className="employee-panel-actions">
             <Link className="button button-secondary" to={ROUTES.employeeImportHistory}>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 12a9 9 0 1 0 2.64-6.36L3 8" />
+                <path d="M3 3v5h5m4-1v5l3 2" />
+              </svg>
               History
             </Link>
             <button
               type="button"
-              className="button button-primary"
+              className="button button-primary employee-import-button"
               onClick={() => setImportOpen(true)}
             >
-              Import
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3v12m-4-4 4 4 4-4" />
+                <path d="M4 16v4h16v-4" />
+              </svg>
+              Import CSV
+            </button>
+            <button
+              type="button"
+              className="button button-primary employee-import-button"
+              onClick={exportReport}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 16V4m-4 4 4-4 4 4" />
+                <path d="M4 14v6h16v-6" />
+              </svg>
+              Export Report
             </button>
           </div>
         }
@@ -654,7 +727,12 @@ export default function EmployeesPage() {
           <p className="deployment-panel-description">Interview and endorsement progress</p>
           <div className="demo-stage-list">
             {DEMO_DEPLOYMENT_STAGES.map((stage) => (
-              <div className="demo-stage-row" key={stage.label}>
+              <div
+                className="demo-stage-row chart-data-tooltip"
+                data-chart-tooltip={`${stage.label}: ${stage.count} illustrative demo opportunities`}
+                title={`${stage.label}: ${stage.count} illustrative demo opportunities`}
+                key={stage.label}
+              >
                 <span>{stage.label}</span>
                 <i aria-hidden="true">
                   <b
@@ -684,7 +762,12 @@ export default function EmployeesPage() {
           </p>
           <div className="cohort-summary-list">
             {DEMO_COHORT_PROGRESS.map((cohort) => (
-              <article className="cohort-summary-row demo-cohort-row" key={cohort.name}>
+              <article
+                className="cohort-summary-row demo-cohort-row chart-data-tooltip"
+                data-chart-tooltip={`${cohort.name}: ${cohort.progress}% illustrative demo progress, ${cohort.members} demo members`}
+                title={`${cohort.name}: ${cohort.progress}% illustrative demo progress, ${cohort.members} demo members`}
+                key={cohort.name}
+              >
                 <div>
                   <strong>{cohort.name}</strong>
                   <span>{cohort.focus}</span>
