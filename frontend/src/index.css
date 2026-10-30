@@ -509,7 +509,7 @@ p {
   align-items: center;
   padding: 18px;
   border-radius: 0;
-  background: linear-gradient(105deg, #38105c 0%, #a900d8 73%, #50116e 100%);
+  background: linear-gradient(90deg, #d56df3 0%, #8d5cff 50%, #c85b32 100%); 
   box-shadow: var(--box-shadow);
   color: #fff;
 }
@@ -3068,7 +3068,8 @@ p {
   font-size: 9px;
   line-height: 1.35;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+ 
+ /* -webkit-line-clamp: 2;  */
 }
 .learning-error {
   margin: 0;
