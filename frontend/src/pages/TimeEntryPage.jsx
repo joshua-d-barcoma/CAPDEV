@@ -26,6 +26,7 @@ export default function TimeEntryPage() {
     alex && !standardCapabilities.includes(alex.capability)
       ? [...standardCapabilities, alex.capability]
       : standardCapabilities;
+  const [employeeId, setEmployeeId] = useState('');
   const [workType, setWorkType] = useState('Onsite');
   const [location, setLocation] = useState('');
   const [otherLocation, setOtherLocation] = useState('');
@@ -36,6 +37,21 @@ export default function TimeEntryPage() {
   const [trackerCompleted, setTrackerCompleted] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const currentDate = new Date().toLocaleDateString(
+    'en-US',
+    {
+      month: 'long',
+      day: '2-digit',
+      year: 'numeric',
+    },
+  );
+  const currentTime = new Date().toLocaleTimeString(
+    'en-US',
+    {
+      hour: '2-digit',
+      minute: '2-digit',
+    },
+  );
 
   function submit(event) {
     event.preventDefault();
@@ -52,7 +68,12 @@ export default function TimeEntryPage() {
       setError('Your time-in is already recorded. Submit time-out before starting another entry.');
       return;
     }
-    if (!alex || !capability || !acknowledged || (workType === 'Onsite' && !location)) {
+    if (!employeeId.trim()) {
+      setError('Please enter your EID.');
+      return;
+    }
+
+    if (!alex || !capability || (workType === 'Onsite' && !location)) {
       setError('Complete all required fields and acknowledge the attendance declaration.');
       return;
     }
@@ -75,6 +96,7 @@ export default function TimeEntryPage() {
       location: workType !== 'Onsite' ? '—' : location === 'Other' ? otherLocation : location,
       status: workType === 'Leave' ? 'Vacation Leave' : 'Present',
       seatNumber: workType === 'Onsite' ? seatNumber : '',
+      capability,
     };
     if (submitAttendance(record)) setMessage('Your time-in has been recorded successfully.');
   }
@@ -82,8 +104,8 @@ export default function TimeEntryPage() {
   return (
     <div className="page-stack">
       <PageHeader
-        eyebrow="Personal Workspace"
-        title={isTimeOut ? 'Time Out' : 'Time In'}
+        eyebrow=""
+        title={isTimeOut ? 'Time Out' : 'MY TIME IN & ATTENDANCE'}
         description={
           isTimeOut
             ? 'Complete your workday and record your time-out.'
@@ -100,6 +122,11 @@ export default function TimeEntryPage() {
           {error}
         </div>
       )}
+
+
+
+
+
       <Panel
         title={isTimeOut ? 'End-of-day check-out' : 'Daily attendance declaration'}
         eyebrow={new Date().toLocaleDateString()}
