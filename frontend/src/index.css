@@ -11462,11 +11462,27 @@ html body .app-layout.theme-dark.user-role .page-stack:not(.user-dashboard-page)
   box-shadow: 0 5px 15px rgb(0 0 0 / 20%);
 }
 
-html body .app-layout.theme-dark :is(.productivity-page, .learning-dashboard, .action-items-page) .stat-grid > .stat-card,
-html body .app-layout.theme-dark.user-role .page-stack:not(.user-dashboard-page) .stat-grid > .stat-card {
+html body .app-layout.theme-dark :is(.productivity-page, .learning-dashboard, .action-items-page, .history-page) .stat-grid > .stat-card {
+  border-color: #343746;
+  background: #181a25;
+  box-shadow: 0 6px 22px rgb(0 0 0 / 24%);
+}
+
+html body .app-layout.theme-dark.user-role .page-stack:not(.user-dashboard-page):not(.tasks-page):not(.history-page) .stat-grid > .stat-card {
   border-color: #403749;
   background: linear-gradient(110deg, #211d2a 0%, #282331 58%, #302620 100%);
   box-shadow: 0 5px 15px rgb(0 0 0 / 20%);
+}
+
+html body .app-layout.theme-dark.user-role :is(.tasks-page .task-summary-grid, .history-page .history-metrics) > .stat-card {
+  border-color: #343746;
+  background: #181a25;
+  box-shadow: 0 6px 22px rgb(0 0 0 / 24%);
+}
+
+html body .app-layout.theme-dark.user-role .history-page .history-schedule-day {
+  border-color: #343746;
+  background: #181a25;
 }
 
 html body .app-layout.theme-dark :is(.productivity-page, .learning-dashboard, .action-items-page) :is(.panel-header h2, .dashboard-card h3, .eod-card h3, .pending-header h3),

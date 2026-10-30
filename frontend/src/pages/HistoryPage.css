@@ -197,8 +197,8 @@
 
 .theme-dark .history-schedule-day,
 .app-layout.theme-dark .history-schedule-day {
-  border-color: #40374b;
-  background: linear-gradient(135deg, #282230, #30283a 70%, #382a2a);
+  border-color: #343746;
+  background: #181a25;
 }
 
 .theme-dark .history-pagination button,

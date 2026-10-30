@@ -569,8 +569,8 @@
 }
 
 .app-layout.theme-dark .calendar-page .calendar-metric {
-  border-color: #403749;
-  background: linear-gradient(145deg, #211d2a 0%, #201c2a 70%, #292022 100%);
+  border-color: #343746;
+  background: #181a25;
 }
 
 .app-layout.theme-dark .calendar-page .calendar-metric-heading,
