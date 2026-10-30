@@ -4991,7 +4991,11 @@ p {
 .attendance-form .field b { color: #a42cff; }
 
 .attendance-form input, .attendance-form select, .attendance-form textarea { width: 100%; box-sizing: border-box; border: 1px solid #d9d9df; border-radius: 5px; background: #fff; color: #292929; font: inherit; font-size: 12px; outline: none; }
-.attendance-form input, .attendance-form select { height: 36px; padding: 0 12px; }
+.attendance-form input, .attendance-form select { 
+  height: 36px; 
+  padding: 0 12px;
+  width:auto 
+}
 .attendance-form select, .attendance-form textarea { border-color: #b72cff; }
 .attendance-form textarea { min-height: 70px; padding: 10px 12px; resize: vertical; }
 .attendance-form input[readonly] { background: #f3f3f5; color: #555; }
