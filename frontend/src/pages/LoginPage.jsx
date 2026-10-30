@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../hooks/ThemeProvider.jsx";
-// import "./LoginPage.css";
+import "./LoginPage.css";
 
 /*
 |--------------------------------------------------------------------------
@@ -60,8 +60,26 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [error, setError] = useState("");
+  const [alert, setAlert] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const showAlert = (message) => {
+    setAlert({ message, type: "error" });
+  };
+
+  const closeAlert = () => {
+    setAlert(null);
+  };
+
+  useEffect(() => {
+    if (!alert) return undefined;
+
+    const timer = window.setTimeout(() => {
+      setAlert(null);
+    }, 4000);
+
+    return () => window.clearTimeout(timer);
+  }, [alert]);
 
   /*
   |--------------------------------------------------------------------------
@@ -82,14 +100,14 @@ export default function LoginPage() {
     if (!matchedAccount) {
       return {
         success: false,
-        message: "Demo account not found.",
+        message: "Account not found. Please check your email address.",
       };
     }
 
     if (enteredPassword !== DEMO_PASSWORD) {
       return {
         success: false,
-        message: "Incorrect demo password.",
+        message: "Incorrect password. Please try again.",
       };
     }
 
@@ -166,15 +184,22 @@ export default function LoginPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    setError("");
+    closeAlert();
 
-    if (!email.trim()) {
-      setError("Please enter your email address.");
+    const trimmedEmail = email.trim();
+
+    if (!trimmedEmail && !password) {
+      showAlert("Please enter your email and password.");
+      return;
+    }
+
+    if (!trimmedEmail) {
+      showAlert("Please enter your email address.");
       return;
     }
 
     if (!password) {
-      setError("Please enter your password.");
+      showAlert("Please enter your password.");
       return;
     }
 
@@ -219,10 +244,10 @@ export default function LoginPage() {
       |--------------------------------------------------------------------------
       */
 
-      const result = authenticateDemoUser(email, password);
+      const result = authenticateDemoUser(trimmedEmail, password);
 
       if (!result.success) {
-        setError(result.message);
+        showAlert(result.message);
         return;
       }
 
@@ -232,9 +257,7 @@ export default function LoginPage() {
     } catch (err) {
       console.error("Login failed:", err);
 
-      setError(
-        err.message || "Something went wrong while signing in."
-      );
+      showAlert(err.message || "Something went wrong while signing in.");
     } finally {
       setIsLoading(false);
     }
@@ -247,7 +270,7 @@ export default function LoginPage() {
   */
 
   const handleDemoLogin = (account) => {
-    setError("");
+    closeAlert();
 
     /*
      * Populate the form so the login visually behaves like
@@ -272,6 +295,31 @@ export default function LoginPage() {
 
   return (
     <main className={`login-page ${theme === "dark" ? "dark" : ""}`}>
+      {alert && (
+        <div
+          className={`login-toast login-toast--${alert.type}`}
+          role="alert"
+          aria-live="assertive"
+        >
+          <div className="login-toast__icon" aria-hidden="true">
+            !
+          </div>
+
+          <div className="login-toast__content">
+            <strong>Sign in failed</strong>
+            <span>{alert.message}</span>
+          </div>
+
+          <button
+            type="button"
+            className="login-toast__close"
+            onClick={closeAlert}
+            aria-label="Close alert"
+          >
+            ×
+          </button>
+        </div>
+      )}
       <div className="login-container">
 
         {/* ================= BRAND HEADER ================= */}
@@ -343,12 +391,11 @@ export default function LoginPage() {
                 value={email}
                 onChange={(event) => {
                   setEmail(event.target.value);
-                  setError("");
+                  closeAlert();
                 }}
                 placeholder="you@accenture.com"
                 autoComplete="email"
                 disabled={isLoading}
-                required
               />
             </div>
 
@@ -364,25 +411,13 @@ export default function LoginPage() {
                 value={password}
                 onChange={(event) => {
                   setPassword(event.target.value);
-                  setError("");
+                  closeAlert();
                 }}
                 placeholder="••••••••"
                 autoComplete="current-password"
                 disabled={isLoading}
-                required
               />
             </div>
-
-            {/* Authentication Error */}
-
-            {error && (
-              <div
-                className="login-error"
-                role="alert"
-              >
-                {error}
-              </div>
-            )}
 
             <button
               className="sign-in-button"
