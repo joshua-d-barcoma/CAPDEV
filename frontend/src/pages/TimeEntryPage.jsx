@@ -255,7 +255,7 @@ export default function TimeEntryPage() {
 
         title={
           isTimeOut
-            ? 'Time Out'
+            ? 'TIME OUT & DAILY ACCOMPLISHMENTS'
             : 'MY TIME IN & ATTENDANCE'
         }
         description={
@@ -478,8 +478,7 @@ export default function TimeEntryPage() {
                     <input
                       type="text"
                       required
-                      value={timeOutEmployeeId}
-                      onChange={(event) => setTimeOutEmployeeId(event.target.value)}
+                     
                       placeholder="Enter your EID"
                     />
 
