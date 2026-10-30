@@ -330,7 +330,12 @@ export default function EmployeesPage() {
         <Panel title="Time in bench" eyebrow="Employee aging">
           <div className="tenure-grid">
             {tenureBuckets.map((bucket) => (
-              <div className="tenure-card" key={bucket.label}>
+              <div
+                className="tenure-card chart-data-tooltip"
+                data-chart-tooltip={`${bucket.label}: ${bucket.count} ${bucket.count === 1 ? 'employee' : 'employees'}`}
+                title={`${bucket.label}: ${bucket.count} ${bucket.count === 1 ? 'employee' : 'employees'}`}
+                key={bucket.label}
+              >
                 <strong>{bucket.count}</strong>
                 <span>{bucket.label}</span>
               </div>
@@ -343,6 +348,7 @@ export default function EmployeesPage() {
               className={`career-level-donut${careerLevelTotal ? '' : ' is-empty'}`}
               role="img"
               aria-label={`${careerLevelTotal} employees across career levels`}
+              title={`Career level mix: ${careerLevels.map((item) => `${item.level}: ${item.count}`).join(', ')}`}
               style={{
                 '--career-level-donut': careerLevelTotal
                   ? `conic-gradient(${careerDonut})`
@@ -356,7 +362,12 @@ export default function EmployeesPage() {
             </div>
             <ul className="career-level-legend" aria-label="Employee count by career level">
               {careerLevels.map((item, index) => (
-                <li key={item.level}>
+                <li
+                  className="chart-data-tooltip"
+                  data-chart-tooltip={`${item.level}: ${item.count} ${item.count === 1 ? 'employee' : 'employees'} (${careerLevelTotal ? Math.round((item.count / careerLevelTotal) * 100) : 0}%)`}
+                  title={`${item.level}: ${item.count} employees (${careerLevelTotal ? Math.round((item.count / careerLevelTotal) * 100) : 0}%)`}
+                  key={item.level}
+                >
                   <span className="career-level-key">
                     <i style={{ backgroundColor: careerLevelColors[index] }} />
                     {item.level}
@@ -386,7 +397,13 @@ export default function EmployeesPage() {
               const barHeight = Math.max(10, (count / maxCount) * 100);
 
               return (
-                <div className="skill-distribution-item" role="listitem" key={skill}>
+                <div
+                  className="skill-distribution-item chart-data-tooltip"
+                  data-chart-tooltip={`${skill}: ${count} ${count === 1 ? 'employee' : 'employees'}`}
+                  title={`${skill}: ${count} ${count === 1 ? 'employee' : 'employees'}`}
+                  role="listitem"
+                  key={skill}
+                >
                   <strong>{count}</strong>
                   <div className="skill-distribution-track">
                     <i
@@ -412,7 +429,12 @@ export default function EmployeesPage() {
         <Panel title="Bench Status" eyebrow="Workforce availability">
           <div className="employee-breakdown-list">
             {benchStatusCounts.map(({ label, count }) => (
-              <div className="employee-breakdown-row" key={label}>
+              <div
+                className="employee-breakdown-row chart-data-tooltip"
+                data-chart-tooltip={`${label}: ${count} of ${filteredEmployees.length} employees (${filteredEmployees.length ? Math.round((count / filteredEmployees.length) * 100) : 0}%)`}
+                title={`${label}: ${count} of ${filteredEmployees.length} employees`}
+                key={label}
+              >
                 <span>{label}</span>
                 <i aria-hidden="true">
                   <b
@@ -440,7 +462,12 @@ export default function EmployeesPage() {
         >
           <div className="employee-breakdown-list">
             {capabilityCounts.map(({ label, count }) => (
-              <div className="employee-breakdown-row" key={label}>
+              <div
+                className="employee-breakdown-row chart-data-tooltip"
+                data-chart-tooltip={`${label}: ${count} of ${filteredEmployees.length} employees (${filteredEmployees.length ? Math.round((count / filteredEmployees.length) * 100) : 0}%)`}
+                title={`${label}: ${count} of ${filteredEmployees.length} employees`}
+                key={label}
+              >
                 <span>{label}</span>
                 <i aria-hidden="true">
                   <b
@@ -505,21 +532,6 @@ export default function EmployeesPage() {
           />
           <div className="employee-filter-controls">
             <label className="employee-filter-control">
-              <span className="visually-hidden">Filter by capability</span>
-              <select
-                aria-label="Filter by capability"
-                value={filters.capability}
-                onChange={(event) => updateFilter('capability', event.target.value)}
-              >
-                <option value="">All Capabilities</option>
-                {filterOptions.capabilities.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="employee-filter-control">
               <span className="visually-hidden">Filter by career level</span>
               <select
                 aria-label="Filter by career level"
@@ -528,21 +540,6 @@ export default function EmployeesPage() {
               >
                 <option value="">All Career Levels</option>
                 {filterOptions.careerLevels.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="employee-filter-control">
-              <span className="visually-hidden">Filter by location</span>
-              <select
-                aria-label="Filter by location"
-                value={filters.location}
-                onChange={(event) => updateFilter('location', event.target.value)}
-              >
-                <option value="">All Locations</option>
-                {filterOptions.locations.map((value) => (
                   <option key={value} value={value}>
                     {value}
                   </option>
@@ -730,7 +727,12 @@ export default function EmployeesPage() {
           <p className="deployment-panel-description">Interview and endorsement progress</p>
           <div className="demo-stage-list">
             {DEMO_DEPLOYMENT_STAGES.map((stage) => (
-              <div className="demo-stage-row" key={stage.label}>
+              <div
+                className="demo-stage-row chart-data-tooltip"
+                data-chart-tooltip={`${stage.label}: ${stage.count} illustrative demo opportunities`}
+                title={`${stage.label}: ${stage.count} illustrative demo opportunities`}
+                key={stage.label}
+              >
                 <span>{stage.label}</span>
                 <i aria-hidden="true">
                   <b
@@ -760,7 +762,12 @@ export default function EmployeesPage() {
           </p>
           <div className="cohort-summary-list">
             {DEMO_COHORT_PROGRESS.map((cohort) => (
-              <article className="cohort-summary-row demo-cohort-row" key={cohort.name}>
+              <article
+                className="cohort-summary-row demo-cohort-row chart-data-tooltip"
+                data-chart-tooltip={`${cohort.name}: ${cohort.progress}% illustrative demo progress, ${cohort.members} demo members`}
+                title={`${cohort.name}: ${cohort.progress}% illustrative demo progress, ${cohort.members} demo members`}
+                key={cohort.name}
+              >
                 <div>
                   <strong>{cohort.name}</strong>
                   <span>{cohort.focus}</span>

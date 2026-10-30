@@ -6,11 +6,13 @@ import {
   addSkillHubItem,
   addEmployee,
   deleteEmployee,
+  getEmployeeLeaveBalances,
   reviewEmployeeScheduleRequest,
   submitEmployeeScheduleRequest,
   updateTaskAssignee,
   updateLearningAssignment,
   updateMandatoryTraining,
+  updateCheckInStatus,
 } from './benchDataService.js';
 
 function createData() {
@@ -95,6 +97,186 @@ test('a second pending request of the same kind is rejected', () => {
       }),
     /one pending schedule request/,
   );
+});
+
+test('calendar leave balances count approved and pending days once against annual allowances', () => {
+  const balances = getEmployeeLeaveBalances(
+    'employee-1',
+    [
+      { employeeId: 'employee-1', date: '2026-10-01', status: 'Vacation Leave' },
+      { employeeId: 'employee-1', date: '2026-10-02', status: 'Sick Leave' },
+    ],
+    [
+      {
+        employeeId: 'employee-1',
+        kind: 'calendar',
+        date: '2026-10-01',
+        requestType: 'Vacation leave',
+        status: 'Approved',
+      },
+      {
+        employeeId: 'employee-1',
+        kind: 'calendar',
+        date: '2026-10-05',
+        requestType: 'Vacation leave',
+        status: 'Pending',
+      },
+      {
+        employeeId: 'employee-1',
+        kind: 'calendar',
+        date: '2026-10-04',
+        requestType: 'Sick leave',
+        status: 'Rejected',
+      },
+    ],
+  );
+
+  assert.deepEqual(balances['Vacation leave'], {
+    entitlement: 15,
+    used: 1,
+    pending: 1,
+    remaining: 13,
+  });
+  assert.deepEqual(balances['Sick leave'], {
+    entitlement: 10,
+    used: 1,
+    pending: 0,
+    remaining: 9,
+  });
+});
+
+test('calendar leave requests reserve balances and prevent duplicate or excess usage', () => {
+  const initial = createData();
+  const withPendingLeave = submitEmployeeScheduleRequest(initial, {
+    employeeId: 'employee-1',
+    employeeName: 'Alex Santos',
+    requestType: 'Sick leave',
+    date: '2026-10-30',
+  });
+
+  assert.equal(
+    getEmployeeLeaveBalances(
+      'employee-1',
+      withPendingLeave.attendanceRecords,
+      withPendingLeave.scheduleRequests,
+    )['Sick leave'].remaining,
+    9,
+  );
+  assert.throws(
+    () =>
+      submitEmployeeScheduleRequest(withPendingLeave, {
+        employeeId: 'employee-1',
+        employeeName: 'Alex Santos',
+        requestType: 'Sick leave',
+        date: '2026-10-30',
+      }),
+    /already exists for this date/,
+  );
+
+  const weekdays = [];
+  for (let day = 1; weekdays.length < 15; day += 1) {
+    const date = `2026-11-${String(day).padStart(2, '0')}`;
+    if (![0, 6].includes(new Date(`${date}T00:00:00`).getDay())) weekdays.push(date);
+  }
+  const fullyUsed = {
+    ...initial,
+    scheduleRequests: weekdays.map((date) => ({
+      employeeId: 'employee-1',
+      kind: 'calendar',
+      date,
+      requestType: 'Vacation leave',
+      status: 'Approved',
+    })),
+  };
+  assert.throws(
+    () =>
+      submitEmployeeScheduleRequest(fullyUsed, {
+        employeeId: 'employee-1',
+        employeeName: 'Alex Santos',
+        requestType: 'Vacation leave',
+        date: '2026-12-01',
+      }),
+    /No Vacation leave balance remains/,
+  );
+});
+
+test('calendar leave requests are recorded as approved without pending review', () => {
+  const updated = submitEmployeeScheduleRequest(createData(), {
+    employeeId: 'employee-1',
+    employeeName: 'Alex Santos',
+    requestType: 'Vacation leave',
+    date: '2026-10-30',
+  });
+
+  assert.equal(updated.scheduleRequests[0].status, 'Approved');
+  assert.equal(
+    getEmployeeLeaveBalances('employee-1', updated.attendanceRecords, updated.scheduleRequests)[
+      'Vacation leave'
+    ].used,
+    1,
+  );
+  assert.equal(
+    getEmployeeLeaveBalances('employee-1', updated.attendanceRecords, updated.scheduleRequests)[
+      'Vacation leave'
+    ].pending,
+    0,
+  );
+});
+
+test('calendar leave requests are rejected on non-working weekends', () => {
+  assert.throws(
+    () =>
+      submitEmployeeScheduleRequest(createData(), {
+        employeeId: 'employee-1',
+        employeeName: 'Alex Santos',
+        requestType: 'Sick leave',
+        date: '2026-10-31',
+      }),
+    /Leave is not needed on weekends/,
+  );
+});
+
+test('time-out submission adds the time and accomplishments to the matching attendance record', () => {
+  const initial = {
+    checkedIn: true,
+    attendanceRecords: [
+      { id: 'attendance-1', employeeId: 'employee-1', date: '2026-10-30', timeIn: '08:00 AM' },
+      { id: 'attendance-2', employeeId: 'employee-2', date: '2026-10-30', timeIn: '08:30 AM' },
+    ],
+  };
+
+  const updated = updateCheckInStatus(initial, false, {
+    employeeId: 'employee-1',
+    date: '2026-10-30',
+    timeOut: '05:00 PM',
+    accomplishments: 'Completed assigned trainings.',
+  });
+
+  assert.equal(initial.checkedIn, true);
+  assert.equal(initial.attendanceRecords[0].timeOut, undefined);
+  assert.equal(updated.checkedIn, false);
+  assert.equal(updated.attendanceRecords[0].timeOut, '05:00 PM');
+  assert.equal(updated.attendanceRecords[0].accomplishments, 'Completed assigned trainings.');
+  assert.equal(updated.attendanceRecords[1].timeOut, undefined);
+});
+
+test('time-out submission rejects when there is no matching attendance record', () => {
+  const initial = {
+    checkedIn: true,
+    attendanceRecords: [],
+  };
+
+  assert.throws(
+    () =>
+      updateCheckInStatus(initial, false, {
+        employeeId: 'employee-1',
+        date: '2026-10-30',
+        timeOut: '05:00 PM',
+        accomplishments: 'Completed assigned trainings.',
+      }),
+    /Attendance record was not found for the time-out submission/,
+  );
+  assert.equal(initial.checkedIn, true);
 });
 
 test('recording a learning completion updates status and completion date', () => {

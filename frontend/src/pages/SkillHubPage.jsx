@@ -100,7 +100,10 @@ export default function SkillHubPage() {
             <span>
             {completeCount} of {readiness.length} complete · {completeCount} ÷ {readiness.length} × 100 = {readinessPercent}%
             </span>
-            <div className="progress-track">
+            <div
+              className="progress-track"
+              title={`Readiness checklist: ${completeCount} of ${readiness.length} complete (${readinessPercent}%)`}
+            >
             <i style={{ width: `${readinessPercent}%` }} />
             </div>
           </div>
@@ -187,7 +190,8 @@ export default function SkillHubPage() {
                 className="skill-hub-proficiency-track"
                 role="img"
                 aria-label={`${competency.name}: ${competency.level}, ${competency.score}%`}
-              >
+                  title={`${competency.name}: ${competency.level}, illustrative assessment score ${competency.score}%`}
+                >
                 <i style={{ width: `${competency.score}%` }} />
               </div>
             </div>

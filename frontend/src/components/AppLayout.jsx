@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { matchPath, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useBenchData } from '../hooks/useBenchData.js';
 import { useRole } from '../hooks/useRole.js';
+import { useTheme } from '../hooks/ThemeProvider.jsx';
 import { ROUTES } from '../constants/routes.js';
 import { Header } from './Header.jsx';
 import { Sidebar } from './Sidebar.jsx';
@@ -12,6 +13,7 @@ export function AppLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { role } = useRole();
+  const { theme, toggleTheme } = useTheme();
   const { storageError, clearStorageError } = useBenchData();
   const isAdminDashboard =
     role === 'admin' && matchPath(ROUTES.adminDashboard, location.pathname) !== null;
@@ -26,6 +28,7 @@ export function AppLayout() {
     role === 'user' && matchPath(ROUTES.userDashboard, location.pathname) !== null;
   const layoutClassName = [
     'app-layout',
+    theme === 'dark' && 'theme-dark',
     sidebarCollapsed && role === 'admin' && 'sidebar-is-collapsed',
     role === 'user' && 'user-role',
     isUserDashboard && 'user-dashboard-layout',
@@ -52,6 +55,8 @@ export function AppLayout() {
       <div className="main-area">
         <Header
           role={role}
+          theme={theme}
+          onToggleTheme={toggleTheme}
           onToggleSidebar={() => {
             if (role === 'admin') setSidebarCollapsed((collapsed) => !collapsed);
           }}

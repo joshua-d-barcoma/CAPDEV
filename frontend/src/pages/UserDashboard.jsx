@@ -563,9 +563,10 @@ export default function UserDashboard() {
                       : 'Planned';
               return (
                 <div
-                  className={`user-week-day user-week-day-${status.toLowerCase()}`}
+                  className={`user-week-day user-week-day-${status.toLowerCase()} chart-data-tooltip`}
+                  data-chart-tooltip={`${dayLabel}, ${new Date(`${date}T00:00:00`).toLocaleDateString()}: ${status} · ${record?.workType ?? plan}`}
                   key={date}
-                  title={`${day}: ${record?.workType ?? plan}`}
+                  title={`${dayLabel}, ${new Date(`${date}T00:00:00`).toLocaleDateString()}: ${status} · ${record?.workType ?? plan}`}
                 >
                   <strong>{dayLabel}</strong>
                   <span aria-hidden="true">

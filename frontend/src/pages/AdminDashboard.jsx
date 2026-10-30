@@ -52,7 +52,18 @@ function AttendanceTrendChart({ trend }) {
             <path d={line} className="admin-chart-line" />
             {points.map((point) => (
               <g key={point.date}>
-                <circle cx={point.x} cy={point.y} r="3" className="admin-chart-point" />
+                <circle
+                  cx={point.x}
+                  cy={point.y}
+                  r="4"
+                  className="admin-chart-point"
+                  tabIndex="0"
+                  aria-label={`${point.date}: ${point.present} of ${point.total} present (${point.percentage}%)`}
+                >
+                  <title>
+                    {`${new Date(`${point.date}T00:00:00`).toLocaleDateString('en', { month: 'long', day: 'numeric', year: 'numeric' })}: ${point.present} of ${point.total} present (${point.percentage}%)`}
+                  </title>
+                </circle>
                 <text x={point.x} y="157" textAnchor="middle" className="admin-chart-date">
                   {new Date(`${point.date}T00:00:00`).toLocaleDateString('en', {
                     month: 'short',
@@ -176,8 +187,14 @@ export default function AdminDashboard() {
             {capabilities.map((item) => {
               const count = employees.filter((employee) => employee.capability === item).length;
               const width = employees.length ? Math.max(8, (count / employees.length) * 100) : 0;
+              const tooltip = `${item}: ${count} ${count === 1 ? 'employee' : 'employees'} (${employees.length ? Math.round((count / employees.length) * 100) : 0}% of filtered bench)`;
               return (
-                <div className="bar-row" key={item}>
+                <div
+                  className="bar-row chart-data-tooltip"
+                  data-chart-tooltip={tooltip}
+                  title={tooltip}
+                  key={item}
+                >
                   <span>{item}</span>
                   <div className="bar-track">
                     <i style={{ width: `${width}%` }} />

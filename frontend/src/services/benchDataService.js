@@ -8,6 +8,20 @@ const DEFAULT_SCHEDULE = Object.freeze({
   Thursday: 'Onsite',
   Friday: 'Work from home',
 });
+const LEAVE_ENTITLEMENTS = Object.freeze({
+  'Vacation leave': 15,
+  'Sick leave': 10,
+});
+
+function normalizeLeaveType(value) {
+  const normalized = typeof value === 'string' ? value.trim().toLowerCase() : '';
+  return Object.keys(LEAVE_ENTITLEMENTS).find((type) => type.toLowerCase() === normalized);
+}
+
+function isWeekendDate(date) {
+  const parsedDate = new Date(`${date}T00:00:00`);
+  return parsedDate.getDay() === 0 || parsedDate.getDay() === 6;
+}
 
 function todayDate() {
   const today = new Date();
@@ -569,6 +583,30 @@ export function loadBenchData() {
       'Saved BenchFlow data has an unsupported format. Clear the bench-flow browser storage and reload.',
     );
   }
+  let leaveRequestsMigrated = false;
+  parsedData.scheduleRequests = parsedData.scheduleRequests.map((request) => {
+    if (
+      request.kind !== 'calendar' ||
+      request.status !== 'Pending' ||
+      !normalizeLeaveType(request.requestType)
+    ) {
+      return request;
+    }
+
+    leaveRequestsMigrated = true;
+    return {
+      ...request,
+      status: isWeekendDate(request.date) ? 'Rejected' : 'Approved',
+      ...(isWeekendDate(request.date)
+        ? {
+            notes: [request.notes, 'Weekend is a non-working day; leave is not required.']
+              .filter(Boolean)
+              .join(' '),
+          }
+        : {}),
+    };
+  });
+  if (leaveRequestsMigrated) saveBenchData(parsedData);
   return parsedData;
 }
 
@@ -819,12 +857,69 @@ export function submitAttendanceRecord(data, record) {
   };
 }
 
-export function updateCheckInStatus(data, checkedIn) {
-  return { ...data, checkedIn };
+export function updateCheckInStatus(data, checkedIn, details) {
+  let attendanceRecords = data.attendanceRecords;
+  if (!checkedIn && details) {
+    let updatedRecord = false;
+    attendanceRecords = data.attendanceRecords.map((record) => {
+      if (
+        !updatedRecord &&
+        record.employeeId === details.employeeId &&
+        record.date === details.date
+      ) {
+        updatedRecord = true;
+        return {
+          ...record,
+          timeOut: details.timeOut,
+          accomplishments: details.accomplishments,
+        };
+      }
+      return record;
+    });
+    if (!updatedRecord) {
+      throw new Error('Attendance record was not found for the time-out submission.');
+    }
+  }
+
+  return { ...data, attendanceRecords, checkedIn };
 }
 
 export function submitEmployeeScheduleRequest(data, request) {
   const kind = request.schedule ? 'schedule' : 'calendar';
+  const leaveType = kind === 'calendar' ? normalizeLeaveType(request.requestType) : undefined;
+  if (leaveType) {
+    if (isWeekendDate(request.date)) {
+      throw new Error('Leave is not needed on weekends because they are non-working days.');
+    }
+
+    const duplicateRequest = data.scheduleRequests.some(
+      (item) =>
+        item.employeeId === request.employeeId &&
+        item.kind === 'calendar' &&
+        item.date === request.date &&
+        normalizeLeaveType(item.requestType) === leaveType &&
+        item.status !== 'Rejected',
+    );
+    const duplicateAttendance = data.attendanceRecords.some(
+      (record) =>
+        record.employeeId === request.employeeId &&
+        record.date === request.date &&
+        (normalizeLeaveType(record.status) ?? normalizeLeaveType(record.workType)) === leaveType,
+    );
+    if (duplicateRequest || duplicateAttendance) {
+      throw new Error(`A ${leaveType} request already exists for this date.`);
+    }
+
+    const balance = getEmployeeLeaveBalances(
+      request.employeeId,
+      data.attendanceRecords,
+      data.scheduleRequests,
+    )[leaveType];
+    if (balance.remaining === 0) {
+      throw new Error(`No ${leaveType} balance remains.`);
+    }
+  }
+
   const pendingRequest =
     kind === 'schedule' &&
     data.scheduleRequests.some(
@@ -842,12 +937,73 @@ export function submitEmployeeScheduleRequest(data, request) {
         ...request,
         id: createId('schedule'),
         kind,
-        status: 'Pending',
+        status: leaveType ? 'Approved' : 'Pending',
         submittedAt: new Date().toISOString(),
       },
       ...data.scheduleRequests,
     ],
   };
+}
+
+export function getEmployeeLeaveBalances(
+  employeeId,
+  attendanceRecords = [],
+  scheduleRequests = [],
+) {
+  if (!employeeId) {
+    return Object.fromEntries(
+      Object.entries(LEAVE_ENTITLEMENTS).map(([type, entitlement]) => [
+        type,
+        { entitlement, used: 0, pending: 0, remaining: entitlement },
+      ]),
+    );
+  }
+
+  return Object.fromEntries(
+    Object.entries(LEAVE_ENTITLEMENTS).map(([type, entitlement]) => {
+      const usedDates = new Set();
+      const pendingDates = new Set();
+
+      attendanceRecords.forEach((record) => {
+        if (
+          record.employeeId === employeeId &&
+          !isWeekendDate(record.date) &&
+          (normalizeLeaveType(record.status) ?? normalizeLeaveType(record.workType)) === type
+        ) {
+          usedDates.add(record.date);
+        }
+      });
+
+      scheduleRequests.forEach((request) => {
+        if (
+          request.employeeId !== employeeId ||
+          request.kind !== 'calendar' ||
+          isWeekendDate(request.date) ||
+          normalizeLeaveType(request.requestType) !== type
+        ) {
+          return;
+        }
+        if (request.status === 'Approved') usedDates.add(request.date);
+        if (request.status === 'Pending') pendingDates.add(request.date);
+      });
+
+      pendingDates.forEach((date) => {
+        if (usedDates.has(date)) pendingDates.delete(date);
+      });
+
+      const used = usedDates.size;
+      const pending = pendingDates.size;
+      return [
+        type,
+        {
+          entitlement,
+          used,
+          pending,
+          remaining: Math.max(0, entitlement - used - pending),
+        },
+      ];
+    }),
+  );
 }
 
 export function reviewEmployeeScheduleRequest(data, requestId, status) {

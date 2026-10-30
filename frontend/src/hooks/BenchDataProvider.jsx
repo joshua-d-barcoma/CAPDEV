@@ -87,8 +87,10 @@ export function BenchDataProvider({ children }) {
       submitAttendance(record) {
         return updateData((current) => benchDataService.submitAttendanceRecord(current, record));
       },
-      setCheckedIn(checkedIn) {
-        return updateData((current) => benchDataService.updateCheckInStatus(current, checkedIn));
+      setCheckedIn(checkedIn, details) {
+        return updateData((current) =>
+          benchDataService.updateCheckInStatus(current, checkedIn, details),
+        );
       },
       submitScheduleRequest(request) {
         return updateData((current) =>

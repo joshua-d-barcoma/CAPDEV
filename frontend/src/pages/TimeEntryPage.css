@@ -1,0 +1,468 @@
+.time-entry-page {
+  gap: 14px;
+}
+
+.time-entry-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 1fr);
+  align-items: start;
+  gap: 14px;
+}
+
+.time-entry-page .time-entry-form-panel,
+.time-entry-page .time-entry-info-stack > .panel,
+.time-entry-page .time-entry-records-panel {
+  min-width: 0;
+  padding: 14px;
+  border-radius: 11px;
+  box-shadow: 0 5px 18px rgb(48 37 57 / 8%);
+}
+
+.time-entry-page .time-entry-form-panel > .panel-header,
+.time-entry-page .time-entry-records-panel > .panel-header {
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.time-entry-page .time-entry-form-panel .panel-header > div,
+.time-entry-page .time-entry-records-panel .panel-header > div {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.time-entry-page .time-entry-form-panel .panel-header .card-eyebrow,
+.time-entry-page .time-entry-records-panel .panel-header .card-eyebrow {
+  display: none;
+}
+
+.time-entry-page .time-entry-form-panel .panel-header h2,
+.time-entry-page .time-entry-records-panel .panel-header h2,
+.time-entry-page .time-entry-info-stack > .panel .panel-header h2 {
+  margin: 0;
+  color: #2b2638;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.time-entry-icon {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  flex: 0 0 25px;
+  place-items: center;
+  border-radius: 7px;
+  background: #f0ddfb;
+  color: #912ec7;
+}
+
+.time-entry-icon svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.time-entry-info-links .time-entry-icon {
+  background: #f0e2ff;
+}
+
+.time-entry-info-reminder .time-entry-icon {
+  background: #ffe4e1;
+  color: #d94343;
+}
+
+.time-entry-info-tips .time-entry-icon {
+  background: #f6e5ff;
+  color: #a524df;
+}
+
+.time-entry-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+}
+
+.time-entry-form .field {
+  min-width: 0;
+  gap: 4px;
+}
+
+.time-entry-form .field > span {
+  color: #373246;
+  font-size: 9px;
+  font-weight: 650;
+}
+
+.time-entry-form .field > span b {
+  color: #b62fe1;
+}
+
+.time-entry-form .field input,
+.time-entry-form .field select,
+.time-entry-form .field textarea {
+  min-height: 32px;
+  padding: 6px 9px;
+  border-color: #e4dce9;
+  border-radius: 6px;
+  background: #faf9fb;
+  font-size: 9px;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    background-color 140ms ease;
+}
+
+.time-entry-form .field textarea {
+  min-height: 50px;
+  resize: vertical;
+}
+
+.time-entry-form .field input[readonly] {
+  background: #f2eff4;
+  color: #655e70;
+}
+
+.time-entry-form .field input:focus,
+.time-entry-form .field select:focus,
+.time-entry-form .field textarea:focus {
+  border-color: #b247df;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgb(178 71 223 / 12%);
+  outline: 0;
+}
+
+.time-entry-form .checkbox-field {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 7px;
+  color: #5d5768;
+  font-size: 9px;
+  font-weight: 400;
+}
+
+.time-entry-form .checkbox-field input[type='checkbox'] {
+  width: 15px;
+  height: 15px;
+  min-height: 15px;
+  flex: 0 0 15px;
+  padding: 0;
+  margin: 1px 0 0;
+  accent-color: #a33bd2;
+}
+
+.time-entry-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 1px;
+}
+
+.time-entry-form-actions .button {
+  min-height: 32px;
+  min-width: 90px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: 9px;
+}
+
+.time-entry-form-actions .button-primary {
+  border: 0;
+}
+
+.time-entry-info-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.time-entry-page .time-entry-info-stack > .panel .panel-header {
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.time-entry-page .time-entry-info-stack > .panel .panel-header > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.time-entry-page .time-entry-info-stack > .panel .panel-header .card-eyebrow {
+  display: none;
+}
+
+.time-entry-links {
+  display: grid;
+  gap: 9px;
+}
+
+.time-entry-info-card {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 10px;
+  border: 1px solid #eee6f5;
+  border-radius: 8px;
+  background: linear-gradient(120deg, #f8f2ff, #fff8fc);
+}
+
+.time-entry-info-card > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.time-entry-info-card h3 {
+  margin: 0 0 3px;
+  color: #312a40;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.time-entry-info-card p {
+  margin: 0;
+  color: #80788e;
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.time-entry-info-card ul {
+  display: grid;
+  gap: 3px;
+  margin: 4px 0 0;
+  padding-left: 13px;
+  color: #7e778b;
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.time-entry-info-card li::marker {
+  color: #9c55d5;
+}
+
+.time-entry-info-card .button {
+  min-height: 25px;
+  margin-top: 6px;
+  padding: 0 8px;
+  border-radius: 5px;
+  font-size: 8px;
+}
+
+.time-entry-info-card .button span {
+  font-size: 10px;
+}
+
+.time-entry-info-reminder {
+  border-color: #f4d0cc;
+  background: #fff3f1;
+}
+
+.time-entry-info-tips {
+  border-color: #f0e4fa;
+  background: #f9f2ff;
+}
+
+.time-entry-count {
+  padding: 3px 7px;
+  border: 1px solid #dfb9f1;
+  border-radius: 99px;
+  background: #fbf5ff;
+  color: #8d32ba;
+  font-size: 8px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.time-entry-page .time-entry-records-panel .table-scroll {
+  overflow-x: auto;
+}
+
+.time-entry-page .time-entry-records-panel .data-table {
+  min-width: 570px;
+}
+
+.time-entry-page .time-entry-records-panel .data-table th {
+  padding: 8px 9px;
+  background: #f1eff3;
+  color: #393346;
+  font-size: 8px;
+  font-weight: 750;
+}
+
+.time-entry-page .time-entry-records-panel .data-table td {
+  padding: 8px 9px;
+  color: #4a4555;
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.time-entry-page .time-entry-records-panel .data-table tbody tr {
+  transition: background-color 140ms ease;
+}
+
+.time-entry-page .time-entry-records-panel .data-table tbody tr:hover {
+  background: #faf5ff;
+}
+
+.time-entry-page .time-entry-records-panel .status-badge {
+  padding: 3px 7px;
+  font-size: 7px;
+}
+
+.time-entry-page .time-entry-records-panel .status-submitted {
+  border-color: #bfe9d5;
+  background: #e7f8ef;
+  color: #1b8057;
+}
+
+.time-entry-page .time-entry-records-panel .empty-state {
+  padding: 16px 10px;
+}
+
+.time-entry-page .time-entry-records-panel .empty-state h3 {
+  font-size: 11px;
+}
+
+.time-entry-page .time-entry-records-panel .empty-state p {
+  font-size: 9px;
+}
+
+.app-layout.theme-dark .time-entry-page .time-entry-form-panel,
+.app-layout.theme-dark .time-entry-page .time-entry-info-stack > .panel,
+.app-layout.theme-dark .time-entry-page .time-entry-records-panel {
+  border-color: #403749;
+  background: #211d2a;
+}
+
+.app-layout.theme-dark .time-entry-page .time-entry-form-panel .panel-header h2,
+.app-layout.theme-dark .time-entry-page .time-entry-records-panel .panel-header h2,
+.app-layout.theme-dark .time-entry-page .time-entry-info-stack > .panel .panel-header h2,
+.app-layout.theme-dark .time-entry-page .time-entry-info-card h3 {
+  color: #f2edf7;
+}
+
+.app-layout.theme-dark .time-entry-form .field > span {
+  color: #d9d2e0;
+}
+
+.app-layout.theme-dark .time-entry-form .field input,
+.app-layout.theme-dark .time-entry-form .field select,
+.app-layout.theme-dark .time-entry-form .field textarea {
+  border-color: #50465b;
+  background: #2a2433;
+  color: #f1edf5;
+}
+
+.app-layout.theme-dark .time-entry-form .field input[readonly] {
+  background: #332c3d;
+  color: #c1b8cb;
+}
+
+.app-layout.theme-dark .time-entry-form .field input::placeholder,
+.app-layout.theme-dark .time-entry-form .field textarea::placeholder {
+  color: #a59bad;
+}
+
+.app-layout.theme-dark .time-entry-form .field input:focus,
+.app-layout.theme-dark .time-entry-form .field select:focus,
+.app-layout.theme-dark .time-entry-form .field textarea:focus {
+  border-color: #bd78df;
+  background: #30283a;
+}
+
+.app-layout.theme-dark .time-entry-form .checkbox-field,
+.app-layout.theme-dark .time-entry-info-card p,
+.app-layout.theme-dark .time-entry-info-card ul {
+  color: #c1b8cb;
+}
+
+.app-layout.theme-dark .time-entry-info-card {
+  border-color: #403749;
+  background: #292333;
+}
+
+.app-layout.theme-dark .time-entry-info-reminder {
+  border-color: #684247;
+  background: #342326;
+}
+
+.app-layout.theme-dark .time-entry-page .time-entry-info-reminder .time-entry-icon {
+  background: #512e33;
+  color: #ff8585;
+}
+
+.app-layout.theme-dark .time-entry-info-tips {
+  border-color: #594969;
+  background: #30283a;
+}
+
+.app-layout.theme-dark .time-entry-info-card li::marker {
+  color: #d49aff;
+}
+
+.app-layout.theme-dark .time-entry-count {
+  border-color: #594969;
+  background: #30283a;
+  color: #e2b9ff;
+}
+
+.app-layout.theme-dark .time-entry-page .time-entry-records-panel .data-table th {
+  background: #292333;
+  color: #e6deec;
+}
+
+.app-layout.theme-dark .time-entry-page .time-entry-records-panel .data-table td {
+  border-bottom-color: #34303d;
+  color: #d2cbd8;
+}
+
+.app-layout.theme-dark .time-entry-page .time-entry-records-panel .data-table tbody tr:hover {
+  background: #30283a;
+}
+
+.app-layout.theme-dark .time-entry-page .time-entry-records-panel .status-submitted {
+  border-color: #315d49;
+  background: #1d2b25;
+  color: #93d7b1;
+}
+
+@media (max-width: 760px) {
+  .time-entry-main-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .time-entry-info-stack {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .time-entry-info-stack > .panel {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 500px) {
+  .time-entry-page .time-entry-form-panel,
+  .time-entry-page .time-entry-info-stack > .panel,
+  .time-entry-page .time-entry-records-panel {
+    padding: 11px;
+  }
+
+  .time-entry-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .time-entry-form .field-wide {
+    grid-column: auto;
+  }
+
+  .time-entry-info-stack {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

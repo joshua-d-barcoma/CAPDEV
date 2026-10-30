@@ -200,6 +200,8 @@ export default function AttendancePage() {
     return [...byCapability.entries()]
       .map(([capability, counts]) => ({
         capability,
+        present: counts.present,
+        total: counts.total,
         rate: counts.total ? Math.round((counts.present / counts.total) * 100) : 0,
       }))
       .sort((first, second) => first.capability.localeCompare(second.capability));
@@ -403,7 +405,12 @@ export default function AttendancePage() {
         {compliance.length ? (
           <div className="attendance-compliance-list">
             {compliance.map((item, index) => (
-              <div className={`attendance-compliance-row tone-${index % 4}`} key={item.capability}>
+              <div
+                className={`attendance-compliance-row tone-${index % 4} chart-data-tooltip`}
+                data-chart-tooltip={`${item.capability}: ${item.present} of ${item.total} attendance records present (${item.rate}%)`}
+                title={`${item.capability}: ${item.present} of ${item.total} attendance records present (${item.rate}%)`}
+                key={item.capability}
+              >
                 <span>{item.capability}</span>
                 <div className="attendance-compliance-track">
                   <i style={{ width: `${item.rate}%` }} />

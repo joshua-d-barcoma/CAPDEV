@@ -73,7 +73,7 @@ function NavigationIcon({ name }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.6"
+      strokeWidth="1.8"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
@@ -95,7 +95,9 @@ export function Sidebar({ role, collapsed }) {
         to={role === 'admin' ? ROUTES.adminDashboard : ROUTES.userDashboard}
       >
         <span className="brand-logo" aria-hidden="true">
-          &gt;
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="m6 5 13 7-13 7" />
+          </svg>
         </span>
         {!collapsed && (
           <span className="brand-content">

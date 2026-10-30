@@ -1,0 +1,253 @@
+.history-page {
+  gap: 12px;
+}
+
+.history-metrics > .stat-card {
+  min-height: 84px;
+  padding: 11px 13px;
+}
+
+.history-metrics .stat-content strong {
+  font-size: 23px;
+}
+
+.history-schedule-panel,
+.history-records-panel {
+  padding: 15px;
+}
+
+.history-schedule-panel .panel-header,
+.history-records-panel .panel-header {
+  margin-bottom: 8px;
+}
+
+.history-schedule-panel .panel-header h2,
+.history-records-panel .panel-header h2 {
+  font-size: 15px;
+}
+
+.history-schedule-panel .card-eyebrow,
+.history-records-panel .card-eyebrow {
+  color: var(--purple-dark);
+  font-size: 10px;
+  letter-spacing: 0.3px;
+}
+
+.history-schedule-panel .panel-description,
+.history-records-panel .panel-description {
+  margin: 0 0 12px;
+  font-size: 10px;
+}
+
+.history-schedule-panel .button {
+  min-height: 32px;
+  padding: 0 10px;
+  font-size: 10px;
+}
+
+.history-schedule-list {
+  gap: 10px;
+  margin: 0 0 10px;
+}
+
+.history-schedule-day {
+  min-height: 62px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 9px;
+  border-color: #eee8f4;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fcfaff 0%, #f6f0ff 70%, #fff6f1 100%);
+  text-align: center;
+}
+
+.history-schedule-day strong {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.history-schedule-location {
+  color: var(--subtle);
+  font-size: 9px;
+}
+
+.history-schedule-day select {
+  min-height: 30px;
+  padding: 0 20px 0 7px;
+  font-size: 10px;
+}
+
+.history-schedule-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.history-schedule-footer span,
+.history-record-count {
+  padding: 5px 9px;
+  border-radius: 7px;
+  background: var(--purple-soft);
+  color: var(--purple-dark);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.history-schedule-footer small {
+  color: var(--subtle);
+  font-size: 9px;
+}
+
+.history-table-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.history-table-controls .date-filter-control {
+  width: 190px;
+  flex: 0 1 190px;
+}
+
+.history-table-controls .date-filter-button {
+  min-height: 34px;
+  border-color: var(--border);
+  border-radius: 8px;
+  background: #f7f5ff;
+}
+
+.history-table-controls .date-filter-button:hover,
+.history-table-controls .date-filter-button.is-open {
+  border-color: #d3b1f0;
+  background: #f1e3ff;
+}
+
+.history-pagination button {
+  display: grid;
+  min-width: 25px;
+  height: 25px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: #f7f5ff;
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.history-pagination button:hover:not(:disabled) {
+  border-color: #d3b1f0;
+  background: #f1e3ff;
+}
+
+.history-table-controls .history-record-count {
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+.history-records-table .data-table th {
+  padding: 8px;
+  background: transparent;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.history-records-table .data-table td {
+  padding: 8px;
+  font-size: 10px;
+}
+
+.history-records-table .status-badge {
+  min-width: 66px;
+  justify-content: center;
+}
+
+.history-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 9px;
+  color: var(--subtle);
+  font-size: 9px;
+}
+
+.history-pagination > div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.history-pagination button {
+  min-width: 23px;
+  height: 23px;
+}
+
+.history-pagination button:disabled {
+  opacity: 0.5;
+}
+
+.history-pagination > div > span {
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.theme-dark .history-schedule-day,
+.app-layout.theme-dark .history-schedule-day {
+  border-color: #40374b;
+  background: linear-gradient(135deg, #282230, #30283a 70%, #382a2a);
+}
+
+.theme-dark .history-pagination button,
+.app-layout.theme-dark .history-pagination button {
+  border-color: #494052;
+  background: #2a2432;
+  color: #eee8f4;
+}
+
+.theme-dark .history-records-table .data-table th,
+.app-layout.theme-dark .history-records-table .data-table th {
+  background: transparent;
+}
+
+@media (max-width: 720px) {
+  .history-schedule-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .history-schedule-day:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .history-records-panel .panel-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .history-table-controls {
+    flex-wrap: wrap;
+  }
+
+  .history-table-controls .date-filter-control {
+    width: 190px;
+  }
+}
+
+@media (max-width: 420px) {
+  .history-metrics > .stat-card {
+    gap: 8px;
+    padding: 9px;
+  }
+
+  .history-metrics .stat-content strong {
+    font-size: 20px;
+  }
+
+  .history-pagination {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

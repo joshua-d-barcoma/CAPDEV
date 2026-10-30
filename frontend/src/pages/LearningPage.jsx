@@ -65,6 +65,63 @@ function formatDate(date) {
   );
 }
 
+function TrainingIcon({ trainingId }) {
+  const iconProps = {
+    'aria-hidden': true,
+    fill: 'none',
+    viewBox: '0 0 24 24',
+    stroke: 'currentColor',
+    strokeWidth: 1.8,
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+  };
+
+  if (trainingId === 'training-security') {
+    return (
+      <svg {...iconProps}>
+        <path d="M12 3 19 6v5c0 4.6-2.9 8-7 10-4.1-2-7-5.4-7-10V6l7-3Z" />
+        <path d="m9 12 2 2 4-4" />
+      </svg>
+    );
+  }
+
+  if (trainingId === 'training-privacy') {
+    return (
+      <svg {...iconProps}>
+        <path d="M7 3.5h7l4 4V12" />
+        <path d="M14 3.5v4h4M7 3.5v17h6" />
+        <path d="M9.5 11h5M9.5 14h3" />
+        <path d="m17 13 3 1.2v2.1c0 2-1.2 3.5-3 4.4-1.8-.9-3-2.4-3-4.4v-2.1l3-1.2Z" />
+      </svg>
+    );
+  }
+
+  if (trainingId === 'training-workplace-safety') {
+    return (
+      <svg {...iconProps}>
+        <path d="M4 14a8 8 0 0 1 16 0v1H4v-1Z" />
+        <path d="M12 6v8M6.5 9.5 8 14M17.5 9.5 16 14M3.5 18h17" />
+      </svg>
+    );
+  }
+
+  if (trainingId === 'training-responsible-ai') {
+    return (
+      <svg {...iconProps}>
+        <path d="m12 3 1.6 5.4L19 10l-5.4 1.6L12 17l-1.6-5.4L5 10l5.4-1.6L12 3Z" />
+        <path d="m19 15 .8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15ZM5 3l.6 1.4L7 5l-1.4.6L5 7l-.6-1.4L3 5l1.4-.6L5 3Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg {...iconProps}>
+      <path d="M12 6.5C9.5 4.8 6.5 4.7 4 5.7v13c2.5-1 5.5-.9 8 1 2.5-1.9 5.5-2 8-1v-13c-2.5-1-5.5-.9-8 .8Z" />
+      <path d="M12 6.5v13M7 9h2M7 12h2M15 9h2M15 12h2" />
+    </svg>
+  );
+}
+
 function downloadReport(rows) {
   const columns = [
     ['Employee', 'employee'],
@@ -404,7 +461,12 @@ export default function LearningPage() {
           </p>
           <div className="learning-employee-stats">
             {visibleEmployeeStats.map((employee) => (
-              <article className="learning-employee-stat" key={employee.id}>
+              <article
+                className="learning-employee-stat chart-data-tooltip"
+                data-chart-tooltip={`${employee.name}: ${employee.daily} completed today, ${employee.completed} of ${employee.total} assigned trainings complete (${employee.rate}%)`}
+                title={`${employee.name}: ${employee.daily} completed today, ${employee.completed} of ${employee.total} assigned trainings complete (${employee.rate}%)`}
+                key={employee.id}
+              >
                 <div className="learning-employee-stat-heading">
                   <div>
                     <strong>{employee.name}</strong>
@@ -626,15 +688,7 @@ export default function LearningPage() {
                             className={`learning-training-icon learning-training-icon-${training.id}`}
                             aria-hidden="true"
                           >
-                            {training.id === 'training-security'
-                              ? '⬡'
-                              : training.id === 'training-privacy'
-                                ? '▤'
-                                : training.id === 'training-workplace-safety'
-                                  ? '♡'
-                                  : training.id === 'training-responsible-ai'
-                                    ? '▦'
-                                    : '◇'}
+                            <TrainingIcon trainingId={training.id} />
                           </span>
                           <span>
                             <strong>{training.title}</strong>
@@ -651,6 +705,7 @@ export default function LearningPage() {
                           <div
                             className="learning-progress-track"
                             aria-label={`${progress}% complete`}
+                            title={`${training.title}: ${completed} of ${trainingAssignments.length} employees completed (${progress}%)`}
                           >
                             <i style={{ width: `${progress}%` }} />
                           </div>

@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { BenchDataProvider } from './hooks/BenchDataProvider.jsx';
+import { ThemeProvider } from './hooks/ThemeProvider.jsx';
 import { AppRoutes } from './routes/AppRoutes.jsx';
 
 class ApplicationErrorBoundary extends Component {
@@ -29,12 +30,14 @@ class ApplicationErrorBoundary extends Component {
 
 export default function App() {
   return (
-    <ApplicationErrorBoundary>
-      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <BenchDataProvider>
-          <AppRoutes />
-        </BenchDataProvider>
-      </BrowserRouter>
-    </ApplicationErrorBoundary>
+    <ThemeProvider>
+      <ApplicationErrorBoundary>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <BenchDataProvider>
+            <AppRoutes />
+          </BenchDataProvider>
+        </BrowserRouter>
+      </ApplicationErrorBoundary>
+    </ThemeProvider>
   );
 }
