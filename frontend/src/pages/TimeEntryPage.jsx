@@ -276,9 +276,6 @@ export default function TimeEntryPage() {
         </div>
       )}
 
-
-
-
       <div className="attendance-page-grid">
 
    
@@ -683,6 +680,79 @@ export default function TimeEntryPage() {
   </Panel> 
 
       </div>
+
+      <section className="recent-records-card">
+  <div className="recent-records-header">
+    <div className="recent-records-title">
+      <div className="recent-records-icon">▣</div>
+
+      <div>
+        <h3>Recent Time In Records</h3>
+        <p>Your latest time-in submissions.</p>
+      </div>
+    </div>
+
+    <span className="unassigned-badge">
+      3 Unassigned
+    </span>
+  </div>
+
+  <div className="recent-records-table-wrapper">
+    <table className="recent-records-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time In</th>
+          <th>Work Setup</th>
+          <th>Location</th>
+          <th>Remarks</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>Oct 26, 2027</td>
+          <td>8:00 am</td>
+          <td>Onsite</td>
+          <td>Mandaluyong City, CG2</td>
+          <td>Sample</td>
+          <td>
+            <span className="submitted-badge">
+              Submitted
+            </span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Oct 28, 2026</td>
+          <td>8:00 am</td>
+          <td>Onsite</td>
+          <td>Mandaluyong City, CG2</td>
+          <td></td>
+          <td>
+            <span className="submitted-badge">
+              Submitted
+            </span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Oct 25, 2026</td>
+          <td>8:00 am</td>
+          <td>Work from Home</td>
+          <td>BGC, UP2</td>
+          <td></td>
+          <td>
+            <span className="submitted-badge">
+              Submitted
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
 
       {!isTimeOut && checkedIn && (
         <p className="muted-copy">
