@@ -80,6 +80,10 @@ const [dailyAccomplishments, setDailyAccomplishments] = useState('');
       minute: '2-digit',
     },
   );
+  const currentTimeOut = new Date().toLocaleTimeString('en-US', {
+  hour: 'numeric',
+  minute: '2-digit',
+});
 
   function submit(event) {
     event.preventDefault();
