@@ -569,7 +569,7 @@ export default function TimeEntryPage() {
                   ↗ Open BMT
                 </a>
               </div>
-
+            
               <div className="reminder-box">
                 <h4>ⓘ Important Reminders</h4>
                 <p>• Please submit your Time In before starting your work.</p>

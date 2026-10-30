@@ -4714,7 +4714,10 @@ p {
   grid-template-columns: 45px 1fr auto;
   align-items: center;
   gap: 12px;
-  margin-bottom: 14px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-right: 30px;
+  margin-left: 30px;
   padding: 17px 18px;
   background: #f7efff;
   border-radius: 10px;
@@ -4955,7 +4958,20 @@ p {
   }
 }
 
+.reminder-box {
 
+    grid-template-columns: 45px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding: 17px 18px;
+    background: #f7efff;
+    border-radius: 10px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  margin-top: 20px;
+  margin-left: 30px;
+  margin-right: 30px;
+}
 
 
 
