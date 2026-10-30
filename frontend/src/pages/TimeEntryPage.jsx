@@ -238,11 +238,11 @@ export default function TimeEntryPage() {
 
    
       <PageHeader
-        eyebrow="MY TIME IN & ATTENDANCE"
+      
         title={
           isTimeOut
             ? 'Time Out'
-            : 'Time In & Attendance'
+            : 'MY TIME IN & ATTENDANCE'
         }
         description={
           isTimeOut
