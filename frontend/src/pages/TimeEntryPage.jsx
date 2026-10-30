@@ -6,6 +6,7 @@ import { ROUTES } from '../constants/routes.js';
 import { useBenchData } from '../hooks/useBenchData.js';
 
 const workTypes = ['Onsite', 'Work from home', 'Leave', 'Other'];
+
 const standardCapabilities = [
   'Carrier Networks',
   'Cloud Customer Edge',
@@ -20,23 +21,46 @@ const standardCapabilities = [
 
 export default function TimeEntryPage() {
   const isTimeOut = useLocation().pathname.endsWith('time-out');
-  const { employees, checkedIn, submitAttendance, setCheckedIn } = useBenchData();
-  const alex = employees.find((employee) => employee.name === 'Alex Santos');
+
+  const {
+    employees,
+    checkedIn,
+    submitAttendance,
+    setCheckedIn,
+  } = useBenchData();
+
+  const alex = employees.find(
+    (employee) => employee.name === 'Alex Santos',
+  );
+
   const capabilities =
     alex && !standardCapabilities.includes(alex.capability)
       ? [...standardCapabilities, alex.capability]
       : standardCapabilities;
+
+  // Form fields
   const [employeeId, setEmployeeId] = useState('');
-  const [workType, setWorkType] = useState('Onsite');
+  const [workType, setWorkType] = useState('');
   const [location, setLocation] = useState('');
   const [otherLocation, setOtherLocation] = useState('');
   const [otherWorkType, setOtherWorkType] = useState('');
   const [seatNumber, setSeatNumber] = useState('');
-  const [capability, setCapability] = useState(alex?.capability ?? '');
-  const [acknowledged, setAcknowledged] = useState(false);
-  const [trackerCompleted, setTrackerCompleted] = useState(false);
+  const [remarks, setRemarks] = useState('');
+
+  const [capability, setCapability] = useState(
+    alex?.capability ?? '',
+  );
+
+  const [acknowledged, setAcknowledged] =
+    useState(false);
+
+  const [trackerCompleted, setTrackerCompleted] =
+    useState(false);
+
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+
+  // Current date
   const currentDate = new Date().toLocaleDateString(
     'en-US',
     {
@@ -45,6 +69,8 @@ export default function TimeEntryPage() {
       year: 'numeric',
     },
   );
+
+  // Current time
   const currentTime = new Date().toLocaleTimeString(
     'en-US',
     {
@@ -55,70 +81,196 @@ export default function TimeEntryPage() {
 
   function submit(event) {
     event.preventDefault();
+
     setError('');
+    setMessage('');
+
+    // TIME OUT
     if (isTimeOut) {
       if (!checkedIn) {
-        setError('You need to record your time-in before submitting time-out.');
+        setError(
+          'You need to record your time-in before submitting time-out.',
+        );
         return;
       }
-      if (setCheckedIn(false)) setMessage('Your time-out has been recorded. Have a great evening!');
+
+      if (setCheckedIn(false)) {
+        setMessage(
+          'Your time-out has been recorded. Have a great evening!',
+        );
+      }
+
       return;
     }
+
+    // Already checked in
     if (checkedIn) {
-      setError('Your time-in is already recorded. Submit time-out before starting another entry.');
+      setError(
+        'Your time-in is already recorded. Submit time-out before starting another entry.',
+      );
       return;
     }
+
+    // EID validation
     if (!employeeId.trim()) {
       setError('Please enter your EID.');
       return;
     }
 
-    if (!alex || !capability || (workType === 'Onsite' && !location)) {
-      setError('Complete all required fields and acknowledge the attendance declaration.');
+    // General validation
+    if (!alex || !capability || !workType) {
+      setError(
+        'Please complete all required fields.',
+      );
       return;
     }
+
+    // Onsite validation
     if (
-      (workType === 'Onsite' && location === 'Other' && !otherLocation.trim()) ||
-      (workType === 'Onsite' && location !== 'Other' && !seatNumber.trim()) ||
-      (workType === 'Other' && !otherWorkType.trim()) ||
-      (['Work from home', 'Leave'].includes(workType) && !trackerCompleted)
+      workType === 'Onsite' &&
+      !location
     ) {
-      setError('Complete the additional details required for the selected work type.');
+      setError(
+        'Please select your office location.',
+      );
       return;
     }
+
+    if (
+      workType === 'Onsite' &&
+      location === 'Other' &&
+      !otherLocation.trim()
+    ) {
+      setError(
+        'Please enter your office location.',
+      );
+      return;
+    }
+
+    if (
+      workType === 'Onsite' &&
+      location !== 'Other' &&
+      !seatNumber.trim()
+    ) {
+      setError(
+        'Please enter your seat number.',
+      );
+      return;
+    }
+
+    // Other work setup
+    if (
+      workType === 'Other' &&
+      !otherWorkType.trim()
+    ) {
+      setError(
+        'Please describe your work setup.',
+      );
+      return;
+    }
+
+    // WFH / Leave tracker
+    if (
+      ['Work from home', 'Leave'].includes(workType) &&
+      !trackerCompleted
+    ) {
+      setError(
+        'Please confirm that your tracker has been completed.',
+      );
+      return;
+    }
+
+    if (!acknowledged) {
+      setError(
+        'Please acknowledge the attendance declaration.',
+      );
+      return;
+    }
+
     const record = {
-      employeeId: alex.id,
-      date: new Date().toISOString().slice(0, 10),
-      timeIn: new Intl.DateTimeFormat('en', { hour: '2-digit', minute: '2-digit' }).format(
-        new Date(),
-      ),
-      workType: workType === 'Other' ? otherWorkType : workType,
-      location: workType !== 'Onsite' ? '—' : location === 'Other' ? otherLocation : location,
-      status: workType === 'Leave' ? 'Vacation Leave' : 'Present',
-      seatNumber: workType === 'Onsite' ? seatNumber : '',
+      employeeId: employeeId.trim(),
+
+      date: new Date()
+        .toISOString()
+        .slice(0, 10),
+
+      timeIn: new Intl.DateTimeFormat('en', {
+        hour: '2-digit',
+        minute: '2-digit',
+      }).format(new Date()),
+
+      workType:
+        workType === 'Other'
+          ? otherWorkType
+          : workType,
+
+      location:
+        workType !== 'Onsite'
+          ? '—'
+          : location === 'Other'
+            ? otherLocation
+            : location,
+
+      remarks: remarks.trim(),
+
+      status:
+        workType === 'Leave'
+          ? 'Vacation Leave'
+          : 'Present',
+
+      seatNumber:
+        workType === 'Onsite'
+          ? seatNumber
+          : '',
+
       capability,
     };
-    if (submitAttendance(record)) setMessage('Your time-in has been recorded successfully.');
+
+    if (submitAttendance(record)) {
+      setMessage(
+        'Your time-in has been recorded successfully.',
+      );
+    }
   }
 
   return (
     <div className="page-stack">
+
+   
       <PageHeader
-        eyebrow=""
-        title={isTimeOut ? 'Time Out' : 'MY TIME IN & ATTENDANCE'}
+        eyebrow="MY TIME IN & ATTENDANCE"
+        title={
+          isTimeOut
+            ? 'Time Out'
+            : 'Time In & Attendance'
+        }
         description={
           isTimeOut
             ? 'Complete your workday and record your time-out.'
-            : 'Record your work location and attendance for today.'
+            : 'Record your time-in and access the required attendance systems.'
         }
       />
+
+      
       {message && (
-        <div className="success-message" role="status">
-          {message} <Link to={ROUTES.userDashboard}>Return to dashboard</Link>
+        <div
+          className="success-message"
+          role="status"
+        >
+          {message}{' '}
+
+          <Link to={ROUTES.userDashboard}>
+            Return to dashboard
+          </Link>
         </div>
       )}
+
+   
       {error && (
-        <div className="inline-error" role="alert">
+        <div
+          className="inline-error"
+          role="alert"
+        >
           {error}
         </div>
       )}
@@ -126,166 +278,345 @@ export default function TimeEntryPage() {
 
 
 
+      <div className="attendance-page-grid">
 
-      <Panel
-        title={isTimeOut ? 'End-of-day check-out' : 'Daily attendance declaration'}
-        eyebrow={new Date().toLocaleDateString()}
-      >
-        <form className="form-grid attendance-form" onSubmit={submit}>
-          <label className="field">
-            <span>Employee</span>
-            <input value={alex?.name ?? 'Alex Santos'} readOnly />
-          </label>
-          <label className="field">
-            <span>
-              Employee ID <b aria-hidden="true">*</b>
-            </span>
-            <input required placeholder="Enter your employee ID" />
-          </label>
-          {!isTimeOut && (
-            <>
-              <label className="field">
-                <span>
-                  Capability <b aria-hidden="true">*</b>
-                </span>
-                <select
-                  required
-                  value={capability}
-                  onChange={(event) => setCapability(event.target.value)}
-                >
-                  <option value="">Select a capability</option>
-                  {capabilities.map((item) => (
-                    <option key={item}>{item}</option>
-                  ))}
-                </select>
-              </label>
-              <label className="field">
-                <span>
-                  Work type <b aria-hidden="true">*</b>
-                </span>
-                <select
-                  required
-                  value={workType}
-                  onChange={(event) => {
-                    setWorkType(event.target.value);
-                    setLocation('');
-                    setOtherLocation('');
-                    setOtherWorkType('');
-                    setSeatNumber('');
-                    setTrackerCompleted(false);
-                  }}
-                >
-                  <option value="">Select work type</option>
-                  {workTypes.map((item) => (
-                    <option key={item}>{item}</option>
-                  ))}
-                </select>
-              </label>
-              {workType === 'Onsite' && (
-                <>
-                  <label className="field">
+   
+        <Panel
+          title={
+            isTimeOut ? 'End-of-day check-out'  : 'Time-In Attendance Form' }
+          eyebrow={ isTimeOut
+              ? new Date().toLocaleDateString()
+              : 'Record your time-in and access the required attendance systems.'
+          }
+        >
+
+          <form
+            className="form-grid attendance-form"
+            onSubmit={submit}
+          >
+
+            {!isTimeOut && (
+              <>
+
+
+                <label className="field field-wide">
+                  <span>
+                    EID{' '}
+                    <b aria-hidden="true">
+                      *
+                    </b>
+                  </span>
+
+                  <input
+                    type="text"
+                    required
+                    value={employeeId}
+                    onChange={(event) =>
+                      setEmployeeId(
+                        event.target.value,
+                      )
+                    }
+                    placeholder="Enter your EID"
+                  />
+                </label>
+
+
+                <label className="field field-wide">
+                  <span>Date</span>
+
+                  <input
+                    type="text"
+                    value={currentDate}
+                    readOnly
+                  />
+                </label>
+
+                <label className="field field-wide">
+                  <span>Time In</span>
+
+                  <input
+                    type="text"
+                    value={currentTime}
+                    readOnly
+                  />
+                </label>
+
+                <label className="field field-wide">
+                  <span>
+                    Work Setup{' '}
+                    <b aria-hidden="true">
+                      *
+                    </b>
+                  </span>
+
+                  <select
+                    required
+                    value={workType}
+                    onChange={(event) => {
+                      setWorkType(
+                        event.target.value,
+                      );
+
+                      setLocation('');
+                      setOtherLocation('');
+                      setOtherWorkType('');
+                      setSeatNumber('');
+                      setTrackerCompleted(false);
+                    }}
+                  >
+                    <option value="">
+                      Select work setup
+                    </option>
+
+                    {workTypes.map(
+                      (item) => (
+                        <option
+                          key={item}
+                          value={item}
+                        >
+                          {item}
+                        </option>
+                      ),
+                    )}
+
+                  </select>
+                </label>
+
+                {workType === 'Onsite' && (
+                  <label className="field field-wide">
                     <span>
-                      Office location <b aria-hidden="true">*</b>
+                      Location{' '}
+                      <b aria-hidden="true">
+                        *
+                      </b>
                     </span>
+
                     <select
                       required
                       value={location}
-                      onChange={(event) => setLocation(event.target.value)}
+                      onChange={(event) =>
+                        setLocation(
+                          event.target.value,
+                        )
+                      }
                     >
-                      <option value="">Select location</option>
-                      <option>Mandaluyong, Robinsons Cybergate Tower 2</option>
-                      <option>Cebu IT Park, Cyberzone 2</option>
-                      <option>Other</option>
+                      <option value="">
+                        Select location
+                      </option>
+
+                      <option value="Mandaluyong, Robinsons Cybergate Tower 2">
+                        Mandaluyong, Robinsons Cybergate Tower 2
+                      </option>
+
+                      <option value="Cebu IT Park, Cyberzone 2">
+                        Cebu IT Park, Cyberzone 2
+                      </option>
+
+                      <option value="Other">
+                        Other
+                      </option>
+
                     </select>
                   </label>
-                  {location === 'Other' && (
-                    <label className="field">
+                )}
+
+                {workType === 'Onsite' &&
+                  location === 'Other' && (
+
+                    <label className="field field-wide">
                       <span>
-                        Other office location <b aria-hidden="true">*</b>
+                        Other Office Location{' '}
+                        <b aria-hidden="true">
+                          *
+                        </b>
                       </span>
+
                       <input
                         required
+                        type="text"
                         value={otherLocation}
-                        onChange={(event) => setOtherLocation(event.target.value)}
-                        placeholder="Enter the office location"
+                        onChange={(event) =>
+                          setOtherLocation(
+                            event.target.value,
+                          )
+                        }
+                        placeholder="Enter office location"
                       />
                     </label>
                   )}
-                  {location && location !== 'Other' && (
-                    <label className="field">
+
+                {workType === 'Onsite' &&
+                  location &&
+                  location !== 'Other' && (
+
+                    <label className="field field-wide">
                       <span>
-                        Seat number <b aria-hidden="true">*</b>
+                        Seat Number{' '}
+                        <b aria-hidden="true">
+                          *
+                        </b>
                       </span>
+
                       <input
                         required
+                        type="text"
                         value={seatNumber}
-                        onChange={(event) => setSeatNumber(event.target.value)}
+                        onChange={(event) =>
+                          setSeatNumber(
+                            event.target.value,
+                          )
+                        }
                         placeholder="e.g. CG2-05-18"
                       />
                     </label>
                   )}
-                </>
-              )}
-              {workType === 'Other' && (
-                <label className="field">
-                  <span>
-                    Other work type <b aria-hidden="true">*</b>
-                  </span>
-                  <input
-                    required
-                    value={otherWorkType}
-                    onChange={(event) => setOtherWorkType(event.target.value)}
-                    placeholder="Describe your work type"
+
+                {workType === 'Other' && (
+
+                  <label className="field field-wide">
+                    <span>
+                      Other Work Setup{' '}
+                      <b aria-hidden="true">
+                        *
+                      </b>
+                    </span>
+
+                    <input
+                      required
+                      type="text"
+                      value={otherWorkType}
+                      onChange={(event) =>
+                        setOtherWorkType(
+                          event.target.value,
+                        )
+                      }
+                      placeholder="Describe your work setup"
+                    />
+                  </label>
+                )}
+
+                <label className="field field-wide">
+                  <span>Remarks</span>
+
+                  <textarea
+                    rows="3"
+                    value={remarks}
+                    onChange={(event) =>
+                      setRemarks(
+                        event.target.value,
+                      )
+                    }
+                    placeholder="Optional"
                   />
                 </label>
-              )}
-              {['Work from home', 'Leave'].includes(workType) && (
+
+                {[
+                  'Work from home',
+                  'Leave',
+                ].includes(workType) && (
+
+                  <label className="field field-wide checkbox-field">
+
+                    <input
+                      type="checkbox"
+                      required
+                      checked={
+                        trackerCompleted
+                      }
+                      onChange={(event) =>
+                        setTrackerCompleted(
+                          event.target.checked,
+                        )
+                      }
+                    />
+
+                    <span>
+                      I confirm that my{' '}
+                      {workType === 'Leave'
+                        ? 'leave'
+                        : 'work-from-home'}{' '}
+                      tracker has been
+                      completed.
+                    </span>
+
+                  </label>
+                )}
+
                 <label className="field field-wide checkbox-field">
+
                   <input
                     type="checkbox"
                     required
-                    checked={trackerCompleted}
-                    onChange={(event) => setTrackerCompleted(event.target.checked)}
+                    checked={acknowledged}
+                    onChange={(event) =>
+                      setAcknowledged(
+                        event.target.checked,
+                      )
+                    }
                   />
+
                   <span>
-                    I confirm that my {workType === 'Leave' ? 'leave' : 'work-from-home'} tracker
-                    has been completed.
+                    I confirm that the
+                    information provided is
+                    accurate and reflects my
+                    work location for today.
                   </span>
+
                 </label>
-              )}
-              <label className="field field-wide checkbox-field">
-                <input
-                  type="checkbox"
-                  required
-                  checked={acknowledged}
-                  onChange={(event) => setAcknowledged(event.target.checked)}
-                />
+
+              </>
+            )}
+
+            {isTimeOut && (
+
+              <label className="field field-wide">
+
                 <span>
-                  I confirm that the information provided is accurate and reflects my work location
-                  for today.
+                  End-of-day notes
                 </span>
+
+                <textarea
+                  rows="4"
+                  placeholder="Share a brief summary of today's work."
+                />
+
               </label>
-            </>
-          )}
-          {isTimeOut && (
-            <label className="field field-wide">
-              <span>End-of-day notes</span>
-              <textarea rows="4" placeholder="Share a brief summary of today's work." />
-            </label>
-          )}
-          <div className="form-actions field-wide">
-            <Link className="button button-secondary" to={ROUTES.userDashboard}>
-              Cancel
-            </Link>
-            <button className="button button-primary" type="submit">
-              {isTimeOut ? 'Submit time-out' : 'Submit time-in'}
-            </button>
-          </div>
-        </form>
-      </Panel>
+
+            )}
+
+            <div className="form-actions field-wide">
+
+              <Link
+                className="button button-secondary"
+                to={ROUTES.userDashboard}
+              >
+                Cancel
+              </Link>
+
+              <button
+                className="button button-primary"
+                type="submit"
+              >
+                {isTimeOut
+                  ? 'Submit time-out'
+                  : 'Submit'}
+              </button>
+
+            </div>
+
+          </form>
+
+        </Panel>
+
+      </div>
+
       {!isTimeOut && checkedIn && (
-        <p className="muted-copy">You have already recorded a time-in for this session.</p>
+        <p className="muted-copy">
+          You have already recorded a
+          time-in for this session.
+        </p>
       )}
+
     </div>
   );
 }

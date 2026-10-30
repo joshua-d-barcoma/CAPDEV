@@ -1738,9 +1738,7 @@ p {
 }
 
 
-/* =========================
-   RESPONSIVE
-========================= */
+
 
 @media (max-width: 900px) {
   .pending-card {
@@ -4661,4 +4659,62 @@ p {
     width: 100%;
     justify-content: center;
   }
+}
+
+
+
+
+
+.page-stack { width: 100%; min-height: 100vh; padding: 20px; background: #f7f4f4; box-sizing: border-box; }
+
+.page-stack .page-header { background: linear-gradient(90deg, #d26ff5, #963cff 48%, #c95c32); color: #fff; border-radius: 3px; padding: 18px 22px; margin-bottom: 20px; }
+.page-stack .page-header h1 { margin: 0; font-size: 20px; color: #fff; }
+.page-stack .page-header p { margin: 6px 0 0; font-size: 12px; color: rgba(255, 255, 255, 0.85); }
+
+.attendance-page-grid { display: grid; grid-template-columns: minmax(320px, 1fr); gap: 20px; }
+.attendance-page-grid .panel { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 22px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); }
+
+.attendance-form { display: grid; gap: 14px; margin-top: 14px; }
+.attendance-form .field { display: grid; grid-template-columns: 130px 1fr; align-items: center; gap: 16px; }
+.attendance-form .field-wide { grid-column: 1 / -1; }
+.attendance-form .field > span { font-size: 13px; font-weight: 600; color: #292929; }
+.attendance-form .field b { color: #a42cff; }
+
+.attendance-form input, .attendance-form select, .attendance-form textarea { width: 100%; box-sizing: border-box; border: 1px solid #d9d9df; border-radius: 5px; background: #fff; color: #292929; font: inherit; font-size: 12px; outline: none; }
+.attendance-form input, .attendance-form select { height: 36px; padding: 0 12px; }
+.attendance-form select, .attendance-form textarea { border-color: #b72cff; }
+.attendance-form textarea { min-height: 70px; padding: 10px 12px; resize: vertical; }
+.attendance-form input[readonly] { background: #f3f3f5; color: #555; }
+.attendance-form input:focus, .attendance-form select:focus, .attendance-form textarea:focus { border-color: #9c20e8; box-shadow: 0 0 0 2px rgba(183, 44, 255, 0.12); }
+
+.attendance-form .checkbox-field { display: flex; align-items: flex-start; gap: 9px; }
+.attendance-form .checkbox-field input { width: 15px; height: 15px; accent-color: #b52cff; }
+.attendance-form .checkbox-field span { font-size: 11px; font-weight: 400; color: #666; }
+
+.attendance-form .form-actions { display: flex; justify-content: center; gap: 10px; margin-top: 8px; }
+.attendance-form .button { min-width: 145px; height: 38px; padding: 0 24px; border: 0; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-size: 12px; font-weight: 600; cursor: pointer; }
+.attendance-form .button-primary { color: #fff; background: linear-gradient(90deg, #a530f5, #bd2df4); }
+.attendance-form .button-primary:hover { background: linear-gradient(90deg, #9524e8, #ae20e8); }
+.attendance-form .button-secondary { background: #eeeef2; border: 1px solid #dddde5; color: #55555f; }
+
+.success-message, .inline-error { margin-bottom: 15px; padding: 12px 16px; border-radius: 6px; font-size: 13px; }
+.success-message { background: #edfaf4; color: #16774c; }
+.inline-error { background: #fff1f1; color: #b42318; }
+.muted-copy { margin-top: 14px; color: #777; font-size: 12px; }
+
+@media (min-width: 900px) {
+  .attendance-page-grid { grid-template-columns: minmax(450px, 0.95fr) minmax(450px, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .page-stack { padding: 14px; }
+  .attendance-page-grid { grid-template-columns: 1fr; }
+  .attendance-form .field { grid-template-columns: 110px 1fr; }
+}
+
+@media (max-width: 520px) {
+  .page-stack { padding: 10px; }
+  .attendance-form .field { grid-template-columns: 1fr; gap: 6px; }
+  .attendance-form .form-actions { flex-direction: column-reverse; }
+  .attendance-form .button { width: 100%; }
 }
