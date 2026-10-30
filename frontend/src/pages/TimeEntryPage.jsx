@@ -72,7 +72,7 @@ const [dailyAccomplishments, setDailyAccomplishments] = useState('');
     },
   );
 
-  // Current time
+
   const currentTime = new Date().toLocaleTimeString(
     'en-US',
     {
@@ -91,25 +91,32 @@ const [dailyAccomplishments, setDailyAccomplishments] = useState('');
     setError('');
     setMessage('');
 
-    // TIME OUT
-    if (isTimeOut) {
-      if (!checkedIn) {
-        setError(
-          'You need to record your time-in before submitting time-out.',
-        );
-        return;
-      }
 
-      if (setCheckedIn(false)) {
-        setMessage(
-          'Your time-out has been recorded. Have a great evening!',
-        );
-      }
+   if (isTimeOut) {
+  if (!checkedIn) {
+    setError('You need to record your time-in before submitting time-out.');
+    return;
+  }
 
-      return;
-    }
+  if (!timeOutEmployeeId.trim()) {
+    setError('Please enter your EID.');
+    return;
+  }
 
-    // Already checked in
+  if (!dailyAccomplishments.trim()) {
+    setError('Please enter your daily accomplishments.');
+    return;
+  }
+
+  if (setCheckedIn(false)) {
+    setMessage('Your time-out and daily accomplishments have been submitted.');
+    setDailyAccomplishments('');
+  }
+
+  return;
+}
+
+  
     if (checkedIn) {
       setError(
         'Your time-in is already recorded. Submit time-out before starting another entry.',
