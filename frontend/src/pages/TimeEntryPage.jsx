@@ -59,6 +59,8 @@ export default function TimeEntryPage() {
 
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [timeOutEmployeeId, setTimeOutEmployeeId] = useState(alex?.id ?? '');
+const [dailyAccomplishments, setDailyAccomplishments] = useState('');
 
   // Current date
   const currentDate = new Date().toLocaleDateString(

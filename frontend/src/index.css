@@ -4813,6 +4813,148 @@ p {
   }
 }
 
+.recent-records-card {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 20px;
+  padding: 18px 14px 55px;
+  background: #ffffff;
+  border: 1px solid #ece8ec;
+  border-radius: 6px;
+  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.18);
+}
+
+.recent-records-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 0 10px 16px;
+}
+
+.recent-records-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.recent-records-icon {
+  width: 31px;
+  height: 31px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 4px;
+  background: #dda0f9;
+  color: #8146a0;
+  font-size: 18px;
+}
+
+.recent-records-title h3 {
+  margin: 0;
+  color: #1f1c23;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.recent-records-title p {
+  margin: 2px 0 0;
+  color: #77727d;
+  font-size: 10px;
+}
+
+.unassigned-badge {
+  padding: 5px 8px;
+  border: 1px solid #c228ff;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #ba1cff;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.recent-records-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.recent-records-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #242127;
+  font-size: 11px;
+}
+
+.recent-records-table thead {
+  background: #e7e7e7;
+}
+
+.recent-records-table th {
+  height: 43px;
+  padding: 0 16px;
+  border-bottom: 1px solid #bdbdbd;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.recent-records-table td {
+  height: 46px;
+  padding: 0 16px;
+  border-bottom: 1px solid #d4d1d4;
+  font-size: 10px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.recent-records-table tbody tr:hover {
+  background: #faf7fc;
+}
+
+.submitted-badge {
+  display: inline-block;
+  min-width: 70px;
+  padding: 5px 8px;
+  box-sizing: border-box;
+  border: 1px solid #afe5d0;
+  border-radius: 6px;
+  background: #dff7ee;
+  color: #198d72;
+  font-size: 9px;
+  font-weight: 700;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .recent-records-card {
+    padding: 16px 12px 30px;
+  }
+
+  .recent-records-header {
+    margin: 0 4px 14px;
+  }
+
+  .recent-records-table {
+    min-width: 750px;
+  }
+}
+
+@media (max-width: 520px) {
+  .recent-records-header {
+    align-items: flex-start;
+  }
+
+  .recent-records-title h3 {
+    font-size: 13px;
+  }
+
+  .unassigned-badge {
+    font-size: 8px;
+  }
+}
+
 
 
 
