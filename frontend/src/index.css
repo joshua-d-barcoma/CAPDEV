@@ -6697,16 +6697,6 @@ p {
   background: linear-gradient(135deg, #f8f3ff 0%, #fbf8ff 62%, #fff6ef 100%);
   box-shadow: 0 6px 18px rgb(53 30 80 / 7%);
 }
-.admin-dashboard .stat-card::after {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  color: #817990;
-  content: '↗';
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1;
-}
 .admin-dashboard .stat-icon {
   width: 33px;
   height: 33px;
@@ -6727,7 +6717,6 @@ p {
   min-width: 0;
   grid-column: 2;
   grid-row: 1;
-  padding-right: 20px;
   font-size: 12px;
 }
 .admin-dashboard .stat-content strong,
@@ -6973,10 +6962,6 @@ p {
   .admin-dashboard-metrics > .stat-card:nth-child(7) {
     grid-column: 1 / -1;
   }
-  .admin-dashboard .stat-card::after {
-    top: 13px;
-    right: 13px;
-  }
   .admin-dashboard .stat-label {
     font-size: 10px;
   }
@@ -7109,16 +7094,6 @@ p {
   background: linear-gradient(135deg, #f8f3ff 0%, #fbf8ff 62%, #fff6ef 100%);
   box-shadow: 0 5px 15px rgb(53 30 80 / 7%);
 }
-.employee-page > .stat-grid .stat-card::after {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  color: #817990;
-  content: '↗';
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1;
-}
 .employee-page .stat-icon {
   width: 28px;
   height: 28px;
@@ -7139,7 +7114,6 @@ p {
   min-width: 0;
   grid-column: 2;
   grid-row: 1;
-  padding-right: 16px;
   font-size: 10px;
 }
 .employee-page .stat-content strong,
@@ -10318,11 +10292,11 @@ html body .app-layout.theme-dark .page-content .page-stack :is(
     .welcome-banner,
     .employee-import-review-banner
   ) {
-  border-color: rgb(255 255 255 / 9%);
+    border-color: #51415c;
   border-radius: 12px;
-  background: #181a25;
+    background: linear-gradient(110deg, #292337 0%, #30263a 100%);
   color: var(--ink);
-  box-shadow: 0 6px 22px rgb(0 0 0 / 24%);
+    box-shadow: 0 6px 22px rgb(0 0 0 / 32%);
 }
 
 html body .app-layout.theme-dark .page-content .page-stack :is(
@@ -11342,8 +11316,8 @@ html body .app-layout.admin-productivity-layout .navigation-item.active {
 }
 
 html body .app-layout.admin-productivity-layout .productivity-banner {
-  min-height: 60px;
-  padding: 11px 14px;
+  min-height: 70px;
+  padding: 13px 14px;
   background: var(--banner-gradient);
 }
 
@@ -11376,11 +11350,6 @@ html body .app-layout.theme-dark.admin-productivity-layout :is(
     .sidebar-footer small
   ) {
   color: #bdb1c8;
-}
-
-html body .app-layout.theme-dark.admin-productivity-layout .navigation-item:hover {
-  background: rgb(255 255 255 / 8%);
-  color: #e2b9ff;
 }
 
 html body .app-layout.theme-dark.admin-productivity-layout .navigation-item.active {
@@ -11521,4 +11490,21 @@ html body .app-layout.theme-dark .productivity-page .pending-row :is(strong, p) 
 html body .app-layout.theme-dark .learning-dashboard .learning-training-table th {
   background: #292532;
   color: #c1b8cb;
+}
+
+html body .app-layout .sidebar .brand:hover {
+  filter: none;
+  transform: none;
+  box-shadow: none;
+}
+
+html body .app-layout .sidebar :where(a[href]):hover {
+  transition:
+    background 140ms ease,
+    color 140ms ease;
+}
+
+html body .app-layout.theme-dark.admin-productivity-layout .navigation-item:hover {
+  background: rgb(255 255 255 / 8%);
+  color: #e2b9ff;
 }
