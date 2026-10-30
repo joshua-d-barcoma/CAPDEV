@@ -529,84 +529,57 @@ const [dailyAccomplishments, setDailyAccomplishments] = useState('');
     </button>
   </div>
 </form>
-
-
-
-
         </Panel>
 
-<Panel>
-                  
-  <div className="attendance-card">
-
-    <div className="card-title">
-      <div className="title-icon">↗</div>
-      <div>
-        <h3>Attendance Links</h3>
-        <p>Access the required links for your attendance.</p>
-      </div>
-    </div>
 
 
+{!isTimeOut && (
+  <Panel>
+    <div className="attendance-card">
+      <div className="card-title">
+        <div className="title-icon">↗</div>
 
-    <div className="attendance-link-box">
-
-      <div className="link-icon">〽</div>
-
-      <div className="link-info">
-        <h3>Office Pulse</h3>
-        <p>
-          Go to pulse for the official time
-          and attendance records.
-        </p>
+        <div>
+          <h3>Attendance Links</h3>
+          <p>Access the required links for your attendance.</p>
+        </div>
       </div>
 
-      <a
-        className="open-link"
-        href="#"
-      >
-        ↗ Open Pulse
-      </a>
+      <div className="attendance-link-box">
+        <div className="link-icon">〽</div>
 
-    </div>
+        <div className="link-info">
+          <h3>Office Pulse</h3>
+          <p>Go to Pulse for the official time and attendance records.</p>
+        </div>
 
-
-   
-    <div className="attendance-link-box bmt-box">
-
-      <div className="link-icon">♙</div>
-
-      <div className="link-info">
-        <h3>BMT</h3>
-        <p>
-          Go to BMT for additional
-          attendance management.
-        </p>
+        <a className="open-link" href="#">
+          ↗ Open Pulse
+        </a>
       </div>
 
-      <a
-        className="open-link"
-        href="#"
-      >
-        ↗ Open BMT
-      </a>
+      <div className="attendance-link-box bmt-box">
+        <div className="link-icon">♙</div>
 
+        <div className="link-info">
+          <h3>BMT</h3>
+          <p>Go to BMT for additional attendance management.</p>
+        </div>
+
+        <a className="open-link" href="#">
+          ↗ Open BMT
+        </a>
+      </div>
+
+      <div className="reminder-box">
+        <h4>ⓘ Important Reminders</h4>
+        <p>• Please submit your Time In before starting your work.</p>
+        <p>• Your attendance will be routed to Pulse and BMT.</p>
+        <p>• Contact your Bench Lead if you encounter issues.</p>
+      </div>
     </div>
-
-
-    <div className="reminder-box">
-
-      <h4>ⓘ Important Reminders</h4>
-
-      <p>• Please submit your Time In before starting your work.</p>
-      <p>• Your attendance will be routed to Pulse and BMT.</p>
-      <p>• Contact your Bench Lead if you encounter issues.</p>
-
-    </div>
-
-  </div>
-
-  </Panel> 
+  </Panel>
+)}
 
       </div>
 
