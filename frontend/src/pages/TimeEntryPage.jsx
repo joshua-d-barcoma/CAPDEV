@@ -293,7 +293,7 @@ export default function TimeEntryPage() {
       <div className="attendance-page-grid">
         <Panel
           title={
-            isTimeOut ? 'End-of-day check-out' : 'Time-In Attendance Form'}
+            isTimeOut ? 'EOD/Time-Out Form' : 'Time-In Attendance Form'}
           eyebrow={isTimeOut
             ? new Date().toLocaleDateString()
             : 'Record your time-in and access the required attendance systems.'
