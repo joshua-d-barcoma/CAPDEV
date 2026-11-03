@@ -5283,6 +5283,7 @@ background: linear-gradient(
   .attendance-form .field { grid-template-columns: 1fr; gap: 6px; }
   .attendance-form .form-actions { flex-direction: column-reverse; }
   .attendance-form .button { width: 100%; }
+}
 /* Attendance history */
 .history-page {
   gap: 14px;
@@ -5577,6 +5578,7 @@ background: linear-gradient(
   .history-week-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .history-week-card:last-child { grid-column: 1 / -1; }
   .history-table-toolbar { align-items: flex-end; }
+}
 .user-role .menu-button:hover {
   background: transparent;
   color: var(--muted);
@@ -8748,6 +8750,7 @@ background: linear-gradient(
 
 /* ==============================
    BRAND CARD
+   ============================== */
 
 .brand-card {
   min-height: 123px;
@@ -8871,6 +8874,7 @@ background: linear-gradient(
 
 /* ==============================
    LOGIN CARD
+   ============================== */
 
 .login-card {
   margin-top: 24px;
@@ -8917,6 +8921,7 @@ background: linear-gradient(
 
 /* ==============================
    FORM
+   ============================== */
 
 .login-form {
   padding: 22px 15px 0;
@@ -9018,6 +9023,7 @@ background: linear-gradient(
 
 /* ==============================
    DEMO DIVIDER
+   ============================== */
 
 .demo-separator {
   padding: 19px 26px 18px;
@@ -9046,6 +9052,7 @@ background: linear-gradient(
 
 /* ==============================
    DEMO ACCOUNTS
+   ============================== */
 
 .demo-section {
   padding: 0 15px 24px;
@@ -9169,6 +9176,7 @@ background: linear-gradient(
 
 /* ==============================
    FOOTER
+   ============================== */
 
 .login-footer {
   min-height: 45px;
@@ -9213,6 +9221,7 @@ background: linear-gradient(
 
 /* ==============================
    DARK MODE
+   ============================== */
 
 .login-page.dark {
   --page-bg-1: #17121f;
@@ -9258,6 +9267,7 @@ background: linear-gradient(
 
 /* ==============================
    MOBILE
+   ============================== */
 
 @media (max-width: 600px) {
   .login-page {
@@ -10693,28 +10703,22 @@ background: linear-gradient(
 }
 
 :where(
-    button:not(:disabled),
-    a[href],
+    button:not(:disabled):not(.text-button):not(.button-reset),
     [role='button']:not([aria-disabled='true']),
     [role='tab'],
     [tabindex]:not([tabindex='-1'])
   ):hover {
-  filter: brightness(0.84);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 13px rgb(65 24 93 / 24%);
+  filter: brightness(0.96);
 }
 
 .app-layout .header button:not(:disabled):hover,
 .app-layout .page-content :is(
-    button:not(:disabled),
-    a[href],
-    [role='button']:not([aria-disabled='true']),
-    [role='tab'],
-    [tabindex]:not([tabindex='-1'])
-  ):hover {
-  filter: brightness(0.82);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 14px rgb(65 24 93 / 26%);
+    button:not(:disabled):not(.text-button):not(.button-reset),
+      [role='button']:not([aria-disabled='true']),
+      [role='tab'],
+      [tabindex]:not([tabindex='-1'])
+    ):hover {
+    filter: brightness(0.96);
 }
 
 :where(
@@ -10743,14 +10747,12 @@ background: linear-gradient(
 
 .app-layout.theme-dark
   :where(
-    button:not(:disabled),
-    a[href],
+    button:not(:disabled):not(.text-button):not(.button-reset),
     [role='button']:not([aria-disabled='true']),
     [role='tab'],
     [tabindex]:not([tabindex='-1'])
   ):hover {
-  filter: brightness(1.2);
-  box-shadow: 0 5px 13px rgb(0 0 0 / 38%);
+  filter: brightness(1.05);
 }
 
 .app-layout.theme-dark
@@ -10780,15 +10782,31 @@ background: linear-gradient(
 
 .app-layout.theme-dark .header button:not(:disabled):hover,
 .app-layout.theme-dark .page-content :is(
-    button:not(:disabled),
-    a[href],
-    [role='button']:not([aria-disabled='true']),
-    [role='tab'],
-    [tabindex]:not([tabindex='-1'])
-  ):hover {
-  filter: brightness(1.2);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 14px rgb(0 0 0 / 40%);
+    button:not(:disabled):not(.text-button):not(.button-reset),
+      [role='button']:not([aria-disabled='true']),
+      [role='tab'],
+      [tabindex]:not([tabindex='-1'])
+    ):hover {
+    filter: brightness(1.05);
+}
+
+html body .app-layout .page-content a[href]:not(.button):not(.navigation-item):not(.brand):not(.employee-link):hover {
+  color: var(--purple-dark);
+  text-decoration: underline;
+}
+
+html body .app-layout .page-content .employee-link:hover strong {
+  color: var(--purple-dark);
+}
+
+html body .app-layout .page-content .user-training-item:hover:not(:disabled) {
+  filter: none;
+  transform: none;
+  box-shadow: none;
+}
+
+html body .app-layout .page-content .user-training-item:hover:not(:disabled) strong {
+  color: var(--purple-dark);
 }
 
 html body .app-layout .header .profile-button:hover,
@@ -10915,9 +10933,9 @@ html body .app-layout .page-content :is(
     [role='tab'],
     [tabindex]:not([tabindex='-1'])
   ):hover:not(:disabled) {
-  filter: brightness(0.9);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgb(65 24 93 / 20%);
+  filter: none;
+  transform: none;
+  box-shadow: none;
 }
 
 html body .app-layout.theme-dark .page-content :is(
@@ -10927,9 +10945,9 @@ html body .app-layout.theme-dark .page-content :is(
     [role='tab'],
     [tabindex]:not([tabindex='-1'])
   ):hover:not(:disabled) {
-  filter: brightness(1.16);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgb(0 0 0 / 34%);
+  filter: none;
+  transform: none;
+  box-shadow: none;
 }
 
 html body .app-layout .page-content :is(
@@ -10959,9 +10977,9 @@ html body .app-layout .page-content .page-stack :is(
     [role='tab'],
     [tabindex]:not([tabindex='-1'])
   ):hover:not(:disabled) {
-  filter: brightness(0.9);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgb(65 24 93 / 20%);
+  filter: none;
+  transform: none;
+  box-shadow: none;
 }
 
 html body .app-layout.theme-dark .page-content .page-stack :is(
@@ -10971,9 +10989,9 @@ html body .app-layout.theme-dark .page-content .page-stack :is(
     [role='tab'],
     [tabindex]:not([tabindex='-1'])
   ):hover:not(:disabled) {
-  filter: brightness(1.16);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgb(0 0 0 / 34%);
+  filter: none;
+  transform: none;
+  box-shadow: none;
 }
 
 html body .app-layout .page-content .page-stack :is(
@@ -11041,9 +11059,9 @@ html body .app-layout .page-content .page-stack :is(
     [role='button']:not([aria-disabled='true']),
     [role='tab']
   ):hover:not(:disabled) {
-  filter: brightness(0.9) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 5px 13px rgb(65 24 93 / 24%) !important;
+  filter: none !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 html body .app-layout.theme-dark .page-content .page-stack :is(
@@ -11052,9 +11070,9 @@ html body .app-layout.theme-dark .page-content .page-stack :is(
     [role='button']:not([aria-disabled='true']),
     [role='tab']
   ):hover:not(:disabled) {
-  filter: brightness(1.16) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 5px 13px rgb(0 0 0 / 40%) !important;
+  filter: none !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 html body .app-layout .page-content .page-stack .search-control input:hover,
@@ -12331,4 +12349,55 @@ html body .app-layout .sidebar :where(a[href]):hover {
 html body .app-layout.theme-dark.admin-productivity-layout .navigation-item:hover {
   background: rgb(255 255 255 / 8%);
   color: #e2b9ff;
+}
+
+@keyframes overlay-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popup-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.app-layout .dialog-backdrop {
+  animation: overlay-fade-in 180ms ease-out both;
+}
+
+.app-layout .dialog {
+  animation: popup-enter 200ms cubic-bezier(0.2, 0.75, 0.3, 1) both;
+}
+
+.app-layout .profile-menu,
+.app-layout .notifications-panel,
+.app-layout .date-filter-popover {
+  transform-origin: top right;
+  animation: popup-enter 170ms cubic-bezier(0.2, 0.75, 0.3, 1) both;
+}
+
+.app-layout .button:not(:disabled):active,
+.app-layout button:not(:disabled):not(.text-button):not(.button-reset):active {
+  transform: scale(0.98);
+  transition-duration: 80ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-layout .dialog-backdrop,
+  .app-layout .dialog,
+  .app-layout .profile-menu,
+  .app-layout .notifications-panel,
+  .app-layout .date-filter-popover {
+    animation: none;
+  }
 }

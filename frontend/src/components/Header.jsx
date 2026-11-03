@@ -37,7 +37,6 @@ const notificationData = {
   ],
 };
 
-export function Header({ role, onToggleSidebar, onSwitchRole }) {
 export function Header({ role, theme, onToggleTheme, onToggleSidebar, onLogout }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -225,12 +224,6 @@ export function Header({ role, theme, onToggleTheme, onToggleSidebar, onLogout }
             )}
           </span>
           <span>{theme === 'dark' ? 'Light' : 'Dark'}</span>
-        </button>
-        <button type="button" className="notification-button" aria-label="Notifications">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" />
-          </svg>
-          <span className="notification-dot" />
         </button>
         <div className="profile-container" ref={profileRef}>
           <button
