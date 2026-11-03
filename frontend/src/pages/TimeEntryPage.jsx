@@ -7,7 +7,7 @@ import { StatusBadge } from '../components/StatusBadge.jsx';
 import { ROUTES } from '../constants/routes.js';
 import { useBenchData } from '../hooks/useBenchData.js';
 import { formatDate } from '../utils/formatters.js';
-import { formatTime, getCurrentTimeInput } from '../utils/timeEntry.js';
+import { getCurrentTimeInput } from '../utils/timeEntry.js';
 import './TimeEntryPage.css';
 
 const workTypes = ['Onsite', 'Work from home', 'Leave', 'Other'];
@@ -76,21 +76,17 @@ export default function TimeEntryPage() {
   const { employees, attendanceRecords, checkedIn, submitAttendance, setCheckedIn } =
     useBenchData();
   const alex = employees.find((employee) => employee.name === 'Alex Santos');
-  const [initialClock] = useState(getCurrentTimeInput);
   const [workType, setWorkType] = useState('Onsite');
   const [location, setLocation] = useState('');
   const [otherLocation, setOtherLocation] = useState('');
   const [otherWorkType, setOtherWorkType] = useState('');
   const [seatNumber, setSeatNumber] = useState('');
-  const [employeeCode, setEmployeeCode] = useState(alex?.employeeId ?? '');
-  const [timeOut, setTimeOut] = useState(initialClock.time);
   const [remarks, setRemarks] = useState('');
   const [accomplishments, setAccomplishments] = useState('');
   const [acknowledged, setAcknowledged] = useState(false);
   const [trackerCompleted, setTrackerCompleted] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const today = getLocalDate();
   const employeeRecords = useMemo(
     () =>
       attendanceRecords
@@ -135,19 +131,11 @@ export default function TimeEntryPage() {
     event.preventDefault();
     setError('');
     const submittedDate = getLocalDate();
-    const submittedTime = formatTime(isTimeOut ? timeOut : getCurrentTimeInput().time);
-    if (!submittedTime) {
-      setError('Enter a valid time with AM or PM, such as 5:45 PM. You can also use 17:45.');
-      return;
-    }
+    const submittedTime = getCurrentTimeInput().time;
 
     if (isTimeOut) {
       if (!checkedIn) {
         setError('You need to record your time-in before submitting time-out.');
-        return;
-      }
-      if (!employeeCode.trim()) {
-        setError('Please enter your employee ID.');
         return;
       }
       if (!accomplishments.trim()) {
@@ -188,8 +176,8 @@ export default function TimeEntryPage() {
       return;
     }
     if (
-      (workType === 'Onsite' && location === 'Other' && !otherLocation.trim()) ||
-      (workType === 'Onsite' && location !== 'Other' && !seatNumber.trim()) ||
+      (workType === 'Onsite' &&
+        (!seatNumber.trim() || (location === 'Other' && !otherLocation.trim()))) ||
       (workType === 'Other' && !otherWorkType.trim()) ||
       (['Work from home', 'Leave'].includes(workType) && !trackerCompleted)
     ) {
@@ -250,50 +238,18 @@ export default function TimeEntryPage() {
             onSubmit={submit}
           >
             {isTimeOut ? (
-              <>
-                <label className="field">
-                  <span>
-                    Employee ID <b aria-hidden="true">*</b>
-                  </span>
-                  <input
-                    required
-                    value={employeeCode}
-                    onChange={(event) => setEmployeeCode(event.target.value)}
-                    placeholder="Enter your employee ID"
-                  />
-                </label>
-                <label className="field">
-                  <span>Date</span>
-                  <input type="text" value={formatDate(today)} readOnly />
-                </label>
-                <label className="field">
-                  <span>
-                    Time Out <b aria-hidden="true">*</b>
-                  </span>
-                  <input
-                    required
-                    type="text"
-                    value={timeOut}
-                    onChange={(event) => setTimeOut(event.target.value)}
-                    aria-label="Time Out"
-                    placeholder="e.g. 5:45 PM"
-                    autoComplete="off"
-                    inputMode="text"
-                  />
-                </label>
-                <label className="field field-wide">
-                  <span>
-                    Daily Accomplishments <b aria-hidden="true">*</b>
-                  </span>
-                  <textarea
-                    required
-                    rows="4"
-                    value={accomplishments}
-                    onChange={(event) => setAccomplishments(event.target.value)}
-                    placeholder="Write your accomplishments for today."
-                  />
-                </label>
-              </>
+              <label className="field field-wide">
+                <span>
+                  Daily Accomplishments <b aria-hidden="true">*</b>
+                </span>
+                <textarea
+                  required
+                  rows="4"
+                  value={accomplishments}
+                  onChange={(event) => setAccomplishments(event.target.value)}
+                  placeholder="Write your accomplishments for today."
+                />
+              </label>
             ) : (
               <>
                 <label className="field">
@@ -334,7 +290,7 @@ export default function TimeEntryPage() {
                         <option>Other</option>
                       </select>
                     </label>
-                    {location === 'Other' ? (
+                    {location === 'Other' && (
                       <label className="field">
                         <span>
                           Other office location <b aria-hidden="true">*</b>
@@ -346,7 +302,8 @@ export default function TimeEntryPage() {
                           placeholder="Enter the office location"
                         />
                       </label>
-                    ) : location ? (
+                    )}
+                    {location && (location !== 'Other' || otherLocation.trim()) && (
                       <label className="field">
                         <span>
                           Seat number <b aria-hidden="true">*</b>
@@ -355,10 +312,10 @@ export default function TimeEntryPage() {
                           required
                           value={seatNumber}
                           onChange={(event) => setSeatNumber(event.target.value)}
-                          placeholder="e.g. CG2-05-18"
+                          placeholder={location === 'Other' ? 'Enter your seat number' : 'e.g. CG2-05-18'}
                         />
                       </label>
-                    ) : null}
+                    )}
                   </>
                 )}
                 {workType === 'Other' && (
