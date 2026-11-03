@@ -5229,7 +5229,7 @@ background: linear-gradient(
 
 .page-stack { width: 100%; min-height: 100vh; padding: 20px; background: #f7f4f4; box-sizing: border-box; }
 
-.page-stack .page-header { background: linear-gradient(90deg, #d26ff5, #963cff 48%, #c95c32); color: #fff; border-radius: 3px; padding: 18px 22px; margin-bottom: 20px; }
+.page-stack .page-header { background: linear-gradient(90deg, #d26ff5, #963cff 48%, #c95c32); color: #fff; border-radius: 3px; padding: 18px 22px; }
 .page-stack .page-header h1 { margin: 0; font-size: 20px; color: #fff; }
 .page-stack .page-header p { margin: 6px 0 0; font-size: 12px; color: rgba(255, 255, 255, 0.85); }
 
@@ -8399,7 +8399,11 @@ background: linear-gradient(
   padding: 13px 15px 18px;
 }
 .app-layout .page-stack {
-  max-width: 1500px;
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  padding: 0;
+  background: transparent;
   gap: 10px;
 }
 .app-layout .page-stack .stat-grid {

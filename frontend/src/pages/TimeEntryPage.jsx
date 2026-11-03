@@ -11,17 +11,6 @@ import { formatTime, getCurrentTimeInput } from '../utils/timeEntry.js';
 import './TimeEntryPage.css';
 
 const workTypes = ['Onsite', 'Work from home', 'Leave', 'Other'];
-const standardCapabilities = [
-  'Carrier Networks',
-  'Cloud Customer Edge',
-  'Digital Workplace - CWP',
-  'Hybrid Cloud - Database',
-  'Hybrid Cloud - Migration',
-  'Hybrid Cloud - Operations',
-  'Network',
-  'Service Management',
-  'SRE',
-];
 
 function getLocalDate() {
   const date = new Date();
@@ -87,19 +76,13 @@ export default function TimeEntryPage() {
   const { employees, attendanceRecords, checkedIn, submitAttendance, setCheckedIn } =
     useBenchData();
   const alex = employees.find((employee) => employee.name === 'Alex Santos');
-  const capabilities =
-    alex && !standardCapabilities.includes(alex.capability)
-      ? [...standardCapabilities, alex.capability]
-      : standardCapabilities;
   const [initialClock] = useState(getCurrentTimeInput);
   const [workType, setWorkType] = useState('Onsite');
   const [location, setLocation] = useState('');
   const [otherLocation, setOtherLocation] = useState('');
   const [otherWorkType, setOtherWorkType] = useState('');
   const [seatNumber, setSeatNumber] = useState('');
-  const [capability, setCapability] = useState(alex?.capability ?? '');
   const [employeeCode, setEmployeeCode] = useState(alex?.employeeId ?? '');
-  const [timeIn, setTimeIn] = useState(initialClock.time);
   const [timeOut, setTimeOut] = useState(initialClock.time);
   const [remarks, setRemarks] = useState('');
   const [accomplishments, setAccomplishments] = useState('');
@@ -151,7 +134,8 @@ export default function TimeEntryPage() {
   function submit(event) {
     event.preventDefault();
     setError('');
-    const submittedTime = formatTime(isTimeOut ? timeOut : timeIn);
+    const submittedDate = getLocalDate();
+    const submittedTime = formatTime(isTimeOut ? timeOut : getCurrentTimeInput().time);
     if (!submittedTime) {
       setError('Enter a valid time with AM or PM, such as 5:45 PM. You can also use 17:45.');
       return;
@@ -170,7 +154,7 @@ export default function TimeEntryPage() {
         setError('Please enter your daily accomplishments.');
         return;
       }
-      if (!employeeRecords.some((record) => record.date === today)) {
+      if (!employeeRecords.some((record) => record.date === submittedDate)) {
         setError(
           'No time-in record was found for today. Record your time-in before submitting time-out.',
         );
@@ -179,7 +163,7 @@ export default function TimeEntryPage() {
       if (
         setCheckedIn(false, {
           employeeId: alex?.id,
-          date: today,
+          date: submittedDate,
           timeOut: submittedTime,
           accomplishments: accomplishments.trim(),
         })
@@ -195,8 +179,8 @@ export default function TimeEntryPage() {
     }
     if (
       !alex ||
-      !employeeCode.trim() ||
-      !capability ||
+      !alex.employeeId?.trim() ||
+      !alex.capability ||
       !acknowledged ||
       (workType === 'Onsite' && !location)
     ) {
@@ -214,14 +198,14 @@ export default function TimeEntryPage() {
     }
     const record = {
       employeeId: alex.id,
-      employeeCode: employeeCode.trim(),
-      date: today,
+      employeeCode: alex.employeeId,
+      date: submittedDate,
       timeIn: submittedTime,
       workType: workType === 'Other' ? otherWorkType : workType,
       location: workType !== 'Onsite' ? '—' : location === 'Other' ? otherLocation : location,
       status: workType === 'Leave' ? 'Vacation Leave' : 'Present',
       seatNumber: workType === 'Onsite' ? seatNumber : '',
-      capability,
+      capability: alex.capability,
       remarks: remarks.trim(),
     };
     if (submitAttendance(record)) {
@@ -312,51 +296,6 @@ export default function TimeEntryPage() {
               </>
             ) : (
               <>
-                <label className="field">
-                  <span>Date</span>
-                  <input type="text" value={formatDate(today)} readOnly />
-                </label>
-                <label className="field">
-                  <span>
-                    Employee ID <b aria-hidden="true">*</b>
-                  </span>
-                  <input
-                    required
-                    value={employeeCode}
-                    onChange={(event) => setEmployeeCode(event.target.value)}
-                    placeholder="Enter your employee ID"
-                  />
-                </label>
-                <label className="field">
-                  <span>
-                    Time In <b aria-hidden="true">*</b>
-                  </span>
-                  <input
-                    required
-                    type="text"
-                    value={timeIn}
-                    onChange={(event) => setTimeIn(event.target.value)}
-                    aria-label="Time In"
-                    placeholder="e.g. 8:30 AM"
-                    autoComplete="off"
-                    inputMode="text"
-                  />
-                </label>
-                <label className="field">
-                  <span>
-                    Capability <b aria-hidden="true">*</b>
-                  </span>
-                  <select
-                    required
-                    value={capability}
-                    onChange={(event) => setCapability(event.target.value)}
-                  >
-                    <option value="">Select a capability</option>
-                    {capabilities.map((item) => (
-                      <option key={item}>{item}</option>
-                    ))}
-                  </select>
-                </label>
                 <label className="field">
                   <span>
                     Work Setup <b aria-hidden="true">*</b>
