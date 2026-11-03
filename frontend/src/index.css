@@ -325,6 +325,9 @@ background: linear-gradient(
   background: #f6f1f8;
   color: var(--purple-dark);
 }
+.notification-button:hover {
+  background: transparent;
+}
 .menu-button svg,
 .notification-button svg {
   width: 20px;
@@ -10601,6 +10604,14 @@ background: linear-gradient(
   background: #342a40;
 }
 
+html body .app-layout .employee-page .employee-roster-table .data-table tbody tr:hover {
+  background: transparent;
+}
+
+html body .app-layout.theme-dark .employee-page .employee-roster-table .data-table tbody tr:nth-child(even):hover {
+  background: #282331;
+}
+
 .app-layout.theme-dark .page-stack .button-secondary {
   border-color: #594969;
   background: #30283a;
@@ -10801,6 +10812,10 @@ html body .app-layout .page-content a[href]:not(.button):not(.navigation-item):n
 
 html body .app-layout .page-content .employee-link:hover strong {
   color: var(--purple-dark);
+}
+
+html body .app-layout .employee-page .employee-roster-table .employee-link:hover strong {
+  color: inherit;
 }
 
 html body .app-layout .page-content .user-training-item:hover:not(:disabled) {
@@ -12404,4 +12419,188 @@ html body .app-layout.theme-dark.admin-productivity-layout .navigation-item:hove
   .app-layout .date-filter-popover {
     animation: none;
   }
+}
+
+html body .app-layout .page-content :is(
+    .button-primary,
+    .employee-import-button,
+    .learning-add-button,
+    .learning-report-button,
+    .task-add-button,
+    .assign-btn,
+    .report-btn,
+    .employee-import-choose,
+    .attendance-export,
+    .user-alert-button,
+    .user-recommendation-primary,
+    .user-refresh-button,
+    .calendar-request-trigger
+  ):not(:disabled):hover {
+  border-color: transparent;
+  background: var(--action-button-gradient-hover);
+  box-shadow: 0 6px 15px rgb(101 42 150 / 28%);
+  color: #fff;
+  filter: none;
+  transform: translateY(-1px);
+}
+
+html body .app-layout .page-content .page-stack :is(button.button-primary, a.button-primary):not(:disabled):hover {
+  border-color: transparent;
+  background: var(--action-button-gradient-hover);
+  box-shadow: 0 2px 7px rgb(117 39 160 / 24%);
+  color: #fff;
+  filter: none;
+  transform: none;
+}
+
+html body .app-layout .page-content .page-stack :is(button.button-secondary, a.button-secondary):not(:disabled):hover {
+  border-color: #b875d5;
+  background: #fdfaff;
+  box-shadow: 0 2px 7px rgb(117 39 160 / 14%);
+  color: #651d8d;
+  filter: none;
+  transform: none;
+}
+
+html body .app-layout.theme-dark .page-content .page-stack :is(button.button-secondary, a.button-secondary):not(:disabled):hover {
+  border-color: #bd8bd6;
+  background: #382d43;
+  box-shadow: 0 2px 7px rgb(0 0 0 / 24%);
+  color: #fff;
+  filter: none;
+  transform: none;
+}
+
+html body .app-layout .header .notification-button {
+  transition: color 140ms ease;
+}
+
+html body .app-layout .header .notification-button:hover {
+  background: transparent;
+  color: #8f0db8;
+}
+
+html body .app-layout .header .notification-button svg {
+  transition: transform 140ms ease;
+}
+
+html body .app-layout .header .notification-button:hover svg {
+  fill: #8f0db8;
+  stroke: #8f0db8;
+  transform: scale(1.12);
+}
+
+html body .app-layout.theme-dark .header .notifications-panel {
+  border-color: #484052;
+  background: #211d2a;
+  color: #f5f0f8;
+}
+
+html body .app-layout.theme-dark .header .notifications-header strong,
+html body .app-layout.theme-dark .header .notification-copy strong {
+  color: #f5f0f8;
+}
+
+html body .app-layout.theme-dark .header .notifications-header span,
+html body .app-layout.theme-dark .header .notification-copy small {
+  color: #c1b8cb;
+}
+
+html body .app-layout.theme-dark .header .notification-tabs button {
+  border-color: #50465b;
+  background: #2a2433;
+  color: #c1b8cb;
+}
+
+html body .app-layout.theme-dark .header .notification-tabs button.active {
+  border-color: #76508a;
+  background: #40324e;
+  color: #e2b9ff;
+}
+
+html body .app-layout.theme-dark .header .notification-item,
+html body .app-layout.theme-dark .header .notification-item.notification-read {
+  background: #30283a;
+  color: #f5f0f8;
+}
+
+html body .app-layout.theme-dark .header .notification-item:hover {
+  background: #3a3045;
+  filter: none;
+}
+
+html body .app-layout.theme-dark .header .notification-action {
+  border-color: #bd78df;
+  color: #e2b9ff;
+}
+
+html body .app-layout.theme-dark .header .notification-status-dot.read {
+  border-color: #aaa0b5;
+  background: #30283a;
+}
+
+html body .app-layout.theme-dark .header .notification-empty {
+  color: #c1b8cb;
+}
+
+html body .app-layout .page-content .page-stack .button.button-primary:not(:disabled):hover,
+html body .app-layout .page-content .page-stack .button-primary:not(:disabled):hover {
+  border-color: transparent;
+  background: var(--action-button-gradient-hover);
+  box-shadow: 0 6px 15px rgb(101 42 150 / 28%);
+  color: #fff;
+  filter: none;
+  transform: translateY(-1px);
+}
+
+html body .app-layout .page-content .page-stack .button.button-secondary:not(:disabled):hover,
+html body .app-layout .page-content .page-stack .button-secondary:not(:disabled):hover {
+  border-color: #bb83d5;
+  background: #efdef8;
+  box-shadow: 0 4px 11px rgb(101 42 150 / 16%);
+  color: #651d8d;
+  filter: none;
+  transform: translateY(-1px);
+}
+
+html body .app-layout.theme-dark .page-content .page-stack .button.button-secondary:not(:disabled):hover,
+html body .app-layout.theme-dark .page-content .page-stack .button-secondary:not(:disabled):hover {
+  border-color: #9564b8;
+  background: #40324e;
+  box-shadow: 0 6px 15px rgb(0 0 0 / 28%);
+  color: #fff;
+  filter: none;
+  transform: translateY(-1px);
+}
+
+html body .app-layout .page-content :is(
+    .button-secondary,
+    .user-recommendation-secondary,
+    .calendar-today-button,
+    .voucher-button,
+    .employee-import-history-button,
+    .button-reset
+  ):not(:disabled):hover {
+  border-color: #bb83d5;
+  background: #efdef8;
+  box-shadow: 0 4px 11px rgb(101 42 150 / 16%);
+  color: #651d8d;
+  filter: none;
+  transform: translateY(-1px);
+}
+
+html body .app-layout.theme-dark .page-content :is(
+    .button-secondary,
+    .user-recommendation-secondary,
+    .calendar-today-button,
+    .voucher-button,
+    .employee-import-history-button,
+    .button-reset
+  ):not(:disabled):hover {
+  border-color: #9564b8;
+  background: #40324e;
+  box-shadow: 0 6px 15px rgb(0 0 0 / 28%);
+  color: #fff;
+  filter: none;
+  transform: translateY(-1px);
 }

@@ -206,7 +206,7 @@ export default function EmployeesPage() {
       key: 'employee',
       label: 'EID',
       render: (employee) => (
-        <Link className="employee-link" to={getEmployeeRoute(employee.name)}>
+        <div className="employee-link">
           <span className="avatar-small">
             {employee.name
               .split(' ')
@@ -216,7 +216,7 @@ export default function EmployeesPage() {
           <span>
             <strong>{employee.name}</strong>
           </span>
-        </Link>
+        </div>
       ),
     },
     { key: 'careerLevel', label: 'Level' },
@@ -249,16 +249,13 @@ export default function EmployeesPage() {
       label: 'Actions',
       render: (employee) => (
         <div className="row-actions">
-          <button
+          <Link
             className="text-button"
-            aria-label={`Edit ${employee.name}`}
-            onClick={() => {
-              setDialogEmployee(employee);
-              setFormOpen(true);
-            }}
+            aria-label={`View ${employee.name}`}
+            to={getEmployeeRoute(employee.name)}
           >
-            Edit
-          </button>
+            View
+          </Link>
           <button
             className="text-button danger-text"
             aria-label={`Delete ${employee.name}`}
@@ -597,6 +594,7 @@ export default function EmployeesPage() {
           </div>
         </div>
         <DataTable
+          className="employee-roster-table"
           columns={columns}
           rows={displayedEmployees}
           rowKey={(employee) => employee.id}
