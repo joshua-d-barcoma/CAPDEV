@@ -1,16 +1,23 @@
-import { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../constants/routes.js';
+import { useState } from "react";
+import {
+  getSessionUser,
+  getUserRole,
+} from "../utils/auth.js";
+
+export function getRoleFromSession(user) {
+  return getUserRole(user);
+}
 
 export function useRole() {
-  const navigate = useNavigate();
-  const [role, setRole] = useState('admin');
+  const [user] = useState(() => {
+    return getSessionUser();
+  });
 
-  const switchRole = useCallback(() => {
-    const nextRole = role === 'admin' ? 'user' : 'admin';
-    setRole(nextRole);
-    navigate(nextRole === 'admin' ? ROUTES.adminDashboard : ROUTES.userDashboard);
-  }, [navigate, role]);
+  const role = getRoleFromSession(user);
 
-  return { role, switchRole };
+  return {
+    user,
+    role,
+    isAuthenticated: Boolean(user),
+  };
 }

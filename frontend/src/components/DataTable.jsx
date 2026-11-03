@@ -1,6 +1,14 @@
 import { EmptyState } from './EmptyState.jsx';
 
-export function DataTable({ columns, rows, rowKey, emptyTitle, emptyDescription, className = '' }) {
+export function DataTable({
+  columns,
+  rows,
+  rowKey,
+  emptyTitle,
+  emptyDescription,
+  className = '',
+  rowClassName,
+}) {
   if (rows.length === 0) {
     return <EmptyState title={emptyTitle} description={emptyDescription} />;
   }
@@ -19,7 +27,7 @@ export function DataTable({ columns, rows, rowKey, emptyTitle, emptyDescription,
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={rowKey(row)}>
+            <tr key={rowKey(row)} className={rowClassName?.(row)}>
               {columns.map((column) => (
                 <td key={column.key}>{column.render ? column.render(row) : row[column.key]}</td>
               ))}
