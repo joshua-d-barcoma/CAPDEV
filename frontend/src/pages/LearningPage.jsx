@@ -6,6 +6,7 @@ import { StatCard } from '../components/StatCard.jsx';
 import { StatusBadge } from '../components/StatusBadge.jsx';
 import { useBenchData } from '../hooks/useBenchData.js';
 import { filterEmployees } from '../utils/employeeInsights.js';
+import './LearningPage.css';
 
 const EMPTY_FORM = { title: '', description: '', due: '', status: 'Active' };
 const EMPLOYEES_PER_PAGE = 10;
@@ -61,6 +62,63 @@ function formatDate(date) {
   if (!date) return '—';
   return new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(
     new Date(`${date}T12:00:00`),
+  );
+}
+
+function TrainingIcon({ trainingId }) {
+  const iconProps = {
+    'aria-hidden': true,
+    fill: 'none',
+    viewBox: '0 0 24 24',
+    stroke: 'currentColor',
+    strokeWidth: 1.8,
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+  };
+
+  if (trainingId === 'training-security') {
+    return (
+      <svg {...iconProps}>
+        <path d="M12 3 19 6v5c0 4.6-2.9 8-7 10-4.1-2-7-5.4-7-10V6l7-3Z" />
+        <path d="m9 12 2 2 4-4" />
+      </svg>
+    );
+  }
+
+  if (trainingId === 'training-privacy') {
+    return (
+      <svg {...iconProps}>
+        <path d="M7 3.5h7l4 4V12" />
+        <path d="M14 3.5v4h4M7 3.5v17h6" />
+        <path d="M9.5 11h5M9.5 14h3" />
+        <path d="m17 13 3 1.2v2.1c0 2-1.2 3.5-3 4.4-1.8-.9-3-2.4-3-4.4v-2.1l3-1.2Z" />
+      </svg>
+    );
+  }
+
+  if (trainingId === 'training-workplace-safety') {
+    return (
+      <svg {...iconProps}>
+        <path d="M4 14a8 8 0 0 1 16 0v1H4v-1Z" />
+        <path d="M12 6v8M6.5 9.5 8 14M17.5 9.5 16 14M3.5 18h17" />
+      </svg>
+    );
+  }
+
+  if (trainingId === 'training-responsible-ai') {
+    return (
+      <svg {...iconProps}>
+        <path d="m12 3 1.6 5.4L19 10l-5.4 1.6L12 17l-1.6-5.4L5 10l5.4-1.6L12 3Z" />
+        <path d="m19 15 .8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15ZM5 3l.6 1.4L7 5l-1.4.6L5 7l-.6-1.4L3 5l1.4-.6L5 3Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg {...iconProps}>
+      <path d="M12 6.5C9.5 4.8 6.5 4.7 4 5.7v13c2.5-1 5.5-.9 8 1 2.5-1.9 5.5-2 8-1v-13c-2.5-1-5.5-.9-8 .8Z" />
+      <path d="M12 6.5v13M7 9h2M7 12h2M15 9h2M15 12h2" />
+    </svg>
   );
 }
 
@@ -206,6 +264,15 @@ export default function LearningPage() {
     ...assignment,
     completionDate: assignment.completionDate ?? '',
   }));
+  const reportDate = new Intl.DateTimeFormat(undefined, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }).format(new Date(`${today}T12:00:00`));
+  const reportScope = [
+    scopeFilters.location || 'all locations',
+    scopeFilters.capability || 'all capabilities',
+  ].join(', ');
 
   function updateScopeFilter(name, value) {
     setScopeFilters((current) => ({ ...current, [name]: value }));
@@ -341,7 +408,7 @@ export default function LearningPage() {
       </div>
 
       <Panel
-        title="Recent Accomplishment"
+        title="Recent Accomplishments"
         eyebrow="Recent activity"
         className="learning-activity-panel"
       >
@@ -394,7 +461,12 @@ export default function LearningPage() {
           </p>
           <div className="learning-employee-stats">
             {visibleEmployeeStats.map((employee) => (
-              <article className="learning-employee-stat" key={employee.id}>
+              <article
+                className="learning-employee-stat chart-data-tooltip"
+                data-chart-tooltip={`${employee.name}: ${employee.daily} completed today, ${employee.completed} of ${employee.total} assigned trainings complete (${employee.rate}%)`}
+                title={`${employee.name}: ${employee.daily} completed today, ${employee.completed} of ${employee.total} assigned trainings complete (${employee.rate}%)`}
+                key={employee.id}
+              >
                 <div className="learning-employee-stat-heading">
                   <div>
                     <strong>{employee.name}</strong>
@@ -475,89 +547,6 @@ export default function LearningPage() {
           />
         </Panel>
       </div>
-
-      <Panel
-        title="Mandatory Trainings"
-        eyebrow="Training management"
-        className="learning-training-panel"
-        action={
-          <button type="button" className="button learning-add-button" onClick={openAddTraining}>
-            Add Training <span aria-hidden="true">＋</span>
-          </button>
-        }
-      >
-        <p className="learning-panel-description">
-          Manage required training programs assigned to bench employees.
-        </p>
-        {mandatoryTraining.length ? (
-          <div className="learning-training-list">
-            {mandatoryTraining.map((training) => {
-              const trainingAssignments = assignments.filter(
-                (assignment) => assignment.trainingId === training.id,
-              );
-              const completed = trainingAssignments.filter(
-                (assignment) => assignment.status === 'Completed',
-              ).length;
-              const progress = trainingAssignments.length
-                ? Math.round((completed / trainingAssignments.length) * 100)
-                : 0;
-              return (
-                <article className="learning-training-row" key={training.id}>
-                  <span
-                    className={`learning-training-icon learning-training-icon-${training.id}`}
-                    aria-hidden="true"
-                  >
-                    {training.id === 'training-security'
-                      ? '⬡'
-                      : training.id === 'training-privacy'
-                        ? '▤'
-                        : training.id === 'training-workplace-safety'
-                          ? '♡'
-                          : training.id === 'training-responsible-ai'
-                            ? '▦'
-                            : '◇'}
-                  </span>
-                  <div className="learning-training-copy">
-                    <strong>{training.title}</strong>
-                    <span>{training.description}</span>
-                  </div>
-                  <div className="learning-training-metric">
-                    <span>Due</span>
-                    <strong>{training.due || '—'}</strong>
-                  </div>
-                  <div className="learning-training-metric">
-                    <span>Assigned</span>
-                    <strong>{trainingAssignments.length}</strong>
-                  </div>
-                  <div className="learning-training-metric">
-                    <span>Completed</span>
-                    <strong>{completed}</strong>
-                  </div>
-                  <div className="learning-training-progress">
-                    <span>
-                      Progress <b>{progress}%</b>
-                    </span>
-                    <div className="learning-progress-track">
-                      <i style={{ width: `${progress}%` }} />
-                    </div>
-                  </div>
-                  <StatusBadge status={training.status} />
-                  <button
-                    type="button"
-                    className="icon-button learning-edit-button"
-                    onClick={() => openEditTraining(training)}
-                    aria-label={`Edit ${training.title}`}
-                  >
-                    ✎
-                  </button>
-                </article>
-              );
-            })}
-          </div>
-        ) : (
-          <p className="muted-copy">No mandatory training has been configured.</p>
-        )}
-      </Panel>
 
       <Panel
         title="Certifications, Cohorts, & Announcement"
@@ -652,6 +641,114 @@ export default function LearningPage() {
           </section>
         </div>
       </Panel>
+
+      <Panel
+        title="Mandatory Trainings"
+        eyebrow="Training management"
+        className="learning-training-panel"
+        action={
+          <button type="button" className="button learning-add-button" onClick={openAddTraining}>
+            Add Training <span aria-hidden="true">＋</span>
+          </button>
+        }
+      >
+        <p className="learning-panel-description">
+          Manage required training programs assigned to bench employees.
+        </p>
+        {mandatoryTraining.length ? (
+          <div className="learning-training-table-scroll">
+            <table className="learning-training-table">
+              <thead>
+                <tr>
+                  <th scope="col">Training</th>
+                  <th scope="col">Due</th>
+                  <th scope="col">Assigned</th>
+                  <th scope="col">Completed</th>
+                  <th scope="col">Progress</th>
+                  <th scope="col">Status</th>
+                  <th scope="col"><span className="visually-hidden">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                {mandatoryTraining.map((training) => {
+                  const trainingAssignments = assignments.filter(
+                    (assignment) => assignment.trainingId === training.id,
+                  );
+                  const completed = trainingAssignments.filter(
+                    (assignment) => assignment.status === 'Completed',
+                  ).length;
+                  const progress = trainingAssignments.length
+                    ? Math.round((completed / trainingAssignments.length) * 100)
+                    : 0;
+                  return (
+                    <tr key={training.id}>
+                      <td>
+                        <div className="learning-training-copy">
+                          <span
+                            className={`learning-training-icon learning-training-icon-${training.id}`}
+                            aria-hidden="true"
+                          >
+                            <TrainingIcon trainingId={training.id} />
+                          </span>
+                          <span>
+                            <strong>{training.title}</strong>
+                            <span>{training.description}</span>
+                          </span>
+                        </div>
+                      </td>
+                      <td>{training.due || '—'}</td>
+                      <td>{trainingAssignments.length}</td>
+                      <td>{completed}</td>
+                      <td>
+                        <div className="learning-training-progress">
+                          <span>{progress}%</span>
+                          <div
+                            className="learning-progress-track"
+                            aria-label={`${progress}% complete`}
+                            title={`${training.title}: ${completed} of ${trainingAssignments.length} employees completed (${progress}%)`}
+                          >
+                            <i style={{ width: `${progress}%` }} />
+                          </div>
+                        </div>
+                      </td>
+                      <td><StatusBadge status={training.status} /></td>
+                      <td>
+                        <button
+                          type="button"
+                          className="icon-button learning-edit-button"
+                          onClick={() => openEditTraining(training)}
+                          aria-label={`Edit ${training.title}`}
+                        >
+                          ✎
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="muted-copy">No mandatory training has been configured.</p>
+        )}
+      </Panel>
+
+      <footer className="learning-report-footer">
+        <div>
+          <strong>Learning Report · {reportDate}</strong>
+          <span>
+            Filtered scope: {reportScope}. Report reflects the current filter selection.
+          </span>
+        </div>
+        <button
+          type="button"
+          className="learning-report-button"
+          onClick={() => downloadReport(reportRows)}
+        >
+          <span aria-hidden="true">▤</span>
+          Generate Report
+        </button>
+      </footer>
 
       {isTrainingDialogOpen && (
         <Dialog

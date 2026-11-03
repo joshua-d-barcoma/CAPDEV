@@ -8,7 +8,7 @@ const FIELD_HEADERS = {
   capability: ['capability'],
   careerLevel: ['career level', 'careerlevel', 'level'],
   workLocation: ['work location', 'worklocation', 'location', 'home loc', 'home location'],
-  skills: ['skills', 'key skills', 'primary skill'],
+  skills: ['primary skill', 'key skills', 'skills'],
   attendanceStatus: ['attendance status', 'attendance'],
   employeeStatus: ['employee status', 'status', 'activity type'],
   absenceDays: ['absence days'],
@@ -157,19 +157,17 @@ function parseEmployeeRecords(records) {
   const fieldIndexes = {};
   const errors = [];
   for (const [field, aliases] of Object.entries(FIELD_HEADERS)) {
-    const matchingIndexes = headers
-      .map((header, index) =>
-        aliases.some((alias) => normalizeHeader(alias) === header) ? index : -1,
-      )
-      .filter((index) => index !== -1);
-    if (matchingIndexes.length > 1) {
-      errors.push(`The file contains more than one column for ${field}.`);
-    } else if (matchingIndexes.length === 1) {
-      fieldIndexes[field] = matchingIndexes[0];
-    }
+    fieldIndexes[field] = headers
+      .map((header, index) => ({
+        index,
+        aliasPriority: aliases.findIndex((alias) => normalizeHeader(alias) === header),
+      }))
+      .filter(({ aliasPriority }) => aliasPriority !== -1)
+      .sort((left, right) => left.aliasPriority - right.aliasPriority || left.index - right.index)
+      .map(({ index }) => index);
   }
 
-  const missingHeaders = REQUIRED_FIELDS.filter((field) => fieldIndexes[field] === undefined);
+  const missingHeaders = REQUIRED_FIELDS.filter((field) => fieldIndexes[field].length === 0);
   if (missingHeaders.length) {
     errors.push(
       `Missing required columns: ${missingHeaders.map((field) => REQUIRED_FIELD_LABELS[field]).join(', ')}.`,
@@ -184,10 +182,7 @@ function parseEmployeeRecords(records) {
       errors.push(`Line ${record.line}: this row has more values than the header row.`);
       continue;
     }
-    const getValue = (field) => {
-      const index = fieldIndexes[field];
-      if (index === undefined) return '';
-      const value = record.cells[index] ?? '';
+    const formatValue = (value) => {
       if (value instanceof Date && !Number.isNaN(value.getTime())) {
         return `${value.getUTCFullYear().toString().padStart(4, '0')}-${(value.getUTCMonth() + 1)
           .toString()
@@ -195,6 +190,11 @@ function parseEmployeeRecords(records) {
       }
       return String(value).trim();
     };
+    const getValues = (field) =>
+      fieldIndexes[field]
+        .map((index) => formatValue(record.cells[index] ?? ''))
+        .filter(Boolean);
+    const getValue = (field) => getValues(field)[0] ?? '';
     const sourceRow = sourceHeaders.map((_, index) => {
       const value = record.cells[index];
       if (value === null || value === undefined) return '';
@@ -212,10 +212,15 @@ function parseEmployeeRecords(records) {
       capability: getValue('capability'),
       careerLevel: getValue('careerLevel'),
       workLocation: getValue('workLocation'),
-      skills: getValue('skills')
-        .split(',')
-        .map((skill) => skill.trim())
-        .filter(Boolean),
+      skills: [
+        ...new Map(
+          getValues('skills')
+            .flatMap((value) => value.split(','))
+            .map((skill) => skill.trim())
+            .filter(Boolean)
+            .map((skill) => [skill.toLowerCase(), skill]),
+        ).values(),
+      ],
       attendanceStatus: getValue('attendanceStatus') || 'Present',
       employeeStatus: getValue('employeeStatus')
         ? normalizeEmployeeStatus(getValue('employeeStatus'))
@@ -224,7 +229,9 @@ function parseEmployeeRecords(records) {
       joiningDate: '',
       rollInDate: '',
       providedFields: Object.entries(fieldIndexes)
-        .filter(([, fieldIndex]) => hasCellValue(record.cells[fieldIndex]))
+        .filter(([, fieldIndexes]) =>
+          fieldIndexes.some((fieldIndex) => hasCellValue(record.cells[fieldIndex])),
+        )
         .map(([field]) => field),
     };
     employee.joiningDate = normalizeDate(getValue('joiningDate'), record.line, 'Join Date', errors);

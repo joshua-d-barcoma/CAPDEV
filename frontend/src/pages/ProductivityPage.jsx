@@ -65,13 +65,48 @@ export default function ProductivityPage() {
     [scopedEmployeeIds, scopedEmployees, tasks],
   );
   const completed = scopedTasks.filter((task) => task.status === 'Completed').length;
-  const inProgress = scopedTasks.filter((task) => task.status === 'In Progress').length;
-  const notStarted = scopedTasks.filter((task) => task.status === 'Not Started').length;
+  const overdueTasks = scopedTasks.filter((task) => getTaskStatus(task) === 'Overdue').length;
+  const unassignedTasks = scopedTasks.filter((task) => !task.assigneeId).length;
+  const completionRate = scopedTasks.length
+    ? Math.round((completed / scopedTasks.length) * 100)
+    : 0;
 
-  const categories = useMemo(
-    () => [...new Set(scopedTasks.map((task) => task.category))],
-    [scopedTasks],
-  );
+  const taskStatusByCapability = useMemo(() => {
+    const groups = new Map();
+    scopedTasks.forEach((task) => {
+      const employee =
+        employees.find((candidate) => candidate.id === task.assigneeId) ??
+        findSkillMatch(task, scopedEmployees)?.employee;
+      const capability = employee?.capability ?? 'Unmatched';
+      const current = groups.get(capability) ?? {
+        completed: 0,
+        progress: 0,
+        notStarted: 0,
+        overdue: 0,
+        total: 0,
+      };
+      const status = getTaskStatus(task);
+      current.total += 1;
+      if (status === 'Completed') current.completed += 1;
+      else if (status === 'Overdue') current.overdue += 1;
+      else if (status === 'In Progress') current.progress += 1;
+      else current.notStarted += 1;
+      groups.set(capability, current);
+    });
+    return [...groups.entries()]
+      .map(([name, counts]) => ({ name, ...counts }))
+      .sort((first, second) => first.name.localeCompare(second.name));
+  }, [employees, scopedEmployees, scopedTasks]);
+  const taskCategoryStats = useMemo(() => {
+    const groups = new Map();
+    scopedTasks.forEach((task) => {
+      groups.set(task.category, (groups.get(task.category) ?? 0) + 1);
+    });
+    return [...groups.entries()]
+      .map(([name, count]) => ({ name, count }))
+      .sort((first, second) => second.count - first.count);
+  }, [scopedTasks]);
+  const maxCategoryCount = Math.max(1, ...taskCategoryStats.map(({ count }) => count));
   const pendingTasks = getTasksForDistribution(scopedTasks);
 
   const distributionColumns = [
@@ -176,20 +211,20 @@ export default function ProductivityPage() {
         <StatCard
           label="Completed Tasks"
           value={completed}
-          detail="41% completion rate"
+          detail={`${completionRate}% completion rate`}
           tone="green"
           icon="✓"
         />
         <StatCard
           label="Overdue Tasks"
-          value={inProgress}
-          detail="5% of total tasks"
+          value={overdueTasks}
+          detail="Past due date and incomplete"
           tone="red"
           icon="◷"
         />
         <StatCard
           label="Unassigned Tasks"
-          value={notStarted}
+          value={unassignedTasks}
           detail="Pending distribution"
           tone="black"
           icon="!"
@@ -197,7 +232,7 @@ export default function ProductivityPage() {
          <StatCard
           label="EOD Submission Rate"
           value={`${EOD_AVERAGE}%`}
-          detail="Last 10 working days"
+          detail="Illustrative demo trend"
           tone="blue"
           icon="✓"
         />
@@ -207,39 +242,50 @@ export default function ProductivityPage() {
  
   <div className="dashboard-card">
     <h3>Task Status by Capability</h3>
-    <p className="subtitle">Completion state of tracked work</p>
+    <p className="subtitle">Current task statuses in the selected employee scope</p>
 
-    {[
-      { name: "Hybrid Cloud", completed: 43, progress: 24, notStarted: 21, overdue: 12, total: 24 },
-      { name: "Network", completed: 44, progress: 17, notStarted: 23, overdue: 16, total: 38 },
-      { name: "Security", completed: 39, progress: 24, notStarted: 25, overdue: 12, total: 18 },
-      { name: "Data & AI", completed: 42, progress: 24, notStarted: 21, overdue: 13, total: 4 },
-    ].map((item) => (
-      <div className="capability-row" key={item.name}>
-        <span className="capability-name">{item.name}</span>
+    {taskStatusByCapability.map((item) => {
+      const tooltip = `${item.name}: ${item.total} tasks · ${item.completed} completed, ${item.progress} in progress, ${item.notStarted} not started, ${item.overdue} overdue`;
+      const percent = (count) => (item.total ? (count / item.total) * 100 : 0);
+      return (
+        <div
+          className="capability-row chart-data-tooltip"
+          data-chart-tooltip={tooltip}
+          title={tooltip}
+          key={item.name}
+        >
+          <span className="capability-name">{item.name}</span>
 
-        <div className="status-bar">
-          <div
-            className="bar completed"
-            style={{ width: `${item.completed}%` }}
-          />
-          <div
-            className="bar progress"
-            style={{ width: `${item.progress}%` }}
-          />
-          <div
-            className="bar not-started"
-            style={{ width: `${item.notStarted}%` }}
-          />
-          <div
-            className="bar overdue"
-            style={{ width: `${item.overdue}%` }}
-          />
+          <div className="status-bar">
+            <div
+              className="bar completed"
+              title={`Completed: ${item.completed} tasks (${Math.round(percent(item.completed))}%)`}
+              style={{ width: `${percent(item.completed)}%` }}
+            />
+            <div
+              className="bar progress"
+              title={`In Progress: ${item.progress} tasks (${Math.round(percent(item.progress))}%)`}
+              style={{ width: `${percent(item.progress)}%` }}
+            />
+            <div
+              className="bar not-started"
+              title={`Not Started: ${item.notStarted} tasks (${Math.round(percent(item.notStarted))}%)`}
+              style={{ width: `${percent(item.notStarted)}%` }}
+            />
+            <div
+              className="bar overdue"
+              title={`Overdue: ${item.overdue} tasks (${Math.round(percent(item.overdue))}%)`}
+              style={{ width: `${percent(item.overdue)}%` }}
+            />
+          </div>
+
+          <strong>{item.total}</strong>
         </div>
-
-        <strong>{item.total}</strong>
-      </div>
-    ))}
+      );
+    })}
+    {taskStatusByCapability.length === 0 && (
+      <p className="muted-copy">No tasks are available for the selected employee scope.</p>
+    )}
 
     <div className="legend">
       <span><i className="legend-box completed-box"></i> Completed</span>
@@ -254,8 +300,8 @@ export default function ProductivityPage() {
   <div className="dashboard-card">
     <div className="card-header">
       <div>
-        <h3>Productivity by Task Category</h3>
-        <p className="subtitle">Hours logged this week</p>
+        <h3>Tasks by Category</h3>
+        <p className="subtitle">Current tasks in the selected employee scope</p>
       </div>
 
       <button className="details-btn">
@@ -263,25 +309,31 @@ export default function ProductivityPage() {
       </button>
     </div>
 
-    {[
-      { name: "Capability Building", value: 126, width: 100 },
-      { name: "Mandatory Learning", value: 94, width: 59 },
-      { name: "Internal Assignments", value: 72, width: 84 },
-      { name: "Deployment Preparation", value: 58, width: 93 },
-    ].map((item) => (
-      <div className="productivity-row" key={item.name}>
-        <strong>{item.name}</strong>
+    {taskCategoryStats.map((item) => {
+      const tooltip = `${item.name}: ${item.count} ${item.count === 1 ? 'task' : 'tasks'}`;
+      return (
+        <div
+          className="productivity-row chart-data-tooltip"
+          data-chart-tooltip={tooltip}
+          title={tooltip}
+          key={item.name}
+        >
+          <strong>{item.name}</strong>
 
-        <div className="productivity-track">
-          <div
-            className="productivity-fill"
-            style={{ width: `${item.width}%` }}
-          />
+          <div className="productivity-track">
+            <div
+              className="productivity-fill"
+              style={{ width: `${(item.count / maxCategoryCount) * 100}%` }}
+            />
+          </div>
+
+          <strong>{item.count}</strong>
         </div>
-
-        <strong>{item.value}h</strong>
-      </div>
-    ))}
+      );
+    })}
+    {taskCategoryStats.length === 0 && (
+      <p className="muted-copy">No tasks are available for the selected employee scope.</p>
+    )}
   </div>
 
 </div>
@@ -290,7 +342,7 @@ export default function ProductivityPage() {
         
         <div className="eod-card">
   <h3>EOD Submission Rate</h3>
-  <p>Last 10 working days</p>
+  <p>Illustrative demo values · last 10 working days</p>
 
   <div className="eod-chart">
     {[
@@ -305,7 +357,12 @@ export default function ProductivityPage() {
       { day: "D-1", value: 90 },
       { day: "Today", value: 78 },
     ].map((item) => (
-      <div className="eod-column" key={item.day}>
+      <div
+        className="eod-column chart-data-tooltip"
+        data-chart-tooltip={`${item.day}: ${item.value}% illustrative demo EOD submission rate`}
+        title={`${item.day}: ${item.value}% illustrative demo EOD submission rate`}
+        key={item.day}
+      >
         <span className="eod-percent">{item.value}%</span>
 
         <div className="eod-bar-track">
