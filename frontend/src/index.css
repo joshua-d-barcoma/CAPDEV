@@ -424,11 +424,26 @@ background: linear-gradient(
  font-size: 9px;
  font-weight: 800;
 }
+.notification-tabs-wrap {
+ position: relative;
+ width: 100%;
+ padding: 0 10px 10px;
+ overflow: hidden;
+}
 .notification-tabs {
  display: flex;
+ width: 100%;
  gap: 5px;
- padding: 0 16px 10px;
+ padding: 0;
+ margin: 0;
  overflow-x: auto;
+ overflow-y: hidden;
+ scrollbar-width: none;
+ -ms-overflow-style: none;
+ scroll-behavior: smooth;
+}
+.notification-tabs::-webkit-scrollbar {
+ display: none;
 }
 .notification-tabs button {
  flex: 0 0 auto;
@@ -438,6 +453,7 @@ background: linear-gradient(
  background: #fff;
  color: var(--muted);
  font-size: 8px;
+ white-space: nowrap;
 }
 .notification-tabs button.active {
  border-color: #ead7f4;
@@ -12604,3 +12620,40 @@ html body .app-layout.theme-dark .page-content :is(
   filter: none;
   transform: translateY(-1px);
 }
+
+/* BenchFlow notification icons */
+.header .notification-avatar {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 36px !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  font-size: 0 !important;
+}
+
+.header .notification-avatar > svg {
+  display: block !important;
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  overflow: visible !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 1.9 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.header .notification-avatar-request,
+.header .notification-avatar-rto,
+.header .notification-avatar-meeting { background: #efdfff !important; color: #a500ef !important; }
+.header .notification-avatar-warning { background: #fff0d8 !important; color: #f08a00 !important; }
+.header .notification-avatar-training { background: #e1f2ff !important; color: #1473e6 !important; }
+.header .notification-avatar-task { background: #e3f8ec !important; color: #15a258 !important; }
+.header .notification-avatar-employee { background: #fff0dc !important; color: #ed8c14 !important; }
+.header .notification-avatar-compliance { background: #ffe4e4 !important; color: #ef4b4b !important; }
