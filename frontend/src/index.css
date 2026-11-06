@@ -7454,6 +7454,111 @@ background: linear-gradient(
     width: 100%;
   }
 }
+
+/* User Dashboard Layout */
+.user-dashboard-layout .main-area {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.user-dashboard-layout .page-content {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.user-dashboard-layout .user-dashboard-page {
+  width: 100%;
+  max-width: 1500px;
+  min-width: 0;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.user-dashboard-layout .user-dashboard-page > * {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.user-dashboard-layout :is(
+  .user-dashboard-welcome,
+  .user-training-alert,
+  .user-dashboard-metrics,
+  .user-dashboard-overview-grid,
+  .user-dashboard-work-grid,
+  .user-recommendations-panel
+) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.user-dashboard-layout .user-dashboard-metrics {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.user-dashboard-layout .user-dashboard-overview-grid,
+.user-dashboard-layout .user-dashboard-work-grid {
+  grid-template-columns: minmax(0, 1.58fr) minmax(0, 1fr);
+}
+
+.user-dashboard-layout :is(
+  .user-metric-card,
+  .panel,
+  .user-profile-panel,
+  .user-achievement-panel,
+  .user-today-panel,
+  .user-training-panel,
+  .user-readiness-panel,
+  .user-rto-panel,
+  .user-recommendation-card
+) {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.user-dashboard-layout :is(
+  .user-profile-copy,
+  .user-task-copy,
+  .user-training-title-row,
+  .user-recommendation-heading
+) {
+  min-width: 0;
+}
+
+@media (max-width: 1050px) {
+  .user-dashboard-layout .user-dashboard-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .user-dashboard-layout .user-dashboard-overview-grid,
+  .user-dashboard-layout .user-dashboard-work-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .user-dashboard-layout .user-recommendation-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .user-dashboard-layout .user-recommendation-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 430px) {
+  .user-dashboard-layout .user-dashboard-metrics {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Admin Dashboard Layout */
 .admin-dashboard-layout {
   --canvas: #f3eff8;
   --border: #eee8f3;
