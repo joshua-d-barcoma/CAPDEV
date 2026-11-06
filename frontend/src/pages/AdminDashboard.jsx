@@ -153,7 +153,7 @@ export default function AdminDashboard() {
           value={employeesOnLeave}
           detail="Approved leave today"
           tone="blue"
-          icon="◷"
+          icon="clock"
         />
         <StatCard
           label="Active Capabilities"
@@ -166,7 +166,7 @@ export default function AdminDashboard() {
           label="Skills Tracked"
           value={trackedSkills}
           detail="Unique employee skills"
-          icon="✦"
+          icon="sparkle"
         />
         <StatCard
           label="Open Action Items"

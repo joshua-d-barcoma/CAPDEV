@@ -391,6 +391,7 @@ export default function LearningPage() {
           value={`${completionRate}%`}
           detail={`${completedCount} of ${assignments.length} assigned learning`}
           icon="capability"
+          tone="green"
         />
         <StatCard
           label="No active tasks"
@@ -404,6 +405,7 @@ export default function LearningPage() {
           value={mandatoryTraining.filter((item) => item.status === 'Active').length}
           detail="Active training programs"
           icon="people"
+          tone="blue"
         />
       </div>
 

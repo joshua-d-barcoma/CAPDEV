@@ -184,28 +184,29 @@ export default function HistoryPage() {
           label="Present Days"
           value={presentDays}
           detail="Recorded attendance"
-          icon="✓"
-          tone="purple"
+          icon="check"
+          tone="green"
         />
         <StatCard
           label="On Leave"
           value={leaveDays}
           detail="Recorded leave days"
-          icon="↗"
-          tone="green"
+          icon="arrow-up-right"
+          tone="blue"
         />
         <StatCard
           label="Absent Days"
           value={absentDays}
           detail="Attendance marked absent"
-          icon="!"
+          icon="ex-mark"
           tone="red"
         />
+
         <StatCard
           label="Exception"
           value={exceptionDays}
           detail="Attendance requiring review"
-          icon="!"
+          icon="alert"
           tone="orange"
         />
       </section>
