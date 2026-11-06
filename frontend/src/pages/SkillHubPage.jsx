@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { Panel } from '../components/Panel.jsx';
 import { StatusBadge } from '../components/StatusBadge.jsx';
 import { useBenchData } from '../hooks/useBenchData.js';
+import "./SkillHubPage.css";
 
 const readiness = [
   { label: 'Technical profile updated', complete: true },
@@ -66,6 +67,13 @@ const pointsOfContact = [
 export default function SkillHubPage() {
   const { cohorts, certifications, announcements, toggleCohort } = useBenchData();
   const [voucherRequested, setVoucherRequested] = useState(false);
+  const [skillHubAlert, setSkillHubAlert] = useState(null);
+
+  useEffect(() => {
+    if (!skillHubAlert) return undefined;
+    const timer = window.setTimeout(() => setSkillHubAlert(null), 4000);
+    return () => window.clearTimeout(timer);
+  }, [skillHubAlert]);
   const [checkedItems, setCheckedItems] = useState(readiness.map((item) => item.complete));
   const [enrolledBootcamps, setEnrolledBootcamps] = useState(
     () => new Set(bootcamps.filter((bootcamp) => bootcamp.enrolled).map((bootcamp) => bootcamp.id)),
@@ -74,16 +82,43 @@ export default function SkillHubPage() {
   const readinessPercent = Math.round((completeCount / readiness.length) * 100);
 
   function toggleBootcamp(bootcampId) {
+    const bootcamp = bootcamps.find((item) => item.id === bootcampId);
+    const isEnrolling = !enrolledBootcamps.has(bootcampId);
+
     setEnrolledBootcamps((current) => {
       const next = new Set(current);
       if (next.has(bootcampId)) next.delete(bootcampId);
       else next.add(bootcampId);
       return next;
     });
+
+    if (isEnrolling && bootcamp) {
+      setSkillHubAlert({
+        title: 'Bootcamp enrolled',
+        message: `You successfully enrolled in ${bootcamp.name}.`,
+      });
+    }
   }
 
   return (
     <div className="page-stack skill-hub-page">
+      {skillHubAlert && (
+        <div className="skill-hub-toast" role="status" aria-live="polite">
+          <div className="skill-hub-toast__icon" aria-hidden="true">✓</div>
+          <div className="skill-hub-toast__content">
+            <strong>{skillHubAlert.title}</strong>
+            <span>{skillHubAlert.message}</span>
+          </div>
+          <button
+            type="button"
+            className="skill-hub-toast__close"
+            onClick={() => setSkillHubAlert(null)}
+            aria-label="Close alert"
+          >
+            ×
+          </button>
+        </div>
+      )}
       <PageHeader
         eyebrow="Personal Workspace"
         title="Skill Hub"
@@ -163,7 +198,13 @@ export default function SkillHubPage() {
           </div>
           <button
             className="button button-secondary voucher-button"
-            onClick={() => setVoucherRequested(true)}
+            onClick={() => {
+                setVoucherRequested(true);
+                setSkillHubAlert({
+                  title: 'Voucher request submitted',
+                  message: 'Your certification voucher request was submitted successfully.',
+                });
+              }}
             disabled={voucherRequested}
           >
             {voucherRequested ? 'Voucher request submitted' : 'Request certification voucher'}
@@ -215,7 +256,16 @@ export default function SkillHubPage() {
               <p>{cohort.focus}</p>
               <button
                 className={`button ${cohort.joined ? 'button-secondary' : 'button-primary'} button-small`}
-                onClick={() => toggleCohort(cohort.id)}
+                onClick={() => {
+                    const isJoining = !cohort.joined;
+                    toggleCohort(cohort.id);
+                    setSkillHubAlert({
+                      title: isJoining ? 'Cohort joined' : 'Cohort left',
+                      message: isJoining
+                        ? `You successfully joined ${cohort.name}.`
+                        : `You successfully left ${cohort.name}.`,
+                    });
+                  }}
               >
                 {cohort.joined ? 'Leave cohort' : 'Join cohort'}
               </button>

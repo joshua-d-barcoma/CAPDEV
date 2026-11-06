@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DataTable } from '../components/DataTable.jsx';
 import { DateFilter } from '../components/DateFilter.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
@@ -111,7 +111,7 @@ export default function HistoryPage() {
   const [period, setPeriod] = useState(() => getInitialRange(personalRecords));
   const [schedule, setSchedule] = useState(null);
   const [editing, setEditing] = useState(false);
-  const [notice, setNotice] = useState('');
+  const [approvalAlert, setApprovalAlert] = useState(null);
   const [page, setPage] = useState(1);
   const currentSchedule = employee ? employeeSchedules[employee.id] : null;
   const periodRecords = personalRecords.filter(
@@ -151,13 +151,27 @@ export default function HistoryPage() {
     },
   ];
 
+  useEffect(() => {
+    if (!approvalAlert) return undefined;
+
+    const timer = window.setTimeout(() => {
+      setApprovalAlert(null);
+    }, 4000);
+
+    return () => window.clearTimeout(timer);
+  }, [approvalAlert]);
+
   function submitRequest() {
     if (!employee) return;
     const pending = requests.some(
       (request) => request.kind === 'schedule' && request.status === 'Pending',
     );
     if (pending) {
-      setNotice('You already have a schedule request waiting for review.');
+      setApprovalAlert({
+        title: 'Request already submitted',
+        message: 'You already have a schedule request waiting for review.',
+        type: 'warning',
+      });
       return;
     }
     const saved = submitScheduleRequest({
@@ -167,7 +181,11 @@ export default function HistoryPage() {
     });
     if (saved) {
       setEditing(false);
-      setNotice('Your schedule change request has been sent for review.');
+      setApprovalAlert({
+        title: 'Request submitted',
+        message: 'Your schedule change request has been sent for review.',
+        type: 'success',
+      });
     }
   }
 
@@ -178,6 +196,30 @@ export default function HistoryPage() {
         title="Time In / Time Out History"
         description="Review your previous attendance records and hours worked."
       />
+
+      {approvalAlert && (
+        <div
+          className={`history-toast history-toast--${approvalAlert.type}`}
+          role="status"
+          aria-live="polite"
+        >
+          <div className="history-toast__icon" aria-hidden="true">
+            {approvalAlert.type === 'warning' ? '!' : '✓'}
+          </div>
+          <div className="history-toast__content">
+            <strong>{approvalAlert.title}</strong>
+            <span>{approvalAlert.message}</span>
+          </div>
+          <button
+            type="button"
+            className="history-toast__close"
+            onClick={() => setApprovalAlert(null)}
+            aria-label="Close alert"
+          >
+            ×
+          </button>
+        </div>
+      )}
 
       <section className="stat-grid history-metrics" aria-label="Attendance summary">
         <StatCard
@@ -211,12 +253,6 @@ export default function HistoryPage() {
         />
       </section>
 
-      {notice && (
-        <div className="success-message" role="status">
-          {notice}
-        </div>
-      )}
-
       <Panel
         title="My RTO Schedule"
         eyebrow="Return To Office"
@@ -226,7 +262,7 @@ export default function HistoryPage() {
             <button
               className="button button-secondary"
               onClick={() => {
-                setNotice('');
+                setApprovalAlert(null);
                 setSchedule({ ...(currentSchedule ?? {}) });
                 setEditing(true);
               }}
