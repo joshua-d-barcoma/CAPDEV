@@ -251,3 +251,60 @@
     flex-direction: column;
   }
 }
+
+
+/* Attendance History pagination */
+.history-pagination .history-page-buttons {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end;
+  gap: 5px;
+  width: auto;
+}
+
+.history-pagination .history-page-buttons button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-width: 32px;
+  width: auto;
+  height: 32px;
+  padding: 0 8px;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+
+.history-pagination .history-page-buttons button:hover:not(:disabled):not(.active) {
+  border-color: #dcb0f3;
+  background: var(--purple-soft);
+}
+
+.history-pagination .history-page-buttons button.active,
+.history-pagination .history-page-buttons button.active:hover,
+.history-pagination .history-page-buttons button.active:focus,
+.history-pagination .history-page-buttons button.active:focus-visible,
+.history-pagination .history-page-buttons button.active:active {
+  border-color: var(--purple);
+  background: var(--purple);
+  color: #fff;
+  transform: none;
+  box-shadow: none;
+  outline: none;
+  cursor: default;
+}
+
+.history-pagination .history-page-buttons button:disabled {
+  color: var(--subtle);
+  cursor: not-allowed;
+}
