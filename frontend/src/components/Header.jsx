@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../constants/routes.js';
 import { getInitials } from '../utils/formatters.js';
 
@@ -20,20 +20,29 @@ const titlesByPath = {
   [ROUTES.skillHub]: ['Skill Hub', 'Learning and development'],
 };
 
+const BellIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/><path d="M10 21h4"/></svg>;
+const CalendarIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 9.5h17"/></svg>;
+const UserPlusIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c.6-3.5 2.4-5.2 5.5-5.2s4.9 1.7 5.5 5.2M18 7v6M15 10h6"/></svg>;
+const AlertIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 3.5 19h17L12 3.5Z"/><path d="M12 9v4.5M12 17h.01"/></svg>;
+const TrainingIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 8.5 9-5 9 5-9 5-9-5Z"/><path d="M7 11.5v4.2c2.8 2.2 7.2 2.2 10 0v-4.2M21 8.5v6"/></svg>;
+const TaskIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 2.5 2.5L16.5 9"/></svg>;
+const ShieldIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19 6v5c0 4.5-2.7 7.8-7 10-4.3-2.2-7-5.5-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/></svg>;
+
 const notificationData = {
   admin: [
-    { id: 'admin-rto-1', category: 'RTO', title: 'New RTO Change Request', description: 'Maria Cruz submitted an RTO change request for', time: 'Nov 3', action: 'Review Request', tone: 'request' },
-    { id: 'admin-attendance-1', category: 'Attendance', title: 'Attendance Exception', description: 'Maria Cruz has submitted an RTO change request for', detail: 'John Reyes was marked absent today', action: 'View Attendance', tone: 'warning' },
-    { id: 'admin-training-1', category: 'Training', title: 'Training Deadline Approaching', description: '3 employees have upcoming training deadlines', detail: 'this week', action: 'View Training', tone: 'avatar' },
-    { id: 'admin-task-1', category: 'Tasks', title: 'Task Overdue', description: '5 action items are overdue', action: 'View Tasks', tone: 'avatar' },
-    { id: 'admin-employee-1', category: 'Employee', title: 'Employee Added', description: '1 employee has joined the certification', action: 'View Employee', tone: 'avatar' },
+    { id: 'admin-rto-1', category: 'RTO', title: 'New RTO Change Request', description: 'Maria Cruz submitted an RTO change request for Nov 3 - Nov 7, 2026.', time: '10 minutes ago', action: 'Review Request', routeKey: 'attendance', icon: UserPlusIcon, tone: 'request' },
+    { id: 'admin-attendance-1', category: 'Attendance', title: 'Attendance Exception', description: 'John Reyes was marked absent today.', time: '1 hour ago', action: 'View Attendance', routeKey: 'attendance', icon: AlertIcon, tone: 'warning' },
+    { id: 'admin-training-1', category: 'Learning', title: 'Training Deadline Approaching', description: '3 employees have upcoming training deadlines this week.', time: '2 hours ago', action: 'View Training', routeKey: 'learning', icon: TrainingIcon, tone: 'training' },
+    { id: 'admin-task-1', category: 'Tasks', title: 'Task Overdue', description: '5 action items are overdue.', time: '4 hours ago', action: 'View Tasks', routeKey: 'actionItems', icon: TaskIcon, tone: 'task' },
+    { id: 'admin-employee-1', category: 'Employees', title: 'Employee Added', description: 'Alex Santos has been added to BenchFlow.', time: 'Yesterday, 4:20 PM', action: 'View Employee', routeKey: 'employees', icon: UserPlusIcon, tone: 'employee' },
+    { id: 'admin-compliance-1', category: 'Attendance', title: 'Compliance Alert', description: '1 employee has an attendance compliance item that needs review.', time: 'Yesterday, 1:15 PM', action: 'View Compliance', routeKey: 'attendance', icon: ShieldIcon, tone: 'compliance' },
   ],
   user: [
-    { id: 'user-rto-1', category: 'RTO', title: 'New RTO Request Approved', description: 'Your RTO request approved for Nov 3 - Nov 7, 2026', action: 'View Schedule', tone: 'avatar' },
-    { id: 'user-task-1', category: 'Tasks', title: 'Task Due Soon', description: 'Complete the Skill Assessment task by Oct 31, 2026', action: 'View Task', tone: 'avatar' },
-    { id: 'user-training-1', category: 'Training', title: 'Training Deadline Approaching', description: 'Microsoft Learn for Azure Fundamentals is due on Nov 5 2026', action: 'View Training', tone: 'avatar' },
-    { id: 'user-attendance-1', category: 'Attendance', title: 'Attendance Exception', description: 'You were marked absent today. Please review your attendance', action: 'View Attendance', tone: 'avatar' },
-    { id: 'user-meeting-1', category: 'Other', title: 'Upcoming Meeting', description: 'Team Sync Meeting starts in 30 minutes', action: 'View Calendar', tone: 'avatar' },
+    { id: 'user-rto-1', category: 'RTO', title: 'RTO Request Approved', description: 'Your RTO change request for Nov 3 - Nov 7, 2026 has been approved.', time: '15 minutes ago', action: 'View Schedule', routeKey: 'calendar', icon: CalendarIcon, tone: 'rto' },
+    { id: 'user-task-1', category: 'Tasks', title: 'Task Due Soon', description: 'Complete the Skill Assessment task by Nov 8, 2026.', time: '2 hours ago', action: 'View Task', routeKey: 'tasks', icon: TaskIcon, tone: 'task' },
+    { id: 'user-training-1', category: 'Training', title: 'Training Deadline Approaching', description: 'Microsoft Azure Fundamentals is due on Nov 9, 2026.', time: '3 hours ago', action: 'View Training', routeKey: 'skillHub', icon: TrainingIcon, tone: 'training' },
+    { id: 'user-attendance-1', category: 'Attendance', title: 'Attendance Exception', description: 'You were marked absent today. Please review your attendance record.', time: 'Today, 9:15 AM', action: 'View Attendance', routeKey: 'history', icon: AlertIcon, tone: 'warning' },
+    { id: 'user-meeting-1', category: 'Calendar', title: 'Upcoming Meeting', description: 'Team Sync Meeting starts in 30 minutes.', time: 'Today, 9:30 AM', action: 'View Calendar', routeKey: 'calendar', icon: BellIcon, tone: 'meeting' },
   ],
 };
 
@@ -45,6 +54,7 @@ export function Header({ role, theme, onToggleTheme, onToggleSidebar, onLogout }
   const profileRef = useRef(null);
   const notificationsRef = useRef(null);
   const location = useLocation();
+  const navigate = useNavigate();
   const title =
     titlesByPath[location.pathname] ??
     (location.pathname.startsWith(ROUTES.employeeImportHistory)
@@ -85,8 +95,8 @@ export function Header({ role, theme, onToggleTheme, onToggleSidebar, onLogout }
     return item.category === activeFilter;
   });
   const filters = role === 'admin'
-    ? ['All', 'Unread', 'RTO', 'Tasks', 'Attendance']
-    : ['All', 'Unread', 'RTO', 'Tasks', 'Attendance'];
+    ? ['All', 'Unread', 'RTO', 'Attendance', 'Tasks', 'Learning', 'Employees']
+    : ['All', 'Unread', 'RTO', 'Tasks', 'Training', 'Attendance', 'Calendar'];
 
   function markNotificationRead(id) {
     setReadNotifications((current) => {
@@ -102,6 +112,13 @@ export function Header({ role, theme, onToggleTheme, onToggleSidebar, onLogout }
       notifications.forEach((item) => next.add(item.id));
       return next;
     });
+  }
+
+  function handleNotificationClick(item) {
+    markNotificationRead(item.id);
+    setNotificationsOpen(false);
+    const destination = ROUTES[item.routeKey];
+    if (destination) navigate(destination);
   }
 
   return (
@@ -152,24 +169,26 @@ export function Header({ role, theme, onToggleTheme, onToggleSidebar, onLogout }
                   Mark all as read
                 </button>
               </div>
-              <div className="notification-tabs" aria-label="Filter notifications">
-                {filters.map((filter) => {
-                  const count = filter === 'All'
-                    ? notifications.length
-                    : filter === 'Unread'
-                      ? unreadCount
-                      : notifications.filter((item) => item.category === filter).length;
-                  return (
-                    <button
-                      type="button"
-                      key={filter}
-                      className={activeFilter === filter ? 'active' : ''}
-                      onClick={() => setActiveFilter(filter)}
-                    >
-                      {filter} ({count})
-                    </button>
-                  );
-                })}
+              <div className="notification-tabs-wrap">
+                <div className="notification-tabs" aria-label="Filter notifications">
+                  {filters.map((filter) => {
+                    const count = filter === 'All'
+                      ? notifications.length
+                      : filter === 'Unread'
+                        ? unreadCount
+                        : notifications.filter((item) => item.category === filter).length;
+                    return (
+                      <button
+                        type="button"
+                        key={filter}
+                        className={activeFilter === filter ? 'active' : ''}
+                        onClick={() => setActiveFilter(filter)}
+                      >
+                        {filter} ({count})
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
               <div className="notification-list">
                 {filteredNotifications.map((item) => {
@@ -179,17 +198,17 @@ export function Header({ role, theme, onToggleTheme, onToggleSidebar, onLogout }
                       type="button"
                       className={`notification-item${isRead ? ' notification-read' : ''}`}
                       key={item.id}
-                      onClick={() => markNotificationRead(item.id)}
+                      onClick={() => handleNotificationClick(item)}
                     >
                       <span className={`notification-avatar notification-avatar-${item.tone}`} aria-hidden="true">
-                        {item.tone === 'request' ? '♙' : item.tone === 'warning' ? '!' : 'AS'}
+                        <item.icon />
                       </span>
                       <span className="notification-copy">
                         <strong>{item.title}</strong>
                         <small>
                           {item.description}
                           {item.detail && <> <span>{item.detail}</span></>}
-                          {item.time && <> · Nov 3, 2026</>}
+                          {item.time && <> · {item.time}</>}
                         </small>
                       </span>
                       <span className={`notification-status-dot${isRead ? ' read' : ''}`} aria-label={isRead ? 'Read' : 'Unread'} />

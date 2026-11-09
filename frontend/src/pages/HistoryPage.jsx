@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DataTable } from '../components/DataTable.jsx';
 import { DateFilter } from '../components/DateFilter.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
@@ -65,17 +65,53 @@ export default function HistoryPage() {
     submitScheduleRequest,
   } = useBenchData();
   const employee = employees.find((item) => item.name === 'Alex Santos');
+  const demoAttendanceRecords = useMemo(() => {
+    if (!employee?.id) return [];
+
+    const statuses = ['Present', 'Present', 'Present', 'Present', 'Exception', 'Absent'];
+    const records = [];
+    let cursor = new Date();
+    cursor.setHours(0, 0, 0, 0);
+
+    while (records.length < 40) {
+      const day = cursor.getDay();
+      if (day !== 0 && day !== 6) {
+        const date = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}-${String(cursor.getDate()).padStart(2, '0')}`;
+        const status = statuses[records.length % statuses.length];
+        const exception = status === 'Exception';
+        const absent = status === 'Absent';
+
+        records.push({
+          id: `demo-attendance-${date}`,
+          employeeId: employee.id,
+          date,
+          timeIn: absent ? null : exception ? '9:22 AM' : records.length % 3 === 0 ? '8:47 AM' : '8:55 AM',
+          timeOut: absent ? null : records.length % 4 === 0 ? '6:03 PM' : '5:35 PM',
+          status,
+          workType: records.length % 2 === 0 ? 'Onsite' : 'Work from home',
+        });
+      }
+      cursor.setDate(cursor.getDate() - 1);
+    }
+
+    return records;
+  }, [employee?.id]);
+
   const personalRecords = useMemo(
-    () =>
-      attendanceRecords
-        .filter((record) => record.employeeId === employee?.id)
-        .sort((first, second) => second.date.localeCompare(first.date)),
-    [attendanceRecords, employee?.id],
+    () => {
+      const realRecords = attendanceRecords.filter((record) => record.employeeId === employee?.id);
+      const realDates = new Set(realRecords.map((record) => record.date));
+      const extraRecords = demoAttendanceRecords.filter((record) => !realDates.has(record.date));
+
+      return [...realRecords, ...extraRecords]
+        .sort((first, second) => second.date.localeCompare(first.date));
+    },
+    [attendanceRecords, demoAttendanceRecords, employee?.id],
   );
   const [period, setPeriod] = useState(() => getInitialRange(personalRecords));
   const [schedule, setSchedule] = useState(null);
   const [editing, setEditing] = useState(false);
-  const [notice, setNotice] = useState('');
+  const [approvalAlert, setApprovalAlert] = useState(null);
   const [page, setPage] = useState(1);
   const currentSchedule = employee ? employeeSchedules[employee.id] : null;
   const periodRecords = personalRecords.filter(
@@ -91,7 +127,8 @@ export default function HistoryPage() {
   const exceptionDays = periodRecords.filter(
     (record) => getHistoryStatus(record) === 'Exception',
   ).length;
-  const pageCount = Math.max(1, Math.ceil(periodRecords.length / PAGE_SIZE));
+  const availablePageCount = Math.max(1, Math.ceil(periodRecords.length / PAGE_SIZE));
+  const displayedPageCount = 5;
   const pageRows = periodRecords.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   const requests = scheduleRequests.filter((request) => request.employeeId === employee?.id);
   const columns = [
@@ -106,6 +143,11 @@ export default function HistoryPage() {
       label: 'Time Out',
       render: (record) => (isLeaveRecord(record) ? 'Not required' : (record.timeOut ?? '—')),
     },
+    {
+      key: 'workMode',
+      label: 'Work Mode',
+      render: (record) => record.workType ?? record.workMode ?? '—',
+    },
     { key: 'hours', label: 'Hours', render: formatHours },
     {
       key: 'status',
@@ -114,13 +156,27 @@ export default function HistoryPage() {
     },
   ];
 
+  useEffect(() => {
+    if (!approvalAlert) return undefined;
+
+    const timer = window.setTimeout(() => {
+      setApprovalAlert(null);
+    }, 4000);
+
+    return () => window.clearTimeout(timer);
+  }, [approvalAlert]);
+
   function submitRequest() {
     if (!employee) return;
     const pending = requests.some(
       (request) => request.kind === 'schedule' && request.status === 'Pending',
     );
     if (pending) {
-      setNotice('You already have a schedule request waiting for review.');
+      setApprovalAlert({
+        title: 'Request already submitted',
+        message: 'You already have a schedule request waiting for review.',
+        type: 'warning',
+      });
       return;
     }
     const saved = submitScheduleRequest({
@@ -130,7 +186,11 @@ export default function HistoryPage() {
     });
     if (saved) {
       setEditing(false);
-      setNotice('Your schedule change request has been sent for review.');
+      setApprovalAlert({
+        title: 'Request submitted',
+        message: 'Your schedule change request has been sent for review.',
+        type: 'success',
+      });
     }
   }
 
@@ -142,42 +202,61 @@ export default function HistoryPage() {
         description="Review your previous attendance records and hours worked."
       />
 
+      {approvalAlert && (
+        <div
+          className={`history-toast history-toast--${approvalAlert.type}`}
+          role="status"
+          aria-live="polite"
+        >
+          <div className="history-toast__icon" aria-hidden="true">
+            {approvalAlert.type === 'warning' ? '!' : '✓'}
+          </div>
+          <div className="history-toast__content">
+            <strong>{approvalAlert.title}</strong>
+            <span>{approvalAlert.message}</span>
+          </div>
+          <button
+            type="button"
+            className="history-toast__close"
+            onClick={() => setApprovalAlert(null)}
+            aria-label="Close alert"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       <section className="stat-grid history-metrics" aria-label="Attendance summary">
         <StatCard
           label="Present Days"
           value={presentDays}
           detail="Recorded attendance"
-          icon="✓"
-          tone="purple"
+          icon="check"
+          tone="green"
         />
         <StatCard
           label="On Leave"
           value={leaveDays}
           detail="Recorded leave days"
-          icon="↗"
-          tone="green"
+          icon="arrow-up-right"
+          tone="blue"
         />
         <StatCard
           label="Absent Days"
           value={absentDays}
           detail="Attendance marked absent"
-          icon="!"
+          icon="ex-mark"
           tone="red"
         />
+
         <StatCard
           label="Exception"
           value={exceptionDays}
           detail="Attendance requiring review"
-          icon="!"
+          icon="alert"
           tone="orange"
         />
       </section>
-
-      {notice && (
-        <div className="success-message" role="status">
-          {notice}
-        </div>
-      )}
 
       <Panel
         title="My RTO Schedule"
@@ -188,7 +267,7 @@ export default function HistoryPage() {
             <button
               className="button button-secondary"
               onClick={() => {
-                setNotice('');
+                setApprovalAlert(null);
                 setSchedule({ ...(currentSchedule ?? {}) });
                 setEditing(true);
               }}
@@ -298,25 +377,36 @@ export default function HistoryPage() {
             Showing {periodRecords.length ? (page - 1) * PAGE_SIZE + 1 : 0} to{' '}
             {Math.min(page * PAGE_SIZE, periodRecords.length)} of {periodRecords.length} records
           </span>
-          <div>
+          <nav className="history-page-buttons" aria-label="Attendance history pages">
             <button
-              aria-label="Previous page"
+              type="button"
               disabled={page <= 1}
               onClick={() => setPage((current) => Math.max(1, current - 1))}
             >
-              ‹
+              ‹ Previous
             </button>
-            <span>
-              Page {page} of {pageCount}
-            </span>
+
+            {Array.from({ length: displayedPageCount }, (_, index) => index + 1).map((pageNumber) => (
+              <button
+                type="button"
+                key={pageNumber}
+                className={pageNumber === page ? 'active' : ''}
+                aria-current={pageNumber === page ? 'page' : undefined}
+                disabled={pageNumber > availablePageCount}
+                onClick={() => setPage(pageNumber)}
+              >
+                {pageNumber}
+              </button>
+            ))}
+
             <button
-              aria-label="Next page"
-              disabled={page >= pageCount}
-              onClick={() => setPage((current) => Math.min(pageCount, current + 1))}
+              type="button"
+              disabled={page >= availablePageCount}
+              onClick={() => setPage((current) => Math.min(availablePageCount, current + 1))}
             >
-              ›
+              Next ›
             </button>
-          </div>
+          </nav>
         </div>
       </Panel>
     </div>

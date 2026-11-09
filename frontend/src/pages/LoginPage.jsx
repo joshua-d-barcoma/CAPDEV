@@ -253,7 +253,9 @@ export default function LoginPage() {
 
       createDemoSession(result.user);
 
-      navigate(result.user.redirectTo);
+      navigate(result.user.redirectTo, {
+        state: { loginAnimation: true },
+      });
     } catch (err) {
       console.error("Login failed:", err);
 
@@ -290,7 +292,9 @@ export default function LoginPage() {
      * Redirect based on account type.
      */
 
-    navigate(account.redirectTo);
+    navigate(account.redirectTo, {
+      state: { loginAnimation: true },
+    });
   };
 
   return (

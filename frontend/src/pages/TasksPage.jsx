@@ -206,21 +206,21 @@ export default function TasksPage() {
           value={tasks.filter((task) => task.status === 'Completed').length}
           detail="Tasks completed"
           tone="green"
-          icon="✓"
+          icon="check"
         />
         <StatCard
           label="In Progress"
           value={tasks.filter((task) => task.status === 'In Progress').length}
           detail="Actively working on"
           tone="blue"
-          icon="◷"
+          icon="clock"
         />
         <StatCard
           label="Not Started"
           value={tasks.filter((task) => task.status === 'Not Started').length}
           detail="Ready when you are"
           tone="orange"
-          icon="!"
+          icon="alert"
         />
       </div>
       <div className="task-groups">

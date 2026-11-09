@@ -26,27 +26,32 @@ export default function ActionItemsPage() {
         description="Prioritize follow-ups that keep employees engaged and deployment-ready."
       />
       <div className="stat-grid">
-        <StatCard label="Open items" value={open.length} detail="Awaiting completion" icon="⚑" />
+        <StatCard 
+          label="Open items" 
+          value={open.length} 
+          detail="Awaiting completion" 
+          icon="flag" 
+        />
         <StatCard
           label="High priority"
           value={open.filter((item) => item.priority === 'High').length}
           detail="Open high-priority items"
           tone="red"
-          icon="!"
+          icon="alert"
         />
         <StatCard
           label="Due today"
           value={open.filter((item) => item.due === 'Due today').length}
           detail="Requires attention today"
           tone="orange"
-          icon="◷"
+          icon="clock"
         />
         <StatCard
           label="Completed"
           value={actionItems.length - open.length}
           detail="Closed action items"
           tone="green"
-          icon="✓"
+          icon="check"
         />
       </div>
       <Panel title="Action register" eyebrow="Follow-up queue">

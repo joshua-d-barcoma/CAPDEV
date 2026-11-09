@@ -1,0 +1,87 @@
+.skill-hub-toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: min(390px, calc(100vw - 48px));
+  padding: 16px 18px;
+  background: #ffffff;
+  border: 1px solid #22a06b;
+  border-left: 4px solid #22a06b;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(0, 0, 0, 0.06);
+  animation: skill-hub-toast-enter 0.25s ease-out;
+}
+.skill-hub-toast__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  color: #ffffff;
+  background: #22a06b;
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: 700;
+}
+.skill-hub-toast__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.skill-hub-toast__content strong {
+  color: #1f2937;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.skill-hub-toast__content span {
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.skill-hub-toast__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: #6b7280;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.skill-hub-toast__close:hover {
+  color: #111827;
+  background: #f3f4f6;
+}
+.app-layout.theme-dark .skill-hub-toast,
+.app-shell.dark .skill-hub-toast {
+  background: #1f1f24;
+  border-color: #22a06b;
+}
+.app-layout.theme-dark .skill-hub-toast__content strong,
+.app-shell.dark .skill-hub-toast__content strong { color: #ffffff; }
+.app-layout.theme-dark .skill-hub-toast__content span,
+.app-layout.theme-dark .skill-hub-toast__close,
+.app-shell.dark .skill-hub-toast__content span,
+.app-shell.dark .skill-hub-toast__close { color: #d1d5db; }
+@keyframes skill-hub-toast-enter {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@media (max-width: 600px) {
+  .skill-hub-toast { top: 16px; right: 16px; left: 16px; width: auto; }
+}

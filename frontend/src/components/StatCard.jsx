@@ -7,6 +7,12 @@ const CARD_ICONS = {
     </>
   ),
   check: <path d="m5 12 4.5 4.5L19 7" />,
+  'ex-mark': (
+    <>
+      <path d="M6 6l12 12" />
+      <path d="M18 6 6 18" />
+    </>
+  ),
   alert: (
     <>
       <path d="M12 3 2.8 20h18.4L12 3Z" />
@@ -45,6 +51,24 @@ const CARD_ICONS = {
       <path d="M9 5.5V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5M9 11h6m-6 4h6" />
     </>
   ),
+  onsite: (
+    <>
+      <path d="M4 21h16" />
+      <path d="M6 21V8l6-4 6 4v13" />
+      <path d="M9 11h2" />
+      <path d="M13 11h2" />
+      <path d="M9 15h2" />
+      <path d="M13 15h2" />
+      <path d="M10 21v-3h4v3" />
+    </>
+  ),
+  'work-from-home': (
+    <>
+      <rect x="5" y="4" width="14" height="11" rx="1.5" />
+      <path d="M3 19h18" />
+      <path d="M8 19l1-4h6l1 4" />
+    </>
+  ),
 };
 
 export function StatCard({ label, value, detail, icon = '•', tone = 'purple' }) {
@@ -53,11 +77,15 @@ export function StatCard({ label, value, detail, icon = '•', tone = 'purple' }
     '⚑': 'flag',
     '!': 'alert',
     '✓': 'check',
+    '✕': 'ex-mark',
     '✦': 'sparkle',
     '↗': 'arrow-up-right',
     '◇': 'capability',
     '▣': 'layers',
     '📋': 'clipboard',
+    'onsite': 'onsite',
+    'work-from-home': 'work-from-home',
+    'leave': 'leave',
   }[icon] ?? icon;
 
   return (
