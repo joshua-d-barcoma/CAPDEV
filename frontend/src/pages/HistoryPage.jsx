@@ -143,6 +143,11 @@ export default function HistoryPage() {
       label: 'Time Out',
       render: (record) => (isLeaveRecord(record) ? 'Not required' : (record.timeOut ?? '—')),
     },
+    {
+      key: 'workMode',
+      label: 'Work Mode',
+      render: (record) => record.workType ?? record.workMode ?? '—',
+    },
     { key: 'hours', label: 'Hours', render: formatHours },
     {
       key: 'status',
