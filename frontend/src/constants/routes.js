@@ -5,6 +5,7 @@ export const ROUTES = Object.freeze({
   employeeImportHistory: '/resources/import-history',
   employeeImportHistoryEntry: '/resources/import-history/:importId',
   employee: '/admin/employees/:employeeName',
+  profile: '/profile',
   attendance: '/attendance',
   learning: '/learning',
   productivity: '/admin/work-management',
