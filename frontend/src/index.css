@@ -12511,6 +12511,52 @@ html body .app-layout.theme-dark.admin-productivity-layout .navigation-item:hove
   }
 }
 
+@keyframes app-login-enter {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.app-layout.login-transition > .sidebar,
+.app-layout.login-transition .main-area > .header {
+  animation: app-login-sidebar-enter 420ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.app-layout.login-transition .main-area > .page-content {
+  animation: app-login-enter 320ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+@keyframes app-login-sidebar-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes page-navigation-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.app-layout .page-content.page-navigation-enter {
+  animation: page-navigation-enter 260ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
 .app-layout .dialog-backdrop {
   animation: overlay-fade-in 180ms ease-out both;
 }
@@ -12526,6 +12572,21 @@ html body .app-layout.theme-dark.admin-productivity-layout .navigation-item:hove
   animation: popup-enter 170ms cubic-bezier(0.2, 0.75, 0.3, 1) both;
 }
 
+@keyframes notification-panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.app-layout .notifications-panel {
+  animation: notification-panel-enter 220ms cubic-bezier(0.2, 0.75, 0.3, 1) both;
+}
+
 .app-layout .button:not(:disabled):active,
 .app-layout button:not(:disabled):not(.text-button):not(.button-reset):active {
   transform: scale(0.98);
@@ -12538,6 +12599,20 @@ html body .app-layout.theme-dark.admin-productivity-layout .navigation-item:hove
   .app-layout .profile-menu,
   .app-layout .notifications-panel,
   .app-layout .date-filter-popover {
+    animation: none;
+  }
+
+  .app-layout.login-transition > .sidebar,
+  .app-layout.login-transition .main-area > .header {
+    animation: none;
+  }
+
+  .app-layout.login-transition .main-area > .page-content {
+    animation: none;
+  }
+
+  .app-layout .page-content.page-navigation-enter,
+  .app-layout .notifications-panel {
     animation: none;
   }
 }

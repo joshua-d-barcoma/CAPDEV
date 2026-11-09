@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import { Panel } from '../components/Panel.jsx';
 import { StatusBadge } from '../components/StatusBadge.jsx';
 import { ROUTES } from '../constants/routes.js';
@@ -54,8 +54,8 @@ function UserMetric({ label, value, detail, note, children }) {
 }
 
 export default function UserDashboard() {
-  const { employees, tasks, checkedIn, attendanceRecords, employeeSchedules, mandatoryTraining, learningAssignments, certifications, updateTask, updateLearningAssignment, addTask, refreshData } = useBenchData();
-  const [lastRefreshed, setLastRefreshed] = useState(null);
+  const { employees, tasks, checkedIn, attendanceRecords, employeeSchedules, mandatoryTraining, learningAssignments, certifications, updateTask, updateLearningAssignment, addTask } = useBenchData();
+  const { openWelcomeMailer } = useOutletContext();
   const [addedRecommendations, setAddedRecommendations] = useState(() => new Set());
   const [dashboardAlert, setDashboardAlert] = useState(null);
   const employee = employees.find((item) => item.name === 'Alex Santos') ?? employees.find((item) => !item.employeeStatus || item.employeeStatus === 'Bench');
@@ -99,7 +99,6 @@ export default function UserDashboard() {
     return () => window.clearTimeout(timer);
   }, [dashboardAlert]);
 
-  function handleRefresh() { if (refreshData()) setLastRefreshed(new Date()); }
   function toggleTask(task) { updateTask(task.id, task.status === 'Completed' ? 'In Progress' : 'Completed'); }
   function markTrainingComplete(assignment) { if (assignment.status !== 'Completed') updateLearningAssignment(assignment.id, 'Completed'); }
   function addRecommendation(recommendation) {
@@ -133,7 +132,7 @@ export default function UserDashboard() {
       )}
       <section className="user-dashboard-welcome" aria-labelledby="user-dashboard-title">
         <div className="user-dashboard-welcome-copy"><span className="user-dashboard-eyebrow">YOUR PERSONAL OVERVIEW</span><h1 id="user-dashboard-title">Welcome back, {firstName}!</h1><p>Here is your personal bench activity and deployment-readiness overview.</p></div>
-        <div className="user-dashboard-refresh"><span>Demo data · {lastRefreshed ? `Refreshed ${lastRefreshed.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}` : 'Not yet refreshed'}</span><button type="button" className="button user-refresh-button" onClick={handleRefresh}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4.6 9a7.5 7.5 0 0 1 13-2L20 12m-16 5v-5h5m10 3a7.5 7.5 0 0 1-13 2L4 12" /></svg>Refresh dashboard</button></div>
+        <div className="user-dashboard-refresh"><span>Policies and employee guidelines</span><button type="button" className="button user-refresh-button" onClick={openWelcomeMailer}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4zM4 7l8 6 8-6M8 16h8" /></svg>Welcome Mailer</button></div>
       </section>
 
       {pendingTraining ? <section className="user-training-alert" aria-label="Mandatory item pending"><span className="user-alert-icon" aria-hidden="true">!</span><div><strong>Mandatory item pending</strong><span>Complete {pendingTraining.training.title} to keep your compliance status current.</span></div><Link className="button user-alert-button" to={ROUTES.tasks}>View training <span aria-hidden="true">→</span></Link></section> : <section className="user-training-alert is-complete" role="status"><span className="user-alert-icon" aria-hidden="true">✓</span><div><strong>Mandatory learning complete</strong><span>Your active required learning items are complete.</span></div><Link className="button user-alert-button" to={ROUTES.tasks}>View training <span aria-hidden="true">→</span></Link></section>}
