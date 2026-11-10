@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../constants/routes.js';
 import { getInitials } from '../utils/formatters.js';
 
@@ -18,6 +18,7 @@ const titlesByPath = {
   [ROUTES.history]: ['Attendance History', 'Review your attendance and schedule'],
   [ROUTES.calendar]: ['My Calendar', 'Attendance and planned leave'],
   [ROUTES.skillHub]: ['Skill Hub', 'Learning and development'],
+  [ROUTES.profile]: ['Profile', 'Manage your profile and work information'],
 };
 
 const BellIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/><path d="M10 21h4"/></svg>;
@@ -46,7 +47,7 @@ const notificationData = {
   ],
 };
 
-export function Header({ role, theme, onToggleTheme, onToggleSidebar, onLogout }) {
+export function Header({ role, user, theme, onToggleTheme, onToggleSidebar, onLogout }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('All');
@@ -60,7 +61,7 @@ export function Header({ role, theme, onToggleTheme, onToggleSidebar, onLogout }
     (location.pathname.startsWith(ROUTES.employeeImportHistory)
       ? ['Import History', 'Employee CSV import records']
       : ['Employee Profile', 'Resource details and development']);
-  const name = role === 'admin' ? 'Admin User' : 'Alex Santos';
+  const name = user?.name || (role === 'admin' ? 'Admin User' : 'Alex Santos');
   const roleDescription = role === 'admin' ? 'Admin / Bench Lead' : 'User / Bench Resource';
 
   useEffect(() => {
@@ -266,10 +267,15 @@ export function Header({ role, theme, onToggleTheme, onToggleSidebar, onLogout }
           </button>
           {menuOpen && (
             <div className="profile-menu" role="menu">
-              <div className="profile-menu-header">
+              <Link
+                to={ROUTES.profile}
+                className="profile-menu-header profile-menu-item"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+              >
                 <strong>{name}</strong>
                 <span>{roleDescription}</span>
-              </div>
+              </Link>
               <button
                 className="profile-menu-item profile-menu-logout"
                 role="menuitem"

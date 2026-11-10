@@ -216,6 +216,7 @@ export function AppLayout() {
 
         <Header
           role={role}
+          user={user}
           theme={theme}
           onToggleTheme={toggleTheme}
           onToggleSidebar={
