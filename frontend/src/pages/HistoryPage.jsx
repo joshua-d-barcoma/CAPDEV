@@ -8,6 +8,9 @@ import { StatusBadge } from '../components/StatusBadge.jsx';
 import { useBenchData } from '../hooks/useBenchData.js';
 import { isDateInRange } from '../utils/dateFilters.js';
 import { formatDate } from '../utils/formatters.js';
+import { getSessionUser } from '../utils/auth.js';
+import { getDemoProfile } from '../utils/demoAccounts.js';
+import { formatAttendanceTime } from '../utils/timeEntry.js';
 import './HistoryPage.css';
 
 const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -19,26 +22,12 @@ function isLeaveRecord(record) {
 
 function getHistoryStatus(record) {
   if (isLeaveRecord(record)) return 'On Leave';
-  if (/absence|absent/i.test(record.status ?? '')) return 'Absent';
-  if (/exception|late/i.test(record.status ?? '')) return 'Exception';
+  const status = record.status ?? '';
+  const hasTimeIn = formatAttendanceTime(record.timeIn) !== '—';
+  if (hasTimeIn) return /exception|late/i.test(status) ? 'Exception' : 'Present';
+  if (/absence|absent|ncns|unapproved/i.test(status)) return 'Absent';
+  if (/exception|late/i.test(status)) return 'Exception';
   return record.status || 'Present';
-}
-
-function getMinutesAfterMidnight(time) {
-  const match = /^(\d{1,2}):([0-5]\d)\s*(AM|PM)$/i.exec(time ?? '');
-  if (!match) return null;
-  const [, hourText, minuteText, meridiem] = match;
-  const hour = (Number(hourText) % 12) + (meridiem.toUpperCase() === 'PM' ? 12 : 0);
-  return hour * 60 + Number(minuteText);
-}
-
-function formatHours(record) {
-  if (record.hours) return record.hours;
-  const start = getMinutesAfterMidnight(record.timeIn);
-  const end = getMinutesAfterMidnight(record.timeOut);
-  if (start === null || end === null || end < start) return '—';
-  const minutes = end - start;
-  return `${Math.floor(minutes / 60)}h ${String(minutes % 60).padStart(2, '0')}m`;
 }
 
 function getInitialRange(records) {
@@ -64,49 +53,25 @@ export default function HistoryPage() {
     scheduleRequests,
     submitScheduleRequest,
   } = useBenchData();
-  const employee = employees.find((item) => item.name === 'Alex Santos');
-  const demoAttendanceRecords = useMemo(() => {
-    if (!employee?.id) return [];
-
-    const statuses = ['Present', 'Present', 'Present', 'Present', 'Exception', 'Absent'];
-    const records = [];
-    let cursor = new Date();
-    cursor.setHours(0, 0, 0, 0);
-
-    while (records.length < 40) {
-      const day = cursor.getDay();
-      if (day !== 0 && day !== 6) {
-        const date = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}-${String(cursor.getDate()).padStart(2, '0')}`;
-        const status = statuses[records.length % statuses.length];
-        const exception = status === 'Exception';
-        const absent = status === 'Absent';
-
-        records.push({
-          id: `demo-attendance-${date}`,
-          employeeId: employee.id,
-          date,
-          timeIn: absent ? null : exception ? '9:22 AM' : records.length % 3 === 0 ? '8:47 AM' : '8:55 AM',
-          timeOut: absent ? null : records.length % 4 === 0 ? '6:03 PM' : '5:35 PM',
-          status,
-          workType: records.length % 2 === 0 ? 'Onsite' : 'Work from home',
-        });
-      }
-      cursor.setDate(cursor.getDate() - 1);
+  const sessionUser = useMemo(() => getSessionUser(), []);
+  const profileState = useMemo(() => {
+    try {
+      return { profile: getDemoProfile(sessionUser?.email), error: '' };
+    } catch (error) {
+      return {
+        profile: null,
+        error: error instanceof Error ? error.message : 'Unable to load your profile.',
+      };
     }
-
-    return records;
-  }, [employee?.id]);
-
+  }, [sessionUser?.email]);
+  const { profile, error: profileError } = profileState;
+  const employee = employees.find((item) => item.name === 'Alex Santos');
   const personalRecords = useMemo(
-    () => {
-      const realRecords = attendanceRecords.filter((record) => record.employeeId === employee?.id);
-      const realDates = new Set(realRecords.map((record) => record.date));
-      const extraRecords = demoAttendanceRecords.filter((record) => !realDates.has(record.date));
-
-      return [...realRecords, ...extraRecords]
-        .sort((first, second) => second.date.localeCompare(first.date));
-    },
-    [attendanceRecords, demoAttendanceRecords, employee?.id],
+    () =>
+      attendanceRecords
+        .filter((record) => record.employeeId === profile?.attendanceEmployeeId)
+        .sort((first, second) => second.date.localeCompare(first.date)),
+    [attendanceRecords, profile?.attendanceEmployeeId],
   );
   const [period, setPeriod] = useState(() => getInitialRange(personalRecords));
   const [schedule, setSchedule] = useState(null);
@@ -135,20 +100,39 @@ export default function HistoryPage() {
     { key: 'date', label: 'Date', render: (record) => formatDate(record.date) },
     {
       key: 'timeIn',
-      label: 'Time In',
-      render: (record) => (isLeaveRecord(record) ? 'On Leave' : (record.timeIn ?? '—')),
+      label: 'Time In (PH)',
+      render: (record) => (isLeaveRecord(record) ? 'On Leave' : formatAttendanceTime(record.timeIn)),
     },
     {
       key: 'timeOut',
       label: 'Time Out',
-      render: (record) => (isLeaveRecord(record) ? 'Not required' : (record.timeOut ?? '—')),
+      render: (record) => (isLeaveRecord(record) ? 'Not required' : formatAttendanceTime(record.timeOut)),
     },
     {
-      key: 'workMode',
-      label: 'Work Mode',
+      key: 'accomplishments',
+      label: 'EOD',
+      render: (record) => record.accomplishments ?? record.eod ?? record.dailyAccomplishments ?? '—',
+    },
+    {
+      key: 'workType',
+      label: 'Work Type',
       render: (record) => record.workType ?? record.workMode ?? '—',
     },
-    { key: 'hours', label: 'Hours', render: formatHours },
+    {
+      key: 'location',
+      label: 'Location',
+      render: (record) => {
+        if (record.location && record.location !== '—') return record.location;
+        return /work from home|wfh/i.test(record.workType ?? record.workMode ?? '')
+          ? 'Work from home'
+          : '—';
+      },
+    },
+    {
+      key: 'seatNumber',
+      label: 'Seat Number',
+      render: (record) => record.seatNumber ?? record.seat_number ?? '—',
+    },
     {
       key: 'status',
       label: 'Status',
@@ -199,8 +183,14 @@ export default function HistoryPage() {
       <PageHeader
         eyebrow="Personal Workspace"
         title="Time In / Time Out History"
-        description="Review your previous attendance records and hours worked."
+        description="Review your submitted attendance records and end-of-day accomplishments."
       />
+
+      {profileError && (
+        <div className="inline-error" role="alert">
+          {profileError}
+        </div>
+      )}
 
       {approvalAlert && (
         <div
@@ -362,7 +352,8 @@ export default function HistoryPage() {
         }
       >
         <p className="panel-description">
-          Time-in, time-out, and calculated hours for each recorded day.
+          Time-in and time-out are shown in Philippine time. EOD details and onsite information
+          appear when included in your attendance submission.
         </p>
         <DataTable
           columns={columns}

@@ -1,6 +1,12 @@
 import { DEFAULT_EMPLOYEE_STATUS, normalizeEmployeeStatus } from '../constants/employeeStatuses.js';
 
 const STORAGE_KEY = 'bench-flow:data:v2';
+const DEMO_ATTENDANCE_CLEANUP_KEY = 'demoAttendanceCleanupV1';
+const DEMO_ATTENDANCE_IDS = new Set([
+  'demo-juan-marcos-garcia',
+  'demo-karoline-cayetano',
+  'demo-oscar-punsalan',
+]);
 const DEFAULT_SCHEDULE = Object.freeze({
   Monday: 'Onsite',
   Tuesday: 'Onsite',
@@ -485,6 +491,7 @@ export function loadBenchData() {
   const storedData = window.localStorage.getItem(STORAGE_KEY);
   if (storedData === null) {
     const seededData = cloneData(seedData);
+    seededData[DEMO_ATTENDANCE_CLEANUP_KEY] = true;
     saveBenchData(seededData);
     return seededData;
   }
@@ -607,6 +614,13 @@ export function loadBenchData() {
     };
   });
   if (leaveRequestsMigrated) saveBenchData(parsedData);
+  if (!parsedData[DEMO_ATTENDANCE_CLEANUP_KEY]) {
+    parsedData.attendanceRecords = parsedData.attendanceRecords.filter(
+      (record) => !DEMO_ATTENDANCE_IDS.has(record.employeeId),
+    );
+    parsedData[DEMO_ATTENDANCE_CLEANUP_KEY] = true;
+    saveBenchData(parsedData);
+  }
   return parsedData;
 }
 

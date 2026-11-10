@@ -29,3 +29,23 @@ export function formatTime(value) {
   const period = hours >= 12 ? 'PM' : 'AM';
   return `${hours % 12 || 12}:${String(minutes).padStart(2, '0')} ${period}`;
 }
+
+export function formatAttendanceTime(value) {
+  if (typeof value !== 'string' || !value.trim()) return '—';
+  const time = value.trim();
+  const standardTime = time.match(/(\d{1,2}:[0-5]\d\s*[ap]\.?m\.?)/i);
+  if (standardTime) return formatTime(standardTime[1]) ?? '—';
+
+  const compactTime = time.match(/\b(\d{3,4})\s*([ap]\.?m\.?)\b/i);
+  if (compactTime) {
+    const digits = compactTime[1];
+    const hour = digits.length === 3 ? digits.slice(0, 1) : digits.slice(0, 2);
+    const minute = digits.slice(-2);
+    return formatTime(`${hour}:${minute} ${compactTime[2]}`) ?? '—';
+  }
+
+  const twentyFourHourTime = time.match(/\b(?:[01]\d|2[0-3]):[0-5]\d\b/);
+  if (twentyFourHourTime) return formatTime(twentyFourHourTime[0]) ?? '—';
+
+  return '—';
+}

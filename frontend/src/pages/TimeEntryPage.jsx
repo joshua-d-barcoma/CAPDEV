@@ -8,12 +8,13 @@ import { ROUTES } from '../constants/routes.js';
 import { useBenchData } from '../hooks/useBenchData.js';
 import { formatDate } from '../utils/formatters.js';
 import { getCurrentTimeInput } from '../utils/timeEntry.js';
+import { getSessionUser } from '../utils/auth.js';
+import { getDemoProfile } from '../utils/demoAccounts.js';
 import './TimeEntryPage.css';
 
 const workTypes = ['Onsite', 'Work from home', 'Leave', 'Other'];
 
-function getLocalDate() {
-  const date = new Date();
+function getLocalDate(date = new Date()) {
   const offset = date.getTimezoneOffset();
   return new Date(date.getTime() - offset * 60_000).toISOString().slice(0, 10);
 }
@@ -73,9 +74,23 @@ function InfoCard({ type, title, children }) {
 
 export default function TimeEntryPage() {
   const isTimeOut = useLocation().pathname.endsWith('time-out');
-  const { employees, attendanceRecords, checkedIn, submitAttendance, setCheckedIn } =
+  const { attendanceRecords, submitAttendance, setCheckedIn } =
     useBenchData();
-  const alex = employees.find((employee) => employee.name === 'Alex Santos');
+  const sessionUser = useMemo(() => getSessionUser(), []);
+  const profileState = useMemo(
+    () => {
+      try {
+        return { profile: getDemoProfile(sessionUser?.email), error: '' };
+      } catch (error) {
+        return {
+          profile: null,
+          error: error instanceof Error ? error.message : 'Unable to load your profile.',
+        };
+      }
+    },
+    [sessionUser?.email],
+  );
+  const { profile, error: profileError } = profileState;
   const [workType, setWorkType] = useState('Onsite');
   const [location, setLocation] = useState('');
   const [otherLocation, setOtherLocation] = useState('');
@@ -90,9 +105,16 @@ export default function TimeEntryPage() {
   const employeeRecords = useMemo(
     () =>
       attendanceRecords
-        .filter((record) => record.employeeId === alex?.id)
+        .filter((record) => record.employeeId === profile?.attendanceEmployeeId)
         .sort((a, b) => b.date.localeCompare(a.date)),
-    [attendanceRecords, alex?.id],
+    [attendanceRecords, profile?.attendanceEmployeeId],
+  );
+  const todayDate = getLocalDate();
+  const todayRecord = employeeRecords.find((record) => record.date === todayDate);
+  const hasActiveTimeIn = Boolean(
+    todayRecord?.timeIn &&
+      !todayRecord.timeOut &&
+      todayRecord.status !== 'Vacation Leave',
   );
   const visibleRecords = isTimeOut
     ? employeeRecords.filter((record) => record.timeOut)
@@ -134,7 +156,7 @@ export default function TimeEntryPage() {
     const submittedTime = getCurrentTimeInput().time;
 
     if (isTimeOut) {
-      if (!checkedIn) {
+      if (!hasActiveTimeIn) {
         setError('You need to record your time-in before submitting time-out.');
         return;
       }
@@ -142,15 +164,9 @@ export default function TimeEntryPage() {
         setError('Please enter your daily accomplishments.');
         return;
       }
-      if (!employeeRecords.some((record) => record.date === submittedDate)) {
-        setError(
-          'No time-in record was found for today. Record your time-in before submitting time-out.',
-        );
-        return;
-      }
       if (
         setCheckedIn(false, {
-          employeeId: alex?.id,
+          employeeId: profile?.attendanceEmployeeId,
           date: submittedDate,
           timeOut: submittedTime,
           accomplishments: accomplishments.trim(),
@@ -161,14 +177,14 @@ export default function TimeEntryPage() {
       }
       return;
     }
-    if (checkedIn) {
-      setError('Your time-in is already recorded. Submit time-out before starting another entry.');
+    if (todayRecord) {
+      setError('You already have an attendance record for today.');
       return;
     }
     if (
-      !alex ||
-      !alex.employeeId?.trim() ||
-      !alex.capability ||
+      !profile?.attendanceEmployeeId ||
+      !profile.employeeId?.trim() ||
+      !profile.capability?.trim() ||
       !acknowledged ||
       (workType === 'Onsite' && !location)
     ) {
@@ -185,15 +201,23 @@ export default function TimeEntryPage() {
       return;
     }
     const record = {
-      employeeId: alex.id,
-      employeeCode: alex.employeeId,
+      employeeId: profile.attendanceEmployeeId,
+      employeeCode: profile.employeeId,
+      employeeName: profile.name,
       date: submittedDate,
       timeIn: submittedTime,
       workType: workType === 'Other' ? otherWorkType : workType,
-      location: workType !== 'Onsite' ? '—' : location === 'Other' ? otherLocation : location,
+      location:
+        workType === 'Onsite'
+          ? location === 'Other'
+            ? otherLocation
+            : location
+          : workType === 'Other'
+            ? otherWorkType
+            : workType,
       status: workType === 'Leave' ? 'Vacation Leave' : 'Present',
       seatNumber: workType === 'Onsite' ? seatNumber : '',
-      capability: alex.capability,
+      capability: profile.capability,
       remarks: remarks.trim(),
     };
     if (submitAttendance(record)) {
@@ -224,6 +248,11 @@ export default function TimeEntryPage() {
       {error && (
         <div className="inline-error" role="alert">
           {error}
+        </div>
+      )}
+      {profileError && (
+        <div className="inline-error" role="alert">
+          {profileError}
         </div>
       )}
       <div className="time-entry-main-grid">
@@ -372,8 +401,13 @@ export default function TimeEntryPage() {
               <Link className="button button-secondary" to={ROUTES.userDashboard}>
                 Cancel
               </Link>
-              <button className="button button-primary" type="submit">
-                Submit {isTimeOut ? 'time-out' : 'time-in'}
+              <button
+                className="button button-primary"
+                type="submit"
+                disabled={!isTimeOut && Boolean(todayRecord)}
+                aria-describedby={!isTimeOut && todayRecord ? 'time-in-recorded' : undefined}
+              >
+                {todayRecord && !isTimeOut ? 'Time-in already recorded' : `Submit ${isTimeOut ? 'time-out' : 'time-in'}`}
               </button>
             </div>
           </form>
@@ -452,8 +486,10 @@ export default function TimeEntryPage() {
           }
         />
       </Panel>
-      {!isTimeOut && checkedIn && (
-        <p className="muted-copy">You have already recorded a time-in for this session.</p>
+      {!isTimeOut && todayRecord && (
+        <p id="time-in-recorded" className="muted-copy" role="status">
+          You already have an attendance record for today. Time-in cannot be submitted again.
+        </p>
       )}
     </div>
   );

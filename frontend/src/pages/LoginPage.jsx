@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../hooks/ThemeProvider.jsx";
+import { DEMO_ACCOUNTS } from "../utils/demoAccounts.js";
 import "./LoginPage.css";
 
 /*
@@ -13,45 +14,6 @@ import "./LoginPage.css";
 */
 
 const DEMO_PASSWORD = "capdev2026";
-
-const demoAccounts = [
-  {
-    initials: "JM",
-    name: "Juan Marcos Garcia",
-    role: "Individual · L6 · Azure PaaS",
-    color: "#9300ff",
-    email: "juan.marcos@accenture.com",
-    accountType: "individual",
-    redirectTo: "/user/dashboard",
-  },
-  {
-    initials: "KC",
-    name: "Karoline S. Cayetano",
-    role: "People Lead · L8 · Cloud Ops",
-    color: "#149b78",
-    email: "karoline.cayetano@accenture.com",
-    accountType: "people-lead",
-    redirectTo: "/user/dashboard",
-  },
-  {
-    initials: "OP",
-    name: "Oscar R. Punsalan",
-    role: "Managing Director · L10 · IIS Philippines",
-    color: "#6c6bd9",
-    email: "oscar.punsalan@accenture.com",
-    accountType: "managing-director",
-    redirectTo: "/user/dashboard",
-  },
-  {
-    initials: "AD",
-    name: "Admin User",
-    role: "Administrator · Demo Admin",
-    color: "#62738c",
-    email: "admin@accenture.com",
-    accountType: "admin",
-    redirectTo: "/admin/dashboard",
-  },
-];
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -93,7 +55,7 @@ export default function LoginPage() {
   const authenticateDemoUser = (emailAddress, enteredPassword) => {
     const normalizedEmail = emailAddress.trim().toLowerCase();
 
-    const matchedAccount = demoAccounts.find(
+    const matchedAccount = DEMO_ACCOUNTS.find(
       (account) => account.email.toLowerCase() === normalizedEmail
     );
 
@@ -132,6 +94,9 @@ export default function LoginPage() {
       email: user.email,
       role: user.role,
       accountType: user.accountType,
+      attendanceEmployeeId: user.profile?.attendanceEmployeeId,
+      employeeId: user.profile?.employeeId,
+      capability: user.profile?.capability,
       isDemo: true,
     };
 
@@ -448,7 +413,7 @@ export default function LoginPage() {
             <h3>DEMO ACCOUNTS</h3>
 
             <div className="demo-list">
-              {demoAccounts.map((account) => (
+              {DEMO_ACCOUNTS.map((account) => (
                 <button
                   type="button"
                   className="demo-account"

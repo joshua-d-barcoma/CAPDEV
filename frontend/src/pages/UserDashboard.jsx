@@ -5,6 +5,8 @@ import { StatusBadge } from '../components/StatusBadge.jsx';
 import { ROUTES } from '../constants/routes.js';
 import { useBenchData } from '../hooks/useBenchData.js';
 import { formatDate, getInitials } from '../utils/formatters.js';
+import { getSessionUser } from '../utils/auth.js';
+import { getDemoProfile } from '../utils/demoAccounts.js';
 import './UserDashboard.css';
 
 const WEEKDAYS = [
@@ -54,10 +56,22 @@ function UserMetric({ label, value, detail, note, children }) {
 }
 
 export default function UserDashboard() {
-  const { employees, tasks, checkedIn, attendanceRecords, employeeSchedules, mandatoryTraining, learningAssignments, certifications, updateTask, updateLearningAssignment, addTask } = useBenchData();
+  const { employees, tasks, attendanceRecords, employeeSchedules, mandatoryTraining, learningAssignments, certifications, updateTask, updateLearningAssignment, addTask } = useBenchData();
   const { openWelcomeMailer } = useOutletContext();
   const [addedRecommendations, setAddedRecommendations] = useState(() => new Set());
   const [dashboardAlert, setDashboardAlert] = useState(null);
+  const sessionUser = useMemo(() => getSessionUser(), []);
+  const profileState = useMemo(() => {
+    try {
+      return { profile: getDemoProfile(sessionUser?.email), error: '' };
+    } catch (error) {
+      return {
+        profile: null,
+        error: error instanceof Error ? error.message : 'Unable to load your profile.',
+      };
+    }
+  }, [sessionUser?.email]);
+  const { profile, error: profileError } = profileState;
   const employee = employees.find((item) => item.name === 'Alex Santos') ?? employees.find((item) => !item.employeeStatus || item.employeeStatus === 'Bench');
   const employeeAssignments = useMemo(() => learningAssignments.filter((assignment) => assignment.employeeId === employee?.id), [employee?.id, learningAssignments]);
   const activeTraining = useMemo(() => mandatoryTraining.filter((training) => training.status === 'Active').map((training) => ({ training, assignment: employeeAssignments.find((item) => item.trainingId === training.id) })).filter((item) => item.assignment), [employeeAssignments, mandatoryTraining]);
@@ -69,7 +83,7 @@ export default function UserDashboard() {
   const today = new Date();
   const weekDates = getWeekDates(today);
   const schedule = employee ? (employeeSchedules[employee.id] ?? {}) : {};
-  const employeeAttendance = useMemo(() => attendanceRecords.filter((record) => record.employeeId === employee?.id), [attendanceRecords, employee?.id]);
+  const employeeAttendance = useMemo(() => attendanceRecords.filter((record) => record.employeeId === profile?.attendanceEmployeeId), [attendanceRecords, profile?.attendanceEmployeeId]);
   const weekAttendance = weekDates.map(({ day, date }) => ({ day, date, plan: schedule[day] ?? 'Onsite', record: employeeAttendance.find((record) => record.date === date) }));
   const scheduledOfficeDays = weekAttendance.filter(({ plan }) => plan === 'Onsite').length;
   const completedOfficeDays = weekAttendance.filter(({ plan, record }) => plan === 'Onsite' && record?.status === 'Present' && record.workType === 'Onsite').length;
@@ -90,8 +104,9 @@ export default function UserDashboard() {
     const completedCertification = certifications.find((item) => item.status === 'Completed');
     return completedCertification ? { title: completedCertification.title, detail: completedCertification.detail } : null;
   }, [certifications, employeeAssignments, mandatoryTraining]);
-  const firstName = employee?.name.split(/\s+/)[0] ?? 'there';
+  const firstName = profile?.name.split(/\s+/)[0] ?? employee?.name.split(/\s+/)[0] ?? 'there';
   const todayRecord = employeeAttendance.find((record) => record.date === formatLocalDate(today));
+  const checkedIn = Boolean(todayRecord?.timeIn && !todayRecord.timeOut && todayRecord.status !== 'Vacation Leave');
 
   useEffect(() => {
     if (!dashboardAlert) return undefined;
@@ -130,6 +145,7 @@ export default function UserDashboard() {
           </button>
         </div>
       )}
+      {profileError && <div className="inline-error" role="alert">{profileError}</div>}
       <section className="user-dashboard-welcome" aria-labelledby="user-dashboard-title">
         <div className="user-dashboard-welcome-copy"><span className="user-dashboard-eyebrow">YOUR PERSONAL OVERVIEW</span><h1 id="user-dashboard-title">Welcome back, {firstName}!</h1><p>Here is your personal bench activity and deployment-readiness overview.</p></div>
         <div className="user-dashboard-refresh"><span>Policies and employee guidelines</span><button type="button" className="button user-refresh-button" onClick={openWelcomeMailer}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4zM4 7l8 6 8-6M8 16h8" /></svg>Welcome Mailer</button></div>

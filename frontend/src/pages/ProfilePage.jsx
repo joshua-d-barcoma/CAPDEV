@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { getDemoProfile, saveDemoProfile } from "../utils/demoAccounts.js";
 import "../index.css";
 
 const fallbackUser = {
@@ -9,7 +10,7 @@ const fallbackUser = {
   capability: "Cloud / SRE",
   location: "Cebu City",
   team: "Cloud Operations",
-  employeeId: "juan.m.garcia",
+  employeeId: "DEMO-JM-001",
   skills: "Azure PaaS, Cloud Support, SRE",
   bio:
     "Cloud support professional working across application support, automation, and reliability engineering.",
@@ -25,6 +26,9 @@ export default function ProfilePage() {
   const [saveMessage, setSaveMessage] =
     useState("");
 
+  const [profileError, setProfileError] =
+    useState("");
+
   const [formData, setFormData] =
     useState(fallbackUser);
 
@@ -38,34 +42,18 @@ export default function ProfilePage() {
   */
 
   useEffect(() => {
-    const storedUser =
-      sessionStorage.getItem(
-        "benchflow_user"
-      );
-
-    if (!storedUser) {
-      return;
-    }
-
     try {
-      const parsedUser =
-        JSON.parse(storedUser);
+      const sessionUser = JSON.parse(
+        sessionStorage.getItem("benchflow_user") ?? "null"
+      );
+      if (!sessionUser?.email) {
+        throw new Error("The current demo session could not be found.");
+      }
 
-      const userData = {
-        ...fallbackUser,
-
-        name:
-          parsedUser.name ||
-          fallbackUser.name,
-
-        email:
-          parsedUser.email ||
-          fallbackUser.email,
-
-        role:
-          parsedUser.role ||
-          fallbackUser.role,
-      };
+      const userData = getDemoProfile(sessionUser.email);
+      if (!userData) {
+        throw new Error("No demo profile is configured for this account.");
+      }
 
       setFormData(userData);
       setOriginalFormData(userData);
@@ -73,6 +61,9 @@ export default function ProfilePage() {
       console.error(
         "Unable to load profile:",
         error
+      );
+      setProfileError(
+        error instanceof Error ? error.message : "Unable to load your profile."
       );
     }
   }, []);
@@ -207,30 +198,29 @@ export default function ProfilePage() {
         }
       );
 
-      const existingUser =
-        sessionStorage.getItem(
-          "benchflow_user"
-        );
+      const sessionUser = JSON.parse(
+        sessionStorage.getItem("benchflow_user") ?? "null"
+      );
+      if (!sessionUser?.email) {
+        throw new Error("The current demo session could not be found.");
+      }
 
-      const sessionUser =
-        existingUser
-          ? JSON.parse(existingUser)
-          : {};
-
+      const savedProfile = saveDemoProfile(sessionUser.email, formData);
       sessionStorage.setItem(
         "benchflow_user",
         JSON.stringify({
           ...sessionUser,
-
-          name: formData.name,
-          email: formData.email,
-          role: formData.role,
+          name: savedProfile.name,
+          role: savedProfile.role,
+          employeeId: savedProfile.employeeId,
+          capability: savedProfile.capability,
         })
       );
 
       setOriginalFormData({
-        ...formData,
+        ...savedProfile,
       });
+      setFormData(savedProfile);
 
       setIsEditing(false);
 
@@ -244,7 +234,7 @@ export default function ProfilePage() {
       );
 
       setSaveMessage(
-        "Unable to update profile."
+        error instanceof Error ? error.message : "Unable to update profile."
       );
     } finally {
       setIsSaving(false);
@@ -410,9 +400,7 @@ export default function ProfilePage() {
                   onChange={
                     handleInputChange
                   }
-                  disabled={
-                    !isEditing
-                  }
+                  disabled
                 />
               </div>
 
@@ -430,9 +418,7 @@ export default function ProfilePage() {
                   onChange={
                     handleInputChange
                   }
-                  disabled={
-                    !isEditing
-                  }
+                  disabled
                 />
               </div>
 
@@ -790,6 +776,12 @@ export default function ProfilePage() {
         )}
 
         {/* ================= STATUS ================= */}
+
+        {profileError && (
+          <p className="inline-error" role="alert">
+            {profileError}
+          </p>
+        )}
 
         {saveMessage && (
           <div
