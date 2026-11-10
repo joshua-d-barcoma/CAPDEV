@@ -228,12 +228,62 @@
 .welcome-mailer-footer {
   position: relative;
   display: flex;
-  min-height: 68px;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 24px;
+  border-top: 1px solid var(--mailer-border);
+}
+
+.welcome-mailer-status {
+  padding: 9px 12px;
+  border: 1px solid;
+  border-radius: 7px;
+}
+
+.welcome-mailer-status.is-pending {
+  border-color: #e4d3ee;
+  background: #faf6fd;
+  color: #5b3b6d;
+}
+
+.welcome-mailer-status.is-acknowledged {
+  border-color: #c9e5d3;
+  background: #f2faf5;
+  color: #285d3b;
+}
+
+.welcome-mailer-status-heading {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+}
+
+.welcome-mailer-status-heading strong {
+  margin-left: auto;
+  font-size: 12px;
+}
+
+.welcome-mailer-status-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.welcome-mailer-status p {
+  margin: 4px 0 0 15px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.welcome-mailer-footer-controls {
+  display: flex;
+  min-height: 30px;
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  padding: 12px 24px;
-  border-top: 1px solid var(--mailer-border);
 }
 
 .welcome-mailer-acknowledgement {
@@ -311,6 +361,18 @@
   background: #282331;
 }
 
+.app-layout.theme-dark .welcome-mailer-status.is-pending {
+  border-color: #554064;
+  background: #302638;
+  color: #e0c3f0;
+}
+
+.app-layout.theme-dark .welcome-mailer-status.is-acknowledged {
+  border-color: #3e654b;
+  background: #223329;
+  color: #bce2c8;
+}
+
 .app-layout.theme-dark .welcome-mailer-nav-item:hover,
 .app-layout.theme-dark .welcome-mailer-nav-item.active {
   border-color: #554064;
@@ -371,6 +433,11 @@
   }
 
   .welcome-mailer-footer {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .welcome-mailer-footer-controls {
     align-items: flex-start;
     flex-direction: column;
     gap: 12px;
