@@ -18,7 +18,10 @@
   --mailer-purple: #7625a5;
   display: flex;
   width: min(1000px, 100%);
+  height: min(760px, 84vh);
+  height: min(760px, 84dvh);
   max-height: min(760px, 84vh);
+  max-height: min(760px, 84dvh);
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--mailer-border);
@@ -53,6 +56,7 @@
 
 .welcome-mailer-header {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   gap: 16px;
   padding: 22px 26px;
@@ -109,8 +113,9 @@
 .welcome-mailer-content {
   display: grid;
   min-height: 0;
-  flex: 1;
+  flex: 1 1 0;
   grid-template-columns: minmax(230px, 290px) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
 }
 
 .welcome-mailer-nav {
@@ -210,8 +215,8 @@
 
 .welcome-mailer-document iframe {
   width: 100%;
-  min-height: 300px;
-  flex: 1;
+  min-height: 0;
+  flex: 1 1 0;
   border: 1px solid var(--mailer-border);
   border-radius: 7px;
   background: #fff;
@@ -229,13 +234,19 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 12px 24px;
+  flex: 0 0 auto;
+  gap: 7px;
+  padding: 8px 24px;
   border-top: 1px solid var(--mailer-border);
 }
 
 .welcome-mailer-status {
-  padding: 9px 12px;
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  padding: 5px 9px;
   border: 1px solid;
   border-radius: 7px;
 }
@@ -254,40 +265,43 @@
 
 .welcome-mailer-status-heading {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   font-size: 11px;
 }
 
 .welcome-mailer-status-heading strong {
-  margin-left: auto;
   font-size: 12px;
 }
 
 .welcome-mailer-status-dot {
-  width: 8px;
-  height: 8px;
-  flex: 0 0 8px;
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
   border-radius: 50%;
   background: currentColor;
 }
 
 .welcome-mailer-status p {
-  margin: 4px 0 0 15px;
+  min-width: min(260px, 100%);
+  flex: 1 1 260px;
+  margin: 0;
   font-size: 11px;
   line-height: 1.4;
 }
 
 .welcome-mailer-footer-controls {
   display: flex;
-  min-height: 30px;
+  min-width: 0;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
+  gap: 12px;
 }
 
 .welcome-mailer-acknowledgement {
   display: inline-flex;
+  min-width: 0;
   align-items: center;
   gap: 9px;
   color: var(--mailer-text);
@@ -298,6 +312,7 @@
 .welcome-mailer-acknowledgement input {
   width: 16px;
   height: 16px;
+  flex: 0 0 16px;
   margin: 0;
   accent-color: var(--mailer-purple);
 }
@@ -399,19 +414,23 @@
   }
 
   .welcome-mailer {
+    height: calc(100vh - 20px);
+    height: calc(100dvh - 20px);
     max-height: 96vh;
-    overflow-y: auto;
+    max-height: 96dvh;
+    overflow: hidden;
   }
 
   .welcome-mailer-content {
-    flex: 0 0 auto;
+    min-height: 0;
+    flex: 1 1 0;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto;
+    grid-template-rows: auto minmax(0, 1fr);
   }
 
   .welcome-mailer-nav {
     display: grid;
-    max-height: 180px;
+    max-height: 150px;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     overflow: auto;
     padding: 10px;
@@ -424,23 +443,21 @@
   }
 
   .welcome-mailer-document {
-    min-height: 300px;
+    min-height: 0;
     padding: 10px;
   }
 
   .welcome-mailer-document iframe {
-    min-height: 260px;
+    min-height: 0;
   }
 
   .welcome-mailer-footer {
-    align-items: flex-start;
-    gap: 10px;
+    gap: 6px;
+    padding: 8px 16px;
   }
 
   .welcome-mailer-footer-controls {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 12px;
+    gap: 8px;
   }
 
   .welcome-mailer-actions {
@@ -469,11 +486,28 @@
   }
 
   .welcome-mailer-footer {
-    padding: 12px 16px;
+    padding: 7px 12px;
+  }
+
+  .welcome-mailer-status {
+    gap: 2px 6px;
+    padding: 4px 7px;
+  }
+
+  .welcome-mailer-status p {
+    min-width: 100%;
+    flex-basis: 100%;
+  }
+
+  .welcome-mailer-footer-controls {
+    align-items: flex-start;
   }
 
   .welcome-mailer-acknowledgement {
-    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .welcome-mailer-acknowledgement span {
     line-height: 1.4;
   }
 }
