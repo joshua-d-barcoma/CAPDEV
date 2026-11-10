@@ -109,19 +109,20 @@ export function WelcomeMailer({ email, openRequest = 0 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
   const [acknowledged, setAcknowledged] = useState(initialState.acknowledged);
-  const [isSubmitted, setIsSubmitted] = useState(initialState.acknowledged);
+  const [isAcknowledged, setIsAcknowledged] = useState(initialState.acknowledged);
   const [error, setError] = useState(initialState.error);
 
   useEffect(() => {
-    if (!initialState.open && openRequest === 0) return undefined;
+    const latestState = getInitialState(email);
+    if (!latestState.open && openRequest === 0) return undefined;
 
     setActiveSection(0);
-    setAcknowledged(initialState.acknowledged);
-    setIsSubmitted(initialState.acknowledged);
-    setError('');
+    setAcknowledged(latestState.acknowledged);
+    setIsAcknowledged(latestState.acknowledged);
+    setError(latestState.error);
     setIsOpen(true);
     return undefined;
-  }, [initialState.open, openRequest]);
+  }, [email, openRequest]);
 
   if (!isOpen) return null;
 
@@ -140,11 +141,13 @@ export function WelcomeMailer({ email, openRequest = 0 }) {
 
   function submitAcknowledgement(event) {
     event.preventDefault();
-    if (!acknowledged) return;
+    if (!acknowledged || isAcknowledged) return;
 
     try {
       window.localStorage.setItem(getAcknowledgementKey(email), 'true');
-      setIsOpen(false);
+      setIsAcknowledged(true);
+      setAcknowledged(true);
+      setError('');
     } catch (storageError) {
       console.error('Unable to save the Welcome Mailer acknowledgement:', storageError);
       setError('Your acknowledgement could not be saved. Please try again.');
@@ -207,35 +210,54 @@ export function WelcomeMailer({ email, openRequest = 0 }) {
         </div>
 
         <form className="welcome-mailer-footer" onSubmit={submitAcknowledgement}>
-          <label
-            className={`welcome-mailer-acknowledgement${isSubmitted ? ' is-accepted' : ''}`}
+          <div
+            className={`welcome-mailer-status${isAcknowledged ? ' is-acknowledged' : ' is-pending'}`}
+            role="status"
+            aria-live="polite"
           >
-            <input
-              type="checkbox"
-              required
-              checked={acknowledged}
-              disabled={isSubmitted}
-              onChange={(event) => {
-                setAcknowledged(event.target.checked);
-                setError('');
-              }}
-            />
-            <span>
-              Yes, I acknowledge receipt and have reviewed it
-              {isSubmitted && <span className="welcome-mailer-accepted">Accepted</span>}
-            </span>
-          </label>
-          <div className="welcome-mailer-actions">
-            <button type="button" className="button button-secondary" onClick={dismissForSession}>
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className={`button button-primary${isSubmitted ? ' is-acknowledged' : ''}`}
-              disabled={isSubmitted}
+            <div className="welcome-mailer-status-heading">
+              <span className="welcome-mailer-status-dot" aria-hidden="true" />
+              <span>Acknowledgement Status</span>
+              <strong>{isAcknowledged ? 'Acknowledged' : 'Not Acknowledged'}</strong>
+            </div>
+            <p>
+              {isAcknowledged
+                ? 'Acknowledged successfully. No further action is required.'
+                : 'Pending acknowledgement. Please review the mailer and acknowledge receipt.'}
+            </p>
+          </div>
+
+          <div className="welcome-mailer-footer-controls">
+            <label
+              className={`welcome-mailer-acknowledgement${isAcknowledged ? ' is-accepted' : ''}`}
             >
-              {isSubmitted ? 'Accepted' : 'Submit'}
-            </button>
+              <input
+                type="checkbox"
+                required={!isAcknowledged}
+                checked={acknowledged}
+                disabled={isAcknowledged}
+                onChange={(event) => {
+                  setAcknowledged(event.target.checked);
+                  setError('');
+                }}
+              />
+              <span>
+                Yes, I acknowledge receipt and have reviewed it
+                {isAcknowledged && <span className="welcome-mailer-accepted">Accepted</span>}
+              </span>
+            </label>
+            <div className="welcome-mailer-actions">
+              <button type="button" className="button button-secondary" onClick={dismissForSession}>
+                {isAcknowledged ? 'Close' : 'Cancel'}
+              </button>
+              <button
+                type="submit"
+                className={`button button-primary${isAcknowledged ? ' is-acknowledged' : ''}`}
+                disabled={isAcknowledged}
+              >
+                {isAcknowledged ? 'Accepted' : 'Submit'}
+              </button>
+            </div>
           </div>
           {error && <p className="welcome-mailer-error" role="alert">{error}</p>}
         </form>
