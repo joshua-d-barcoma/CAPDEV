@@ -11066,31 +11066,7 @@ html body .app-layout.theme-dark :is(
   outline: none;
 }
 
-html body .app-layout .page-content :is(
-    button:not(:disabled),
-    a[href],
-    [role='button']:not([aria-disabled='true']),
-    [role='tab'],
-    [tabindex]:not([tabindex='-1'])
-  ):hover:not(:disabled) {
-  filter: none;
-  transform: none;
-  box-shadow: none;
-}
-
-html body .app-layout.theme-dark .page-content :is(
-    button:not(:disabled),
-    a[href],
-    [role='button']:not([aria-disabled='true']),
-    [role='tab'],
-    [tabindex]:not([tabindex='-1'])
-  ):hover:not(:disabled) {
-  filter: none;
-  transform: none;
-  box-shadow: none;
-}
-
-html body .app-layout .page-content :is(
+html body .app-layout .page-content .page-stack :is(
     select:not(:disabled),
     .search-control,
     .date-filter-button:not(:disabled)
@@ -11100,7 +11076,7 @@ html body .app-layout .page-content :is(
   box-shadow: 0 2px 7px rgb(117 39 160 / 16%);
 }
 
-html body .app-layout.theme-dark .page-content :is(
+html body .app-layout.theme-dark .page-content .page-stack :is(
     select:not(:disabled),
     .search-control,
     .date-filter-button:not(:disabled)
@@ -11108,30 +11084,6 @@ html body .app-layout.theme-dark .page-content :is(
   border-color: #bd8bd6;
   background-color: #382d43;
   box-shadow: 0 2px 7px rgb(0 0 0 / 26%);
-}
-
-html body .app-layout .page-content .page-stack :is(
-    button:not(:disabled),
-    a[href],
-    [role='button']:not([aria-disabled='true']),
-    [role='tab'],
-    [tabindex]:not([tabindex='-1'])
-  ):hover:not(:disabled) {
-  filter: none;
-  transform: none;
-  box-shadow: none;
-}
-
-html body .app-layout.theme-dark .page-content .page-stack :is(
-    button:not(:disabled),
-    a[href],
-    [role='button']:not([aria-disabled='true']),
-    [role='tab'],
-    [tabindex]:not([tabindex='-1'])
-  ):hover:not(:disabled) {
-  filter: none;
-  transform: none;
-  box-shadow: none;
 }
 
 html body .app-layout .page-content .page-stack :is(
@@ -11191,28 +11143,6 @@ html body .app-layout.theme-dark .page-content .page-stack :is(
   outline-color: rgb(210 154 240 / 48%) !important;
   box-shadow: 0 4px 11px rgb(0 0 0 / 40%) !important;
   transform: translateY(-1px) !important;
-}
-
-html body .app-layout .page-content .page-stack :is(
-    button:not(:disabled),
-    a[href],
-    [role='button']:not([aria-disabled='true']),
-    [role='tab']
-  ):hover:not(:disabled) {
-  filter: none !important;
-  transform: none !important;
-  box-shadow: none !important;
-}
-
-html body .app-layout.theme-dark .page-content .page-stack :is(
-    button:not(:disabled),
-    a[href],
-    [role='button']:not([aria-disabled='true']),
-    [role='tab']
-  ):hover:not(:disabled) {
-  filter: none !important;
-  transform: none !important;
-  box-shadow: none !important;
 }
 
 html body .app-layout .page-content .page-stack .search-control input:hover,
@@ -11821,7 +11751,7 @@ html body .app-layout.theme-dark .user-recommendation-secondary {
   --action-button-shadow: 0 3px 9px rgb(101 42 150 / 22%);
 }
 
-html body .app-layout .page-content :is(
+html body .app-layout .page-content .page-stack :is(
     .button-primary,
     .learning-add-button,
     .learning-report-button,
@@ -13656,4 +13586,54 @@ html body .app-layout.theme-dark .page-content :is(
   border-color: #315a49;
   color: #a7e8c5;
   background: #203d33;
+}
+
+html body .app-layout .page-content :is(
+    button:not(:disabled),
+    a[href]:not([aria-disabled='true']),
+    [role='button']:not([aria-disabled='true'])
+  ) {
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    filter 140ms ease,
+    transform 140ms ease;
+}
+
+html body .app-layout .page-content .page-stack :is(
+    button:not(:disabled),
+    a[href]:not([aria-disabled='true']),
+    [role='button']:not([aria-disabled='true'])
+  ):hover {
+  border-color: #a63bd1 !important;
+  background-color: #f7ebff !important;
+  outline: 2px solid rgb(166 59 209 / 42%) !important;
+  outline-offset: 1px !important;
+  box-shadow: 0 4px 11px rgb(101 42 130 / 24%) !important;
+  filter: brightness(1.06) saturate(1.08) !important;
+  transform: translateY(-1px) !important;
+}
+
+html body .app-layout.theme-dark .page-content .page-stack :is(
+    button:not(:disabled),
+    a[href]:not([aria-disabled='true']),
+    [role='button']:not([aria-disabled='true'])
+  ):hover {
+  border-color: #d29af0 !important;
+  background-color: #44334f !important;
+  outline-color: rgb(210 154 240 / 48%) !important;
+  box-shadow: 0 4px 11px rgb(0 0 0 / 40%) !important;
+  filter: brightness(1.12) saturate(1.08) !important;
+  transform: translateY(-1px) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body .app-layout .page-content .page-stack :is(
+      button:not(:disabled),
+      a[href]:not([aria-disabled='true']),
+      [role='button']:not([aria-disabled='true'])
+    ) {
+    transition: filter 140ms ease, box-shadow 140ms ease;
+  }
 }

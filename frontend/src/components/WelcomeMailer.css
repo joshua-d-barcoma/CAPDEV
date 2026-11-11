@@ -372,6 +372,13 @@
   --mailer-purple: #d7a4f2;
 }
 
+.app-layout.theme-dark .welcome-mailer .welcome-mailer-actions .button.button-secondary,
+.app-layout.theme-dark .welcome-mailer .welcome-mailer-actions .button.button-secondary:hover {
+  border-color: #786587;
+  background: #393142;
+  color: #f2edf7;
+}
+
 .app-layout.theme-dark .welcome-mailer-nav {
   background: #282331;
 }
