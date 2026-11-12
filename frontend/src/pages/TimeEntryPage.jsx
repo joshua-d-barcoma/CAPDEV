@@ -7,24 +7,14 @@ import { StatusBadge } from '../components/StatusBadge.jsx';
 import { ROUTES } from '../constants/routes.js';
 import { useBenchData } from '../hooks/useBenchData.js';
 import { formatDate } from '../utils/formatters.js';
-import { formatTime, getCurrentTimeInput } from '../utils/timeEntry.js';
+import { getCurrentTimeInput } from '../utils/timeEntry.js';
+import { getSessionUser } from '../utils/auth.js';
+import { getDemoProfile } from '../utils/demoAccounts.js';
 import './TimeEntryPage.css';
 
 const workTypes = ['Onsite', 'Work from home', 'Leave', 'Other'];
-const standardCapabilities = [
-  'Carrier Networks',
-  'Cloud Customer Edge',
-  'Digital Workplace - CWP',
-  'Hybrid Cloud - Database',
-  'Hybrid Cloud - Migration',
-  'Hybrid Cloud - Operations',
-  'Network',
-  'Service Management',
-  'SRE',
-];
 
-function getLocalDate() {
-  const date = new Date();
+function getLocalDate(date = new Date()) {
   const offset = date.getTimezoneOffset();
   return new Date(date.getTime() - offset * 60_000).toISOString().slice(0, 10);
 }
@@ -84,36 +74,47 @@ function InfoCard({ type, title, children }) {
 
 export default function TimeEntryPage() {
   const isTimeOut = useLocation().pathname.endsWith('time-out');
-  const { employees, attendanceRecords, checkedIn, submitAttendance, setCheckedIn } =
+  const { attendanceRecords, submitAttendance, setCheckedIn } =
     useBenchData();
-  const alex = employees.find((employee) => employee.name === 'Alex Santos');
-  const capabilities =
-    alex && !standardCapabilities.includes(alex.capability)
-      ? [...standardCapabilities, alex.capability]
-      : standardCapabilities;
-  const [initialClock] = useState(getCurrentTimeInput);
+  const sessionUser = useMemo(() => getSessionUser(), []);
+  const profileState = useMemo(
+    () => {
+      try {
+        return { profile: getDemoProfile(sessionUser?.email), error: '' };
+      } catch (error) {
+        return {
+          profile: null,
+          error: error instanceof Error ? error.message : 'Unable to load your profile.',
+        };
+      }
+    },
+    [sessionUser?.email],
+  );
+  const { profile, error: profileError } = profileState;
   const [workType, setWorkType] = useState('Onsite');
   const [location, setLocation] = useState('');
   const [otherLocation, setOtherLocation] = useState('');
   const [otherWorkType, setOtherWorkType] = useState('');
   const [seatNumber, setSeatNumber] = useState('');
-  const [capability, setCapability] = useState(alex?.capability ?? '');
-  const [employeeCode, setEmployeeCode] = useState(alex?.employeeId ?? '');
-  const [timeIn, setTimeIn] = useState(initialClock.time);
-  const [timeOut, setTimeOut] = useState(initialClock.time);
   const [remarks, setRemarks] = useState('');
   const [accomplishments, setAccomplishments] = useState('');
   const [acknowledged, setAcknowledged] = useState(false);
   const [trackerCompleted, setTrackerCompleted] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const today = getLocalDate();
   const employeeRecords = useMemo(
     () =>
       attendanceRecords
-        .filter((record) => record.employeeId === alex?.id)
+        .filter((record) => record.employeeId === profile?.attendanceEmployeeId)
         .sort((a, b) => b.date.localeCompare(a.date)),
-    [attendanceRecords, alex?.id],
+    [attendanceRecords, profile?.attendanceEmployeeId],
+  );
+  const todayDate = getLocalDate();
+  const todayRecord = employeeRecords.find((record) => record.date === todayDate);
+  const hasActiveTimeIn = Boolean(
+    todayRecord?.timeIn &&
+      !todayRecord.timeOut &&
+      todayRecord.status !== 'Vacation Leave',
   );
   const visibleRecords = isTimeOut
     ? employeeRecords.filter((record) => record.timeOut)
@@ -151,27 +152,22 @@ export default function TimeEntryPage() {
   function submit(event) {
     event.preventDefault();
     setError('');
-    const submittedTime = formatTime(isTimeOut ? timeOut : timeIn);
-    if (!submittedTime) {
-      setError('Enter a valid time with AM or PM, such as 5:45 PM. You can also use 17:45.');
-      return;
-    }
+    const submittedDate = getLocalDate();
+    const submittedTime = getCurrentTimeInput().time;
 
     if (isTimeOut) {
-      if (!checkedIn) {
+      if (!hasActiveTimeIn) {
         setError('You need to record your time-in before submitting time-out.');
         return;
       }
-      if (!employeeRecords.some((record) => record.date === today)) {
-        setError(
-          'No time-in record was found for today. Record your time-in before submitting time-out.',
-        );
+      if (!accomplishments.trim()) {
+        setError('Please enter your daily accomplishments.');
         return;
       }
       if (
         setCheckedIn(false, {
-          employeeId: alex?.id,
-          date: today,
+          employeeId: profile?.attendanceEmployeeId,
+          date: submittedDate,
           timeOut: submittedTime,
           accomplishments: accomplishments.trim(),
         })
@@ -181,14 +177,14 @@ export default function TimeEntryPage() {
       }
       return;
     }
-    if (checkedIn) {
-      setError('Your time-in is already recorded. Submit time-out before starting another entry.');
+    if (todayRecord) {
+      setError('You already have an attendance record for today.');
       return;
     }
     if (
-      !alex ||
-      !employeeCode.trim() ||
-      !capability ||
+      !profile?.attendanceEmployeeId ||
+      !profile.employeeId?.trim() ||
+      !profile.capability?.trim() ||
       !acknowledged ||
       (workType === 'Onsite' && !location)
     ) {
@@ -196,8 +192,8 @@ export default function TimeEntryPage() {
       return;
     }
     if (
-      (workType === 'Onsite' && location === 'Other' && !otherLocation.trim()) ||
-      (workType === 'Onsite' && location !== 'Other' && !seatNumber.trim()) ||
+      (workType === 'Onsite' &&
+        (!seatNumber.trim() || (location === 'Other' && !otherLocation.trim()))) ||
       (workType === 'Other' && !otherWorkType.trim()) ||
       (['Work from home', 'Leave'].includes(workType) && !trackerCompleted)
     ) {
@@ -205,15 +201,23 @@ export default function TimeEntryPage() {
       return;
     }
     const record = {
-      employeeId: alex.id,
-      employeeCode: employeeCode.trim(),
-      date: today,
+      employeeId: profile.attendanceEmployeeId,
+      employeeCode: profile.employeeId,
+      employeeName: profile.name,
+      date: submittedDate,
       timeIn: submittedTime,
       workType: workType === 'Other' ? otherWorkType : workType,
-      location: workType !== 'Onsite' ? '—' : location === 'Other' ? otherLocation : location,
+      location:
+        workType === 'Onsite'
+          ? location === 'Other'
+            ? otherLocation
+            : location
+          : workType === 'Other'
+            ? otherWorkType
+            : workType,
       status: workType === 'Leave' ? 'Vacation Leave' : 'Present',
       seatNumber: workType === 'Onsite' ? seatNumber : '',
-      capability,
+      capability: profile.capability,
       remarks: remarks.trim(),
     };
     if (submitAttendance(record)) {
@@ -246,6 +250,11 @@ export default function TimeEntryPage() {
           {error}
         </div>
       )}
+      {profileError && (
+        <div className="inline-error" role="alert">
+          {profileError}
+        </div>
+      )}
       <div className="time-entry-main-grid">
         <Panel
           className="time-entry-form-panel"
@@ -258,94 +267,20 @@ export default function TimeEntryPage() {
             onSubmit={submit}
           >
             {isTimeOut ? (
-              <>
-                <label className="field">
-                  <span>
-                    Employee ID <b aria-hidden="true">*</b>
-                  </span>
-                  <input
-                    required
-                    value={employeeCode}
-                    onChange={(event) => setEmployeeCode(event.target.value)}
-                    placeholder="Enter your employee ID"
-                  />
-                </label>
-                <label className="field">
-                  <span>Date</span>
-                  <input type="text" value={formatDate(today)} readOnly />
-                </label>
-                <label className="field">
-                  <span>
-                    Time Out <b aria-hidden="true">*</b>
-                  </span>
-                  <input
-                    required
-                    type="text"
-                    value={timeOut}
-                    onChange={(event) => setTimeOut(event.target.value)}
-                    aria-label="Time Out"
-                    placeholder="e.g. 5:45 PM"
-                    autoComplete="off"
-                    inputMode="text"
-                  />
-                </label>
-                <label className="field field-wide">
-                  <span>Daily Accomplishments</span>
-                  <textarea
-                    rows="4"
-                    value={accomplishments}
-                    onChange={(event) => setAccomplishments(event.target.value)}
-                    placeholder="Write your accomplishments for today."
-                  />
-                </label>
-              </>
+              <label className="field field-wide">
+                <span>
+                  Daily Accomplishments <b aria-hidden="true">*</b>
+                </span>
+                <textarea
+                  required
+                  rows="4"
+                  value={accomplishments}
+                  onChange={(event) => setAccomplishments(event.target.value)}
+                  placeholder="Write your accomplishments for today."
+                />
+              </label>
             ) : (
               <>
-                <label className="field">
-                  <span>Date</span>
-                  <input type="text" value={formatDate(today)} readOnly />
-                </label>
-                <label className="field">
-                  <span>
-                    Employee ID <b aria-hidden="true">*</b>
-                  </span>
-                  <input
-                    required
-                    value={employeeCode}
-                    onChange={(event) => setEmployeeCode(event.target.value)}
-                    placeholder="Enter your employee ID"
-                  />
-                </label>
-                <label className="field">
-                  <span>
-                    Time In <b aria-hidden="true">*</b>
-                  </span>
-                  <input
-                    required
-                    type="text"
-                    value={timeIn}
-                    onChange={(event) => setTimeIn(event.target.value)}
-                    aria-label="Time In"
-                    placeholder="e.g. 8:30 AM"
-                    autoComplete="off"
-                    inputMode="text"
-                  />
-                </label>
-                <label className="field">
-                  <span>
-                    Capability <b aria-hidden="true">*</b>
-                  </span>
-                  <select
-                    required
-                    value={capability}
-                    onChange={(event) => setCapability(event.target.value)}
-                  >
-                    <option value="">Select a capability</option>
-                    {capabilities.map((item) => (
-                      <option key={item}>{item}</option>
-                    ))}
-                  </select>
-                </label>
                 <label className="field">
                   <span>
                     Work Setup <b aria-hidden="true">*</b>
@@ -384,7 +319,7 @@ export default function TimeEntryPage() {
                         <option>Other</option>
                       </select>
                     </label>
-                    {location === 'Other' ? (
+                    {location === 'Other' && (
                       <label className="field">
                         <span>
                           Other office location <b aria-hidden="true">*</b>
@@ -396,7 +331,8 @@ export default function TimeEntryPage() {
                           placeholder="Enter the office location"
                         />
                       </label>
-                    ) : location ? (
+                    )}
+                    {location && (location !== 'Other' || otherLocation.trim()) && (
                       <label className="field">
                         <span>
                           Seat number <b aria-hidden="true">*</b>
@@ -405,10 +341,10 @@ export default function TimeEntryPage() {
                           required
                           value={seatNumber}
                           onChange={(event) => setSeatNumber(event.target.value)}
-                          placeholder="e.g. CG2-05-18"
+                          placeholder={location === 'Other' ? 'Enter your seat number' : 'e.g. CG2-05-18'}
                         />
                       </label>
-                    ) : null}
+                    )}
                   </>
                 )}
                 {workType === 'Other' && (
@@ -465,8 +401,13 @@ export default function TimeEntryPage() {
               <Link className="button button-secondary" to={ROUTES.userDashboard}>
                 Cancel
               </Link>
-              <button className="button button-primary" type="submit">
-                Submit {isTimeOut ? 'time-out' : 'time-in'}
+              <button
+                className="button button-primary"
+                type="submit"
+                disabled={!isTimeOut && Boolean(todayRecord)}
+                aria-describedby={!isTimeOut && todayRecord ? 'time-in-recorded' : undefined}
+              >
+                {todayRecord && !isTimeOut ? 'Time-in already recorded' : `Submit ${isTimeOut ? 'time-out' : 'time-in'}`}
               </button>
             </div>
           </form>
@@ -545,8 +486,10 @@ export default function TimeEntryPage() {
           }
         />
       </Panel>
-      {!isTimeOut && checkedIn && (
-        <p className="muted-copy">You have already recorded a time-in for this session.</p>
+      {!isTimeOut && todayRecord && (
+        <p id="time-in-recorded" className="muted-copy" role="status">
+          You already have an attendance record for today. Time-in cannot be submitted again.
+        </p>
       )}
     </div>
   );

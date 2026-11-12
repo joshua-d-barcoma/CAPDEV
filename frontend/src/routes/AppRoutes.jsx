@@ -57,6 +57,10 @@ const EmployeeProfilePage = lazy(() =>
   import("../pages/EmployeeProfilePage.jsx")
 );
 
+const ProfilePage = lazy(() =>
+  import("../pages/ProfilePage.jsx")
+);
+
 const UserDashboard = lazy(() =>
   import("../pages/UserDashboard.jsx")
 );
@@ -138,6 +142,21 @@ function ProtectedRoute({
     return (
       <Navigate
         to={getDashboardRoute(role)}
+        replace
+      />
+    );
+  }
+
+  return children;
+}
+
+function AuthenticatedRoute({ children }) {
+  const user = getSessionUser();
+
+  if (!user) {
+    return (
+      <Navigate
+        to={ROUTES.login}
         replace
       />
     );
@@ -234,6 +253,7 @@ export function AppRoutes() {
             path={ROUTES.actionItems}
             element={<ActionItemsPage />}
           />
+
         </Route>
 
         {/* User-only routes */}
@@ -277,6 +297,21 @@ export function AppRoutes() {
           <Route
             path={ROUTES.skillHub}
             element={<SkillHubPage />}
+          />
+
+        </Route>
+
+        {/* Shared authenticated routes */}
+        <Route
+          element={
+            <AuthenticatedRoute>
+              <AppLayout />
+            </AuthenticatedRoute>
+          }
+        >
+          <Route
+            path={ROUTES.profile}
+            element={<ProfilePage />}
           />
         </Route>
 

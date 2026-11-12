@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { DataTable } from '../components/DataTable.jsx';
 import { Dialog } from '../components/Dialog.jsx';
 import { EmployeeScopeFilters } from '../components/EmployeeScopeFilters.jsx';
-import { Panel } from '../components/Panel.jsx';
 import { StatCard } from '../components/StatCard.jsx';
 import { useBenchData } from '../hooks/useBenchData.js';
 import { filterEmployees } from '../utils/employeeInsights.js';
@@ -206,35 +205,35 @@ export default function ProductivityPage() {
           value={scopedTasks.length}
           detail="Total tracked tasks"
           tone="blue"
-          icon="📋"
+          icon="clipboard"
         />
         <StatCard
           label="Completed Tasks"
           value={completed}
           detail={`${completionRate}% completion rate`}
           tone="green"
-          icon="✓"
+          icon="check"
         />
         <StatCard
           label="Overdue Tasks"
           value={overdueTasks}
           detail="Past due date and incomplete"
           tone="red"
-          icon="◷"
+          icon="clock"
         />
         <StatCard
           label="Unassigned Tasks"
           value={unassignedTasks}
           detail="Pending distribution"
           tone="black"
-          icon="!"
+          icon="alert"
         />
          <StatCard
           label="EOD Submission Rate"
           value={`${EOD_AVERAGE}%`}
           detail="Illustrative demo trend"
           tone="blue"
-          icon="✓"
+          icon="check"
         />
       </div>
     <div className="dashboard-row">

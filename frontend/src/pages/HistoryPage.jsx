@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DataTable } from '../components/DataTable.jsx';
 import { DateFilter } from '../components/DateFilter.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
@@ -8,6 +8,9 @@ import { StatusBadge } from '../components/StatusBadge.jsx';
 import { useBenchData } from '../hooks/useBenchData.js';
 import { isDateInRange } from '../utils/dateFilters.js';
 import { formatDate } from '../utils/formatters.js';
+import { getSessionUser } from '../utils/auth.js';
+import { getDemoProfile } from '../utils/demoAccounts.js';
+import { formatAttendanceTime } from '../utils/timeEntry.js';
 import './HistoryPage.css';
 
 const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -19,26 +22,12 @@ function isLeaveRecord(record) {
 
 function getHistoryStatus(record) {
   if (isLeaveRecord(record)) return 'On Leave';
-  if (/absence|absent/i.test(record.status ?? '')) return 'Absent';
-  if (/exception|late/i.test(record.status ?? '')) return 'Exception';
+  const status = record.status ?? '';
+  const hasTimeIn = formatAttendanceTime(record.timeIn) !== '—';
+  if (hasTimeIn) return /exception|late/i.test(status) ? 'Exception' : 'Present';
+  if (/absence|absent|ncns|unapproved/i.test(status)) return 'Absent';
+  if (/exception|late/i.test(status)) return 'Exception';
   return record.status || 'Present';
-}
-
-function getMinutesAfterMidnight(time) {
-  const match = /^(\d{1,2}):([0-5]\d)\s*(AM|PM)$/i.exec(time ?? '');
-  if (!match) return null;
-  const [, hourText, minuteText, meridiem] = match;
-  const hour = (Number(hourText) % 12) + (meridiem.toUpperCase() === 'PM' ? 12 : 0);
-  return hour * 60 + Number(minuteText);
-}
-
-function formatHours(record) {
-  if (record.hours) return record.hours;
-  const start = getMinutesAfterMidnight(record.timeIn);
-  const end = getMinutesAfterMidnight(record.timeOut);
-  if (start === null || end === null || end < start) return '—';
-  const minutes = end - start;
-  return `${Math.floor(minutes / 60)}h ${String(minutes % 60).padStart(2, '0')}m`;
 }
 
 function getInitialRange(records) {
@@ -64,18 +53,30 @@ export default function HistoryPage() {
     scheduleRequests,
     submitScheduleRequest,
   } = useBenchData();
+  const sessionUser = useMemo(() => getSessionUser(), []);
+  const profileState = useMemo(() => {
+    try {
+      return { profile: getDemoProfile(sessionUser?.email), error: '' };
+    } catch (error) {
+      return {
+        profile: null,
+        error: error instanceof Error ? error.message : 'Unable to load your profile.',
+      };
+    }
+  }, [sessionUser?.email]);
+  const { profile, error: profileError } = profileState;
   const employee = employees.find((item) => item.name === 'Alex Santos');
   const personalRecords = useMemo(
     () =>
       attendanceRecords
-        .filter((record) => record.employeeId === employee?.id)
+        .filter((record) => record.employeeId === profile?.attendanceEmployeeId)
         .sort((first, second) => second.date.localeCompare(first.date)),
-    [attendanceRecords, employee?.id],
+    [attendanceRecords, profile?.attendanceEmployeeId],
   );
   const [period, setPeriod] = useState(() => getInitialRange(personalRecords));
   const [schedule, setSchedule] = useState(null);
   const [editing, setEditing] = useState(false);
-  const [notice, setNotice] = useState('');
+  const [approvalAlert, setApprovalAlert] = useState(null);
   const [page, setPage] = useState(1);
   const currentSchedule = employee ? employeeSchedules[employee.id] : null;
   const periodRecords = personalRecords.filter(
@@ -91,22 +92,47 @@ export default function HistoryPage() {
   const exceptionDays = periodRecords.filter(
     (record) => getHistoryStatus(record) === 'Exception',
   ).length;
-  const pageCount = Math.max(1, Math.ceil(periodRecords.length / PAGE_SIZE));
+  const availablePageCount = Math.max(1, Math.ceil(periodRecords.length / PAGE_SIZE));
+  const displayedPageCount = 5;
   const pageRows = periodRecords.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   const requests = scheduleRequests.filter((request) => request.employeeId === employee?.id);
   const columns = [
     { key: 'date', label: 'Date', render: (record) => formatDate(record.date) },
     {
       key: 'timeIn',
-      label: 'Time In',
-      render: (record) => (isLeaveRecord(record) ? 'On Leave' : (record.timeIn ?? '—')),
+      label: 'Time In (PH)',
+      render: (record) => (isLeaveRecord(record) ? 'On Leave' : formatAttendanceTime(record.timeIn)),
     },
     {
       key: 'timeOut',
       label: 'Time Out',
-      render: (record) => (isLeaveRecord(record) ? 'Not required' : (record.timeOut ?? '—')),
+      render: (record) => (isLeaveRecord(record) ? 'Not required' : formatAttendanceTime(record.timeOut)),
     },
-    { key: 'hours', label: 'Hours', render: formatHours },
+    {
+      key: 'accomplishments',
+      label: 'EOD',
+      render: (record) => record.accomplishments ?? record.eod ?? record.dailyAccomplishments ?? '—',
+    },
+    {
+      key: 'workType',
+      label: 'Work Type',
+      render: (record) => record.workType ?? record.workMode ?? '—',
+    },
+    {
+      key: 'location',
+      label: 'Location',
+      render: (record) => {
+        if (record.location && record.location !== '—') return record.location;
+        return /work from home|wfh/i.test(record.workType ?? record.workMode ?? '')
+          ? 'Work from home'
+          : '—';
+      },
+    },
+    {
+      key: 'seatNumber',
+      label: 'Seat Number',
+      render: (record) => record.seatNumber ?? record.seat_number ?? '—',
+    },
     {
       key: 'status',
       label: 'Status',
@@ -114,13 +140,27 @@ export default function HistoryPage() {
     },
   ];
 
+  useEffect(() => {
+    if (!approvalAlert) return undefined;
+
+    const timer = window.setTimeout(() => {
+      setApprovalAlert(null);
+    }, 4000);
+
+    return () => window.clearTimeout(timer);
+  }, [approvalAlert]);
+
   function submitRequest() {
     if (!employee) return;
     const pending = requests.some(
       (request) => request.kind === 'schedule' && request.status === 'Pending',
     );
     if (pending) {
-      setNotice('You already have a schedule request waiting for review.');
+      setApprovalAlert({
+        title: 'Request already submitted',
+        message: 'You already have a schedule request waiting for review.',
+        type: 'warning',
+      });
       return;
     }
     const saved = submitScheduleRequest({
@@ -130,7 +170,11 @@ export default function HistoryPage() {
     });
     if (saved) {
       setEditing(false);
-      setNotice('Your schedule change request has been sent for review.');
+      setApprovalAlert({
+        title: 'Request submitted',
+        message: 'Your schedule change request has been sent for review.',
+        type: 'success',
+      });
     }
   }
 
@@ -139,45 +183,70 @@ export default function HistoryPage() {
       <PageHeader
         eyebrow="Personal Workspace"
         title="Time In / Time Out History"
-        description="Review your previous attendance records and hours worked."
+        description="Review your submitted attendance records and end-of-day accomplishments."
       />
+
+      {profileError && (
+        <div className="inline-error" role="alert">
+          {profileError}
+        </div>
+      )}
+
+      {approvalAlert && (
+        <div
+          className={`history-toast history-toast--${approvalAlert.type}`}
+          role="status"
+          aria-live="polite"
+        >
+          <div className="history-toast__icon" aria-hidden="true">
+            {approvalAlert.type === 'warning' ? '!' : '✓'}
+          </div>
+          <div className="history-toast__content">
+            <strong>{approvalAlert.title}</strong>
+            <span>{approvalAlert.message}</span>
+          </div>
+          <button
+            type="button"
+            className="history-toast__close"
+            onClick={() => setApprovalAlert(null)}
+            aria-label="Close alert"
+          >
+            ×
+          </button>
+        </div>
+      )}
 
       <section className="stat-grid history-metrics" aria-label="Attendance summary">
         <StatCard
           label="Present Days"
           value={presentDays}
           detail="Recorded attendance"
-          icon="✓"
-          tone="purple"
+          icon="check"
+          tone="green"
         />
         <StatCard
           label="On Leave"
           value={leaveDays}
           detail="Recorded leave days"
-          icon="↗"
-          tone="green"
+          icon="arrow-up-right"
+          tone="blue"
         />
         <StatCard
           label="Absent Days"
           value={absentDays}
           detail="Attendance marked absent"
-          icon="!"
+          icon="ex-mark"
           tone="red"
         />
+
         <StatCard
           label="Exception"
           value={exceptionDays}
           detail="Attendance requiring review"
-          icon="!"
+          icon="alert"
           tone="orange"
         />
       </section>
-
-      {notice && (
-        <div className="success-message" role="status">
-          {notice}
-        </div>
-      )}
 
       <Panel
         title="My RTO Schedule"
@@ -188,7 +257,7 @@ export default function HistoryPage() {
             <button
               className="button button-secondary"
               onClick={() => {
-                setNotice('');
+                setApprovalAlert(null);
                 setSchedule({ ...(currentSchedule ?? {}) });
                 setEditing(true);
               }}
@@ -283,7 +352,8 @@ export default function HistoryPage() {
         }
       >
         <p className="panel-description">
-          Time-in, time-out, and calculated hours for each recorded day.
+          Time-in and time-out are shown in Philippine time. EOD details and onsite information
+          appear when included in your attendance submission.
         </p>
         <DataTable
           columns={columns}
@@ -298,25 +368,36 @@ export default function HistoryPage() {
             Showing {periodRecords.length ? (page - 1) * PAGE_SIZE + 1 : 0} to{' '}
             {Math.min(page * PAGE_SIZE, periodRecords.length)} of {periodRecords.length} records
           </span>
-          <div>
+          <nav className="history-page-buttons" aria-label="Attendance history pages">
             <button
-              aria-label="Previous page"
+              type="button"
               disabled={page <= 1}
               onClick={() => setPage((current) => Math.max(1, current - 1))}
             >
-              ‹
+              ‹ Previous
             </button>
-            <span>
-              Page {page} of {pageCount}
-            </span>
+
+            {Array.from({ length: displayedPageCount }, (_, index) => index + 1).map((pageNumber) => (
+              <button
+                type="button"
+                key={pageNumber}
+                className={pageNumber === page ? 'active' : ''}
+                aria-current={pageNumber === page ? 'page' : undefined}
+                disabled={pageNumber > availablePageCount}
+                onClick={() => setPage(pageNumber)}
+              >
+                {pageNumber}
+              </button>
+            ))}
+
             <button
-              aria-label="Next page"
-              disabled={page >= pageCount}
-              onClick={() => setPage((current) => Math.min(pageCount, current + 1))}
+              type="button"
+              disabled={page >= availablePageCount}
+              onClick={() => setPage((current) => Math.min(availablePageCount, current + 1))}
             >
-              ›
+              Next ›
             </button>
-          </div>
+          </nav>
         </div>
       </Panel>
     </div>

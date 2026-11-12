@@ -5,9 +5,11 @@ import { Panel } from '../components/Panel.jsx';
 import { SearchInput } from '../components/SearchInput.jsx';
 import { StatusBadge } from '../components/StatusBadge.jsx';
 import { useBenchData } from '../hooks/useBenchData.js';
+import { DEMO_ACCOUNTS } from '../utils/demoAccounts.js';
 import { filterEmployees, getEmployeeFilterOptions } from '../utils/employeeInsights.js';
 import { isDateInRange } from '../utils/dateFilters.js';
 import { getEmployeeName } from '../utils/formatters.js';
+import { formatAttendanceTime } from '../utils/timeEntry.js';
 
 const iconPaths = {
   calendar: (
@@ -81,25 +83,35 @@ function FilterSelect({ label, value, onChange, children, icon, className = '' }
 
 function formatCompactDate(date) {
   if (!date) return '—';
-  const [year, month, day] = date.split('-');
-  return `${year.slice(2)}-${month}-${day}`;
+  const isoDate = /^(\d{4})-(\d{2})-(\d{2})/.exec(date);
+  if (isoDate) return `${isoDate[1].slice(2)}-${isoDate[2]}-${isoDate[3]}`;
+  const parsedDate = new Date(date);
+  return Number.isNaN(parsedDate.getTime())
+    ? date
+    : new Intl.DateTimeFormat('en', { year: '2-digit', month: '2-digit', day: '2-digit' }).format(parsedDate);
 }
 
 function getMinutesAfterMidnight(time) {
-  const match = /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec(time ?? '');
+  const match = /^(\d{1,2}):([0-5]\d)\s*(AM|PM)$/i.exec(formatAttendanceTime(time));
   if (!match) return null;
   const [, hourText, minuteText, meridiem] = match;
   const hour = (Number(hourText) % 12) + (meridiem.toUpperCase() === 'PM' ? 12 : 0);
   return hour * 60 + Number(minuteText);
 }
 
-function formatHours(record) {
-  if (record.hours) return record.hours;
-  const start = getMinutesAfterMidnight(record.timeIn);
-  const end = getMinutesAfterMidnight(record.timeOut);
-  if (start === null || end === null || end < start) return '—';
-  const minutes = end - start;
-  return `${Math.floor(minutes / 60)}h ${String(minutes % 60).padStart(2, '0')}m`;
+function getRecordStatus(record) {
+  if (/leave/i.test(`${record.status ?? ''} ${record.workType ?? ''}`)) return 'On Leave';
+  const hasTimeIn = formatAttendanceTime(record.timeIn) !== '—';
+  const time = getMinutesAfterMidnight(record.timeIn);
+  if (
+    hasTimeIn &&
+    (/late|exception/i.test(record.status ?? '') || (time !== null && time > 9 * 60))
+  ) {
+    return 'Late';
+  }
+  if (hasTimeIn) return 'Present';
+  if (/absence|absent|ncns|unapproved/i.test(record.status ?? '')) return 'Absent';
+  return record.status || 'Present';
 }
 
 function getLatestAttendanceRange(records) {
@@ -126,7 +138,28 @@ function MetricCard({ label, value, detail, note, icon, tone }) {
 
 export default function AttendancePage() {
   const { employees, attendanceRecords } = useBenchData();
-  const options = useMemo(() => getEmployeeFilterOptions(employees), [employees]);
+  const attendanceEmployees = useMemo(
+    () => [
+      ...employees,
+      ...DEMO_ACCOUNTS.filter((account) => account.profile.attendanceEmployeeId).map((account) => ({
+        id: account.profile.attendanceEmployeeId,
+        name: account.name,
+        capability: account.profile.capability,
+        careerLevel: `CL${account.profile.level.replace(/^L/i, '')}`,
+        skills: account.profile.skills
+          ? account.profile.skills.split(',').map((skill) => skill.trim())
+          : [],
+        workLocation: account.profile.location,
+        attendanceStatus: 'Present',
+        absenceDays: 0,
+      })),
+    ],
+    [employees],
+  );
+  const options = useMemo(
+    () => getEmployeeFilterOptions(attendanceEmployees),
+    [attendanceEmployees],
+  );
   const [query, setQuery] = useState('');
   const [attendanceDate, setAttendanceDate] = useState(() =>
     getLatestAttendanceRange(attendanceRecords),
@@ -143,14 +176,14 @@ export default function AttendancePage() {
   const scopedEmployees = useMemo(
     () =>
       filterEmployees(
-        employees,
+        attendanceEmployees,
         {
           ...filters,
           attendance: '',
         },
         query,
       ),
-    [employees, filters, query],
+    [attendanceEmployees, filters, query],
   );
   const scopedEmployeeIds = useMemo(
     () => new Set(scopedEmployees.map((employee) => employee.id)),
@@ -163,23 +196,31 @@ export default function AttendancePage() {
           (record) =>
             scopedEmployeeIds.has(record.employeeId) &&
             (!attendanceDate || isDateInRange(record.date, attendanceDate)) &&
-            (!filters.attendance || record.status === filters.attendance),
+            (!filters.attendance ||
+              (filters.attendance === 'Present'
+                ? ['Present', 'Late'].includes(getRecordStatus(record))
+                : filters.attendance === 'Unapproved Absence'
+                  ? getRecordStatus(record) === 'Absent'
+                  : filters.attendance === 'Vacation Leave'
+                    ? getRecordStatus(record) === 'On Leave'
+                    : true)),
         )
         .sort((first, second) => second.date.localeCompare(first.date)),
-    [attendanceDate, attendanceRecords, filters.attendance, scopedEmployeeIds],
+    [attendanceDate, attendanceEmployees, attendanceRecords, filters.attendance, scopedEmployeeIds],
   );
-  const presentRecords = records.filter((record) => record.status === 'Present');
-  const leaveRecords = records.filter((record) => record.status === 'Vacation Leave');
-  const absenceRecords = records.filter((record) => record.status === 'Unapproved Absence');
-  const lateRecords = records.filter((record) => {
-    const time = getMinutesAfterMidnight(record.timeIn);
-    return record.status === 'Present' && time !== null && time > 9 * 60;
-  });
-  const eligibleRecords = records.filter((record) => record.status !== 'Vacation Leave');
+  const presentRecords = records.filter((record) =>
+    ['Present', 'Late'].includes(getRecordStatus(record)),
+  );
+  const leaveRecords = records.filter((record) => getRecordStatus(record) === 'On Leave');
+  const absenceRecords = records.filter((record) => getRecordStatus(record) === 'Absent');
+  const lateRecords = records.filter((record) => getRecordStatus(record) === 'Late');
+  const eligibleRecords = records.filter((record) => getRecordStatus(record) !== 'On Leave');
   const attendanceRate = eligibleRecords.length
     ? Math.round((presentRecords.length / eligibleRecords.length) * 100)
     : 0;
-  const onsiteRecords = presentRecords.filter((record) => record.workType === 'Onsite');
+  const onsiteRecords = records.filter(
+    (record) => getRecordStatus(record) !== 'On Leave' && record.workType === 'Onsite',
+  );
   const rtoRate = presentRecords.length
     ? Math.round((onsiteRecords.length / presentRecords.length) * 100)
     : 0;
@@ -190,12 +231,13 @@ export default function AttendancePage() {
   const compliance = useMemo(() => {
     const byCapability = new Map();
     records.forEach((record) => {
-      const employee = employees.find((entry) => entry.id === record.employeeId);
-      if (!employee?.capability || record.status === 'Vacation Leave') return;
-      const current = byCapability.get(employee.capability) ?? { total: 0, present: 0 };
+      const employee = attendanceEmployees.find((entry) => entry.id === record.employeeId);
+      const capability = record.capability || employee?.capability;
+      if (!capability || getRecordStatus(record) === 'On Leave') return;
+      const current = byCapability.get(capability) ?? { total: 0, present: 0 };
       current.total += 1;
-      if (record.status === 'Present') current.present += 1;
-      byCapability.set(employee.capability, current);
+      if (['Present', 'Late'].includes(getRecordStatus(record))) current.present += 1;
+      byCapability.set(capability, current);
     });
     return [...byCapability.entries()]
       .map(([capability, counts]) => ({
@@ -205,7 +247,7 @@ export default function AttendancePage() {
         rate: counts.total ? Math.round((counts.present / counts.total) * 100) : 0,
       }))
       .sort((first, second) => first.capability.localeCompare(second.capability));
-  }, [employees, records]);
+  }, [attendanceEmployees, records]);
   const resetFilters = () => {
     setQuery('');
     setAttendanceDate(getLatestAttendanceRange(attendanceRecords));
@@ -220,12 +262,6 @@ export default function AttendancePage() {
     });
   };
 
-  const getRecordStatus = (record) => {
-    if (record.status === 'Vacation Leave') return 'On Leave';
-    if (record.status === 'Unapproved Absence') return 'Absent';
-    if (lateRecords.some((entry) => entry.id === record.id)) return 'Late';
-    return 'Present';
-  };
   const getRecordTone = (record) =>
     `attendance-row-${getRecordStatus(record).toLowerCase().replace(' ', '-')}`;
   const columns = [
@@ -239,23 +275,49 @@ export default function AttendancePage() {
           <strong
             className={`attendance-employee-name is-${status.toLowerCase().replace(' ', '-')}`}
           >
-            {getEmployeeName(record.employeeId, employees)}
+            {record.employeeName || getEmployeeName(record.employeeId, attendanceEmployees)}
           </strong>
         );
       },
     },
     {
       key: 'timeIn',
-      label: 'Time In',
-      render: (record) => (record.status === 'Vacation Leave' ? 'On Leave' : record.timeIn),
+      label: 'Time In (PH)',
+      render: (record) =>
+        getRecordStatus(record) === 'On Leave' ? 'On Leave' : formatAttendanceTime(record.timeIn),
     },
     {
       key: 'timeOut',
       label: 'Time Out',
       render: (record) =>
-        record.status === 'Vacation Leave' ? 'Blocked' : (record.timeOut ?? '—'),
+        getRecordStatus(record) === 'On Leave' ? 'Not required' : formatAttendanceTime(record.timeOut),
     },
-    { key: 'hours', label: 'Hours', render: formatHours },
+    {
+      key: 'accomplishments',
+      label: 'EOD',
+      render: (record) =>
+        record.accomplishments ?? record.eod ?? record.dailyAccomplishments ?? '—',
+    },
+    {
+      key: 'workType',
+      label: 'Work Type',
+      render: (record) => record.workType ?? record.workMode ?? '—',
+    },
+    {
+      key: 'location',
+      label: 'Location',
+      render: (record) => {
+        if (record.location && record.location !== '—') return record.location;
+        return /work from home|wfh/i.test(record.workType ?? record.workMode ?? '')
+          ? 'Work from home'
+          : '—';
+      },
+    },
+    {
+      key: 'seatNumber',
+      label: 'Seat Number',
+      render: (record) => record.seatNumber ?? record.seat_number ?? '—',
+    },
     {
       key: 'status',
       label: 'Status',
@@ -266,26 +328,37 @@ export default function AttendancePage() {
     {
       key: 'employee',
       label: 'Employee',
-      render: (record) => <strong>{getEmployeeName(record.employeeId, employees)}</strong>,
+      render: (record) => (
+        <strong>
+          {record.employeeName || getEmployeeName(record.employeeId, attendanceEmployees)}
+        </strong>
+      ),
     },
     {
       key: 'capability',
       label: 'Capability',
       render: (record) =>
-        employees.find((employee) => employee.id === record.employeeId)?.capability || '—',
+        record.capability ||
+        attendanceEmployees.find((employee) => employee.id === record.employeeId)?.capability ||
+        '—',
     },
     {
       key: 'careerLevel',
       label: 'CL',
       render: (record) =>
-        employees.find((employee) => employee.id === record.employeeId)?.careerLevel || '—',
+        attendanceEmployees.find((employee) => employee.id === record.employeeId)?.careerLevel ||
+        '—',
     },
     {
       key: 'status',
       label: 'Status',
       render: (record) => (
         <StatusBadge
-          status={record.exceptionStatus === 'Late check-in' ? 'Late check-in' : 'NCNS'}
+          status={
+            record.exceptionStatus === 'Late check-in' || getRecordStatus(record) === 'Late'
+              ? 'Late check-in'
+              : 'NCNS'
+          }
         />
       ),
     },
@@ -293,7 +366,8 @@ export default function AttendancePage() {
       key: 'infractions',
       label: 'Infractions MTD',
       render: (record) =>
-        employees.find((employee) => employee.id === record.employeeId)?.absenceDays || 1,
+        attendanceEmployees.find((employee) => employee.id === record.employeeId)?.absenceDays ||
+        1,
     },
     {
       key: 'nextStep',
@@ -379,7 +453,7 @@ export default function AttendancePage() {
           detail="Present after 9:00 AM"
           note={
             lateRecords.length
-              ? `${getEmployeeName(lateRecords[0].employeeId, employees)} · Late Check-in`
+              ? `${lateRecords[0].employeeName || getEmployeeName(lateRecords[0].employeeId, attendanceEmployees)} · Late Check-in`
               : ''
           }
           icon="alert"
@@ -437,12 +511,14 @@ export default function AttendancePage() {
         {absenceRecords.length ? (
           <div className="attendance-alert-list">
             {absenceRecords.map((record) => {
-              const employee = employees.find((entry) => entry.id === record.employeeId);
+              const employee = attendanceEmployees.find((entry) => entry.id === record.employeeId);
               const absenceDays = employee?.absenceDays ?? 1;
               return (
                 <article className="attendance-alert-card" key={record.id}>
                   <div className="attendance-alert-person">
-                    <strong>{getEmployeeName(record.employeeId, employees)}</strong>
+                    <strong>
+                      {record.employeeName || getEmployeeName(record.employeeId, attendanceEmployees)}
+                    </strong>
                     <span>Attendance requires review</span>
                   </div>
                   <span className="attendance-absence-days">

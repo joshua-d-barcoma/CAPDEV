@@ -13,6 +13,8 @@ import {
   updateLearningAssignment,
   updateMandatoryTraining,
   updateCheckInStatus,
+  loadBenchData,
+  saveBenchData,
 } from './benchDataService.js';
 
 function createData() {
@@ -24,6 +26,54 @@ function createData() {
     scheduleRequests: [],
   };
 }
+
+test('loadBenchData removes old demo attendance once and keeps future time-ins', () => {
+  const savedItems = new Map();
+  const previousWindow = globalThis.window;
+  globalThis.window = {
+    localStorage: {
+      getItem(key) {
+        return savedItems.get(key) ?? null;
+      },
+      setItem(key, value) {
+        savedItems.set(key, value);
+      },
+    },
+  };
+
+  try {
+    const data = loadBenchData();
+    delete data.demoAttendanceCleanupV1;
+    data.attendanceRecords.push(
+      { id: 'old-demo-record', employeeId: 'demo-juan-marcos-garcia', date: '2026-11-10' },
+      { id: 'real-employee-record', employeeId: 'employee-alex-santos', date: '2026-11-10' },
+    );
+    saveBenchData(data);
+
+    const cleanedData = loadBenchData();
+    assert.equal(
+      cleanedData.attendanceRecords.some((record) => record.id === 'old-demo-record'),
+      false,
+    );
+    assert.equal(
+      cleanedData.attendanceRecords.some((record) => record.id === 'real-employee-record'),
+      true,
+    );
+
+    cleanedData.attendanceRecords.push({
+      id: 'new-demo-record',
+      employeeId: 'demo-juan-marcos-garcia',
+      date: '2026-11-11',
+    });
+    saveBenchData(cleanedData);
+    assert.equal(
+      loadBenchData().attendanceRecords.some((record) => record.id === 'new-demo-record'),
+      true,
+    );
+  } finally {
+    globalThis.window = previousWindow;
+  }
+});
 
 test('adding a development task returns immutable data with a generated id', () => {
   const initial = { tasks: [] };

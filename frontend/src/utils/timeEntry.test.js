@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { formatTime } from './timeEntry.js';
+import { formatAttendanceTime, formatTime } from './timeEntry.js';
 
 test('time entry uses the AM/PM period typed by the user', () => {
   assert.equal(formatTime('9:34 AM'), '9:34 AM');
@@ -22,4 +22,13 @@ test('time entry rejects invalid hour and minute input', () => {
   assert.equal(formatTime('9:60 AM'), null);
   assert.equal(formatTime('25:30'), null);
   assert.equal(formatTime('not a time'), null);
+});
+
+test('attendance history formats compact backend times and common time formats', () => {
+  assert.equal(formatAttendanceTime('Nov 9, 2026, 242 PM'), '2:42 PM');
+  assert.equal(formatAttendanceTime('Nov 9, 2026, 1243 PM'), '12:43 PM');
+  assert.equal(formatAttendanceTime('9:05 AM'), '9:05 AM');
+  assert.equal(formatAttendanceTime('17:30'), '5:30 PM');
+  assert.equal(formatAttendanceTime(''), '—');
+  assert.equal(formatAttendanceTime('not a time'), '—');
 });

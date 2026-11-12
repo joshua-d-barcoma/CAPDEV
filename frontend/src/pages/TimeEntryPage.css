@@ -176,6 +176,15 @@
   border: 0;
 }
 
+.time-entry-form-actions .button-primary:disabled {
+  border: 1px solid #d5d0d8;
+  background: #e6e2e8;
+  box-shadow: none;
+  color: #77717d;
+  filter: none;
+  opacity: 1;
+}
+
 .time-entry-info-stack {
   display: grid;
   gap: 12px;

@@ -39,19 +39,31 @@ import {
   Sidebar,
 } from "./Sidebar.jsx";
 
+import {
+  clearWelcomeMailerDismissal,
+  WelcomeMailer,
+} from "./WelcomeMailer.jsx";
+
 export function AppLayout() {
   const [
     sidebarCollapsed,
     setSidebarCollapsed,
   ] = useState(false);
+  const [
+    welcomeMailerOpenRequest,
+    setWelcomeMailerOpenRequest,
+  ] = useState(0);
 
   const mainContentRef = useRef(null);
+  const pageTransitionTimerRef = useRef(null);
 
   const location = useLocation();
+  const previousLocationKeyRef = useRef(location.key);
 
   const navigate = useNavigate();
 
   const {
+    user,
     role,
   } = useRole();
 
@@ -108,6 +120,9 @@ export function AppLayout() {
     theme === "dark" &&
       "theme-dark",
 
+    location.state?.loginAnimation &&
+      "login-transition",
+
     sidebarCollapsed &&
       role === "admin" &&
       "sidebar-is-collapsed",
@@ -139,9 +154,32 @@ export function AppLayout() {
       top: 0,
       left: 0,
     });
+
+    if (previousLocationKeyRef.current === location.key) return undefined;
+    previousLocationKeyRef.current = location.key;
+
+    const pageContent = mainContentRef.current;
+    pageContent?.classList.remove("page-navigation-enter");
+
+    if (location.state?.loginAnimation || !pageContent) return undefined;
+
+    void pageContent.offsetWidth;
+    pageContent.classList.add("page-navigation-enter");
+    pageTransitionTimerRef.current = window.setTimeout(() => {
+      pageContent.classList.remove("page-navigation-enter");
+      pageTransitionTimerRef.current = null;
+    }, 360);
+
+    return () => {
+      if (pageTransitionTimerRef.current !== null) {
+        window.clearTimeout(pageTransitionTimerRef.current);
+        pageTransitionTimerRef.current = null;
+      }
+    };
   }, [location.key]);
 
   function handleLogout() {
+    clearWelcomeMailerDismissal(user?.email);
     clearSessionUser();
 
     navigate(ROUTES.login, {
@@ -155,6 +193,12 @@ export function AppLayout() {
     );
   }
 
+  function handleOpenWelcomeMailer() {
+    setWelcomeMailerOpenRequest(
+      (request) => request + 1
+    );
+  }
+
   return (
     <div className={layoutClassName}>
       <Sidebar
@@ -163,8 +207,16 @@ export function AppLayout() {
       />
 
       <div className="main-area">
+        {role === "user" && user?.email && (
+          <WelcomeMailer
+            email={user.email}
+            openRequest={welcomeMailerOpenRequest}
+          />
+        )}
+
         <Header
           role={role}
+          user={user}
           theme={theme}
           onToggleTheme={toggleTheme}
           onToggleSidebar={
@@ -200,7 +252,11 @@ export function AppLayout() {
           id="main-content"
           ref={mainContentRef}
         >
-          <Outlet />
+          <Outlet
+            context={{
+              openWelcomeMailer: handleOpenWelcomeMailer,
+            }}
+          />
         </main>
       </div>
     </div>
